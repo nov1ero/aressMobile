@@ -32,10 +32,10 @@ function WishlistScreen(props) {
             wishlistData.forEach(function (item, index) {
                 let findedProduct = ProductListDummy.filter(product => product.id == item);
                 wishlistItems.push({
-                    name: findedProduct[0].name,
-                    price: findedProduct[0].price,
-                    image: findedProduct[0].image,
-                    id: findedProduct[0].id
+                    name: findedProduct[index].name,
+                    price: findedProduct[index].price,
+                    image: findedProduct[index].image,
+                    id: findedProduct[index].id
                 });
             });
             noRecord = false;
