@@ -48,6 +48,7 @@ function NewProduct(props) {
                             <OtrixDivider size={'sm'} />
                         </>
                     }
+                    listKey = {(item, index) => index.toString()}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) =>
                         <ProductView data={item} key={item.id} navToDetail={navigateToDetailPage} addToWishlist={addToWishlist} wishlistArray={wishlistArr} />

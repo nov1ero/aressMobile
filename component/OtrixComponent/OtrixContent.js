@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, SafeAreaView, ScrollView } from 'react-native';
+import { View, SafeAreaView} from 'react-native';
+import { ScrollView } from 'react-native-virtualized-view';
 import { GlobalStyles, Colors } from '@helpers'
 
 function OtrixContent(props) {

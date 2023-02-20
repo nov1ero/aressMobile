@@ -3,9 +3,10 @@ import {
     View,
     TouchableOpacity,
     Text,
-    StyleSheet, ScrollView,
+    StyleSheet,
     Modal
 } from "react-native";
+import { ScrollView } from "react-native-virtualized-view";
 import { connect } from 'react-redux';
 import {
     OtrixContainer, OtrixHeader, OtrixDivider, OtirxBackButton, OrdersComponent

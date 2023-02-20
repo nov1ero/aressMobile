@@ -28,7 +28,8 @@ function SimilarProduct(props) {
                     paddingTop: wp('2.5%'),
                 }}
                 onEndReachedThreshold={0.7}
-                keyExtractor={(contact, index) => String(index)}
+                listKey = {(contact, index) => index.toString()}
+                keyExtractor={(contact, index) => index.toString()}
                 renderItem={({ item, index }) =>
                     <ProductView data={item} key={item.id} navToDetail={navigateToDetailPage} />
                 }>

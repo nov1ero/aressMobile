@@ -58,10 +58,10 @@ function CheckoutScreen(props) {
             let findedProduct = ProductListDummy.filter(product => product.id == item.product_id);
             cartItems.push({
                 quantity: item.quantity,
-                name: findedProduct[0].name,
-                price: findedProduct[0].price,
-                image: findedProduct[0].image,
-                id: findedProduct[0].id
+                name: findedProduct[0]?.name,
+                price: findedProduct[0]?.price,
+                image: findedProduct[0]?.image,
+                id: findedProduct[0]?.id
             });
             let amt = parseInt(findedProduct[0].price.replace('$', ''));
             sumAmount += amt * item.quantity;

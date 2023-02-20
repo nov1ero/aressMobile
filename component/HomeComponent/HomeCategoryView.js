@@ -27,6 +27,7 @@ function HomeCategoryView(props) {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
                 onEndReachedThreshold={0.7}
+                listKey = {(index) => index.toString()}
                 keyExtractor={(item) => String(item.id)}
                 renderItem={({ item }) =>
                     <TouchableOpacity style={styles.catBox}  key={item.id} onPress={() => props.navigation.navigate('ProductListScreen', { title: item.name })}>

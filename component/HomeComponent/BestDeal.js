@@ -46,7 +46,8 @@ function BestDeal(props) {
                 numColumns={2}
                 onEndReachedThreshold={0.7}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(contact, index) => String(index)}
+                listKey = {(contact, index) => index.toString()}
+                keyExtractor={(contact, index) => index.toString()}
                 renderItem={({ item, index }) =>
                     <DealsProductView data={item} key={item.id} navToDetail={navigateToDetailPage} addToWishlist={addToWishlist} wishlistArray={wishlistArr} />
                 }>

@@ -55,7 +55,7 @@ function MyTabs(props) {
                 lazy: true,
                 tabBarStyle: styles.tabbarStyle
             }}>
-            <BottomTab.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }}
+            <BottomTab.Screen name="HomeScreen" component={HomeScreen} 
                 options={{
                     headerShown: false,
                     cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid,
@@ -67,7 +67,7 @@ function MyTabs(props) {
                         />
                     ),
                 }} />
-            <BottomTab.Screen name="CategoryScreen" component={CategoryScreen} options={{ headerShown: false }}
+            <BottomTab.Screen name="CategoryScreen" component={CategoryScreen} 
                 options={{
                     headerShown: false,
                     tabBarIcon: ({ focused, tintColor }) => (
@@ -78,7 +78,7 @@ function MyTabs(props) {
                         />
                     ),
                 }} />
-            <BottomTab.Screen name="CartScreen" component={CartScreen} options={{ headerShown: false }}
+            <BottomTab.Screen name="CartScreen" component={CartScreen} 
                 options={{
                     headerShown: false,
                     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -111,7 +111,7 @@ function MyTabs(props) {
                         </View>
                     ),
                 }} />
-            < BottomTab.Screen name="ProfileScreen" component={authStatus == true ? ProfileScreen : AuthNavigator} options={{ headerShown: false }}
+            < BottomTab.Screen name="ProfileScreen" component={authStatus == true ? ProfileScreen : AuthNavigator} 
                 options={{
                     headerShown: false,
                     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -124,7 +124,7 @@ function MyTabs(props) {
                         />
                     ),
                 }} />
-            < BottomTab.Screen name="SettingScreen" component={SettingStackNavigation} options={{ headerShown: false }}
+            < BottomTab.Screen name="SettingScreen" component={SettingStackNavigation} 
                 options={{
                     headerShown: false,
                     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,

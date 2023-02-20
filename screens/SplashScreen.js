@@ -77,7 +77,7 @@ function SplashScreen(props) {
                         {
                             scaleY: animatedValue.interpolate({
                                 inputRange: [0, 1],
-                                outputRange: [1, 10]
+                                outputRange: [1, 8]
                             })
                         }
                     ]

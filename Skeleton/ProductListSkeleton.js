@@ -5,8 +5,6 @@ import {
 } from "react-native";
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { Colors } from '@helpers';
-import { ScrollView } from "native-base";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 function ProductListSkeleton() {

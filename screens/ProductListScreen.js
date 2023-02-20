@@ -4,11 +4,11 @@ import {
     TouchableOpacity,
     Text,
     StyleSheet,
-    ScrollView,
     FlatList,
     Modal,
     Image
 } from "react-native";
+import { ScrollView } from "react-native-virtualized-view";
 import { connect } from 'react-redux';
 import {
     OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, ProductView, OtirxBackButton, OtrixLoader, FilterTags, FilterComponent
@@ -118,7 +118,8 @@ function ProductListScreen(props) {
                         numColumns={2}
                         onEndReachedThreshold={0.7}
                         showsVerticalScrollIndicator={false}
-                        keyExtractor={(contact, index) => String(index)}
+                        listKey = {(contact, index) => index.toString()}
+                        keyExtractor={(contact, index) => index.toString()}
                         renderItem={({ item, index }) =>
                             <ProductView data={item} key={item.id} imageViewBg={Colors.white} navToDetail={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })} addToWishlist={addToWishlist} wishlistArray={wishlistData} />
                         }>

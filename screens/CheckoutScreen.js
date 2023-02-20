@@ -3,7 +3,7 @@ import {
     View,
     TouchableOpacity,
     Text,
-    StyleSheet, ScrollView,
+    StyleSheet, 
     Modal
 } from "react-native";
 import { connect } from 'react-redux';

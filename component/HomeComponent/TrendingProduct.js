@@ -44,6 +44,7 @@ function TrendingProduct(props) {
                 }
                 onEndReachedThreshold={0.7}
                 showsVerticalScrollIndicator={false}
+                listKey = {(contact,index) => index.toString()}
                 keyExtractor={(contact, index) => String(index)}
                 renderItem={({ item, index }) =>
                     <ProductView data={item} key={item.id} navToDetail={navigateToDetailPage} addToWishlist={addToWishlist} wishlistArray={wishlistArr} />

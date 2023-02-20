@@ -22,7 +22,8 @@ function CategoryView(props) {
                 numColumns={2}
                 onEndReachedThreshold={0.7}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(contact, index) => String(index)}
+                listKey = {(contact, index) => index.toString()}
+                keyExtractor={(contact, index) => index.toString()}
                 renderItem={({ item, index }) =>
                     <TouchableOpacity key={index} style={styles.categoryBox} onPress={() => props.navigation.navigate('ProductListScreen', { title: item.name })}>
                         <View style={styles.imageView}>
