@@ -20,22 +20,22 @@ import { _getWishlist, _addToWishlist } from "@helpers/FunctionHelper";
 import ProductListDummy from '@component/items/ProductListDummy';
 
 function WishlistScreen(props) {
-    const [state, setState] = React.useState({ loading: true, noRecord: false, wishlistArr: [] });
+    const [state, setState] = React.useState({ loading: true, noRecord: false, wishlistArr: [], wishlistData: null });
+    const { wishlistData } = props;
+    
 
     const wishlistSetData = async () => {
-        const { wishlistData } = props;
         const {detailsData} = props;
         console.log("PRODUCT", detailsData)
         const  productDetail = detailsData;
-        const wishItems = wishlistData
-        console.log("WISH_DATA", wishItems)
+        console.log("WISH_DATA", wishlistData)
     
         let noRecord = true;
         let wishlistItems = [];
         if (wishlistData && wishlistData.length > 0) {
             for (const id of wishlistData) {
                 // Retrieve product details from some source (e.g. an API or a local data store)
-                const product = await productId(id);
+                const product = await detailsData;
                 console.log("Product", product)
                 wishlistItems.push({
                     name: product.name || "Krevetka",
@@ -51,17 +51,19 @@ function WishlistScreen(props) {
         setState({ ...state, loading: false, noRecord: noRecord, wishlistArr: wishlistItems })
     }
     
-    const productId = async (id)=>{
-        props.getProductDetailsRequest(id)
-    }
+    // const productId = async (id)=>{
+    //     props.getProductDetailsRequest(id)
+    // }
     const onDeleteItem = async (id) => {
         let wishlistData = await _addToWishlist(id);
         props.addToWishList(wishlistData);
-        
+        // props.getProductDetailsRequest(id)
         wishlistSetData()
     }
 
     useEffect(() => {
+        const { id } = props.wishlistData;
+        props.getProductDetailsRequest(id);
         wishlistSetData()
     }, []);
 
@@ -120,7 +122,7 @@ function mapStateToProps(state) {
 
 
 
-export default connect(mapStateToProps, { addToWishList })(WishlistScreen);
+export default connect(mapStateToProps, { addToWishList, getProductDetailsRequest })(WishlistScreen);
 
 const styles = StyleSheet.create({
     noRecord: {

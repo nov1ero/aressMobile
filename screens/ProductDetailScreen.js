@@ -57,11 +57,11 @@ function ProductDetailScreen(props) {
     const  productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
     const [state, setState] = React.useState({ loading: true, productCount: 1, fetchCart: false, selectedColor: 1,productImages:[], showZoom: false, msg: '' });
     const { selectedColor, productCount, showZoom, msg } = state;
-    console.log("\n\n|-|-|-|-NANME-|-|-|-|", productDetail.product_name.ru)
-    console.log("\n\n|-|-|-|-PRICE-|-|-|-|", combinationsProduct[0].mainprice)
-    console.log("IMAGE ===>", combinationsProduct[0].images[0].image)
+    // console.log("\n\n|-|-|-|-NANME-|-|-|-|", productDetail.product_name.ru)
+    // console.log("\n\n|-|-|-|-PRICE-|-|-|-|", combinationsProduct[0].mainprice)
+    // console.log("IMAGE ===>", combinationsProduct[0].images[0].image)
     const image = "https://aress.kz/images/simple_products/gallery/"+combinationsProduct[0].images[0].image
-    console.log("|-|-|-|-IMAGE-|-|-|-|",image)
+    // console.log("|-|-|-|-IMAGE-|-|-|-|",image)
     //const { product } = props;
     
 
