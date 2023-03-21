@@ -24,7 +24,7 @@ import InAppReview from 'react-native-in-app-review';
 import Rate, { AndroidMarket } from 'react-native-rate';
 import Share from 'react-native-share';
 const shareOptions = {
-    title: 'Otrixapp',
+    title: 'AressApp',
     url: Platform.OS == 'android' ? 'https://play.google.com/store/apps/details?id=com.otrixcommerce' : 'iOS url',
 };
 

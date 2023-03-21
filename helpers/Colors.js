@@ -13,7 +13,7 @@ export const Colors = {
   white: '#fff',
   offWhite: 'rgb(255,255,255)',
   newTag: 'rgba(103, 103, 105, 1)',
-  black: 'rgb(0,0,0)',
+  black: 'rgb(2,2,2)',
   light_gray: 'rgb(237,237,237)',
   placeholderTextColor: 'rgb(152,152,152)',
   backgroundColor: 'rgb(250,250,250)',

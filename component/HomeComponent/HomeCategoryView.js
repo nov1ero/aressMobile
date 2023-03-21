@@ -7,8 +7,8 @@ import OtrixDivider from '../OtrixComponent/OtrixDivider';
 import Fonts from '@helpers/Fonts';
 
 function HomeCategoryView(props) {
-    loadImage = false;
     const categories = props?.categories?.items;
+    console.log("homeCAT", categories)
     const path = props?.categories?.path;
 
     return (

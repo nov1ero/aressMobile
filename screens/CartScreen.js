@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 import { Input, Button } from 'native-base';
 import {
-    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, CartView
+    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, OtirxBackButton, CartView
 } from '@component';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
@@ -17,6 +17,7 @@ import { removeFromCart, decrementQuantity, incrementQuantity } from '@actions';
 import ProductListDummy from '@component/items/ProductListDummy';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "@helpers/Fonts";
+import axios from 'axios';
 
 function CheckoutScreen(props) {
     const [state, setState] = React.useState({ loading: true, cartArr: [], cartProducts: [], sumAmount: 0, isApplied: false, validCode: false, couponCode: null, noRecord: false });
@@ -49,21 +50,26 @@ function CheckoutScreen(props) {
     }
 
     const calculateCart = () => {
-        let cartProducts = props.cartData;
+        const { cartData } = props;
+        let cartProducts = cartData;
+        console.log("CART__DATA", cartProducts)
         let cartItems = [];
         let sumAmount = 0;
 
         //find and create array
         cartProducts && cartProducts.length > 0 && cartProducts.forEach(function (item, index) {
-            let findedProduct = ProductListDummy.filter(product => product.id == item.product_id);
+            let foundProduct = cartProducts.filter(product => product.id == item.product_id);
             cartItems.push({
                 quantity: item.quantity,
-                name: findedProduct[index]?.name,
-                price: findedProduct[index]?.price,
-                image: findedProduct[index]?.image,
-                id: findedProduct[index]?.id
+                name: item.name || " ",
+                price: item.price || " ",
+                image: item.image || " ",
+                id: item.product_id || " "
             });
-            let amt = parseInt(findedProduct[0].price.replace('$', ''));
+            console.log("ITEMS", cartItems)
+            //! поменять 30 на 'amt'
+            let amt = item.price?item.price:0;
+            //productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
             sumAmount += amt * item.quantity;
         });
 
@@ -73,6 +79,7 @@ function CheckoutScreen(props) {
     useEffect(() => {
         calculateCart();
     }, []);
+    
 
     const { cartProducts, sumAmount, couponCode, loading, isApplied, validCode, noRecord } = state;
     return (
@@ -80,6 +87,9 @@ function CheckoutScreen(props) {
 
             {/* Header */}
             <OtrixHeader customStyles={{ backgroundColor: Colors.light_white }}>
+            <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => props.navigation.goBack()}>
+                    <OtirxBackButton />
+                </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
                     <Text style={GlobalStyles.headingTxt}>  Shopping Cart</Text>
                 </View>
@@ -129,28 +139,28 @@ function CheckoutScreen(props) {
                 <OtrixDivider size={'sm'} />
                 <View style={styles.totalView}>
                     <Text style={styles.leftTxt}>Sub Total</Text>
-                    <Text style={styles.rightTxt}>${sumAmount}</Text>
+                    <Text style={styles.rightTxt}>₸ {sumAmount}</Text>
                 </View>
                 <View style={styles.totalView}>
                     <Text style={styles.leftTxt}>Discount</Text>
-                    <Text style={styles.rightTxt}>$0</Text>
+                    <Text style={styles.rightTxt}>₸ 0</Text>
                 </View>
                 {
                     validCode && <View style={styles.totalView}>
                         <Text style={styles.leftTxt}>Coupon ({couponCode})</Text>
-                        <Text style={styles.rightTxt}>-$50</Text>
+                        <Text style={styles.rightTxt}>-₸ 50</Text>
                     </View>
                 }
                 <View style={styles.totalView}>
                     <Text style={styles.leftTxt}>Total</Text>
-                    <Text style={[styles.rightTxt, { color: Colors.link_color, fontSize: wp('5.5%') }]}>{validCode ? '$' + parseFloat(sumAmount - 50) : '$' + sumAmount}</Text>
+                    <Text style={[styles.rightTxt, { color: Colors.link_color, fontSize: wp('5.5%') }]}>{validCode ? '₸ ' + parseFloat(sumAmount - 50) : '₸ ' + sumAmount}</Text>
                 </View>
                 <Button
                     size="md"
                     variant="solid"
                     bg={Colors.themeColor}
                     style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('2.5%'), marginTop: hp('1%') }]}
-                    onPress={() => props.navigation.navigate("CheckoutScreen", { totalAmt: validCode ? '$' + parseFloat(sumAmount - 50) : '$' + sumAmount })}
+                    onPress={() => props.navigation.navigate("CheckoutScreen", { totalAmt: validCode ? '₸ ' + parseFloat(sumAmount - 50) : '₸ ' + sumAmount })}
                 >
                     <Text style={GlobalStyles.buttonText}>Checkout</Text>
                 </Button>

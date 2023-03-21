@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Provider } from 'react-redux';
 import { NativeBaseProvider } from "native-base"
 import React, { useEffect } from "react";
-import { createStore, applyMiddleware, compose } from "redux";
+import { legacy_createStore as createStore, applyMiddleware, compose } from "redux";
 import AppNavigator from "./AppNavigator";
 import * as Font from 'expo-font';
 

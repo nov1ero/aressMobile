@@ -2,6 +2,38 @@ import { types } from "./actionTypes";
 // import { AsyncStorage } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+
+export const fetchCategories = () => ({
+    type: types.FETCH_CATEGORIES,
+  });
+
+export function fetchCategoriesRequest(params){
+    return{
+        type: types.FETCH_CATEGORIES_REQUEST,
+        payload: {params}
+
+    }
+};
+
+export function getCategoriesSuccess(categories){
+    return {
+        type: types.GET_CATEGORIES_SUCCESS,
+        payload: {
+            categories
+        }
+    };
+}
+
+export function getCategoriesFailure(error){
+    return {
+        type: types.GET_CATEGORIES_FAILURE,
+        payload: {
+            error
+        }
+    };
+}
+
 export function requestInit(user) {
     return {
         type: types.REQUEST_INIT,
@@ -20,12 +52,15 @@ export function successInt(navigateScreen) {
     };
 }
 
-export function addToCart(id, quantity) {
+export function addToCart(id, quantity, name, price, image) {
     return {
         type: types.ADD_TO_CART,
         payload: {
             id,
-            quantity
+            quantity,
+            name,
+            price,
+            image
         }
     };
 }
@@ -44,6 +79,12 @@ export function getHomeRequest() {
     };
 }
 
+export function customRequest() {
+    return {
+        type: types.GET_HOME_REQUEST,
+    };
+}
+
 export function getHomeSuccess(data) {
     return {
         type: types.GET_HOME_SUCCESS,
@@ -53,9 +94,12 @@ export function getHomeSuccess(data) {
     };
 }
 
-export function getProductDetailsRequest() {
+export function getProductDetailsRequest(id) {
     return {
         type: types.GET_PRODUCT_DETAILS_REQUEST,
+        payload: {
+            id
+        }
     };
 }
 
@@ -67,6 +111,14 @@ export function getProductDetailsSuccess(data) {
         }
     };
 }
+
+export function getProductDetailsFailure(error) {
+    return {
+      type: types.GET_PRODUCT_DETAILS_FAILURE,
+      error,
+    };
+  }
+  
 
 
 export function successCart(data) {
@@ -157,6 +209,15 @@ export function doLogout() {
         type: types.DO_LOGOUT,
         payload: {
 
+        }
+    }
+}
+
+export function fetchProductCart(data){
+    return {
+        type: types.CART_FETCH_PRODUCT_DETAILS_REQUEST,
+        payload: {
+            data
         }
     }
 }

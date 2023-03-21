@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { LogBox } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from "redux";
+import { legacy_createStore as createStore, applyMiddleware, compose } from "redux";
 import sagas from "@sagas";
 import reducers from '@reducer';
 import createSagaMiddleware from "redux-saga";

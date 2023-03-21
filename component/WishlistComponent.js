@@ -10,10 +10,10 @@ import MatIcon from 'react-native-vector-icons/FontAwesome5';
 
 function WishlistComponent(props) {
     let cartProduct = props.products;
+    console.log("cartProduct",cartProduct)
     const PriceQuantity = (price, quantity) => {
-        let amt = parseFloat(price.replace('$', ''));
-        let qty = parseInt(quantity);
-        return '$' + amt;
+        let amt = price;
+        return '₸ ' + amt;
     }
     return (
         <>
@@ -23,7 +23,7 @@ function WishlistComponent(props) {
                     <View style={styles.cartContent} key={item.id}>
                         <View style={styles.cartBox} >
                             <View style={styles.imageView}>
-                                <Image source={item.image} style={styles.image}
+                                <Image source={{uri: item.image}} style={styles.image}
                                 ></Image>
                             </View>
                             <View style={styles.infromationView}>

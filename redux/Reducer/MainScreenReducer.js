@@ -6,7 +6,7 @@ const initialState = {
     navScreen: ''
 }
 export default (state = initialState, action) => {
-    //    logfunction("STATE LOG ====", action)
+    // logfunction("STATE LOG ====", action)
     switch (action.type) {
         case types.REQUEST_INIT:
             return {

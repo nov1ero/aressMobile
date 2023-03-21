@@ -15,7 +15,7 @@ import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "@helpers/Fonts";
-import { addToWishList } from '@actions';
+import { addToWishList, getProductDetailsRequest } from '@actions';
 import { _getWishlist, _addToWishlist } from "@helpers/FunctionHelper";
 import ProductListDummy from '@component/items/ProductListDummy';
 
@@ -23,30 +23,41 @@ function WishlistScreen(props) {
     const [state, setState] = React.useState({ loading: true, noRecord: false, wishlistArr: [] });
 
     const wishlistSetData = async () => {
-        let wishlistData = await _getWishlist();
-
+        const { wishlistData } = props;
+        const {detailsData} = props;
+        console.log("PRODUCT", detailsData)
+        const  productDetail = detailsData;
+        const wishItems = wishlistData
+        console.log("WISH_DATA", wishItems)
+    
         let noRecord = true;
         let wishlistItems = [];
         if (wishlistData && wishlistData.length > 0) {
-            //get and create arrayg
-            wishlistData.forEach(function (item, index) {
-                let findedProduct = ProductListDummy.filter(product => product.id == item);
+            for (const id of wishlistData) {
+                // Retrieve product details from some source (e.g. an API or a local data store)
+                const product = await productId(id);
+                console.log("Product", product)
                 wishlistItems.push({
-                    name: findedProduct[index].name,
-                    price: findedProduct[index].price,
-                    image: findedProduct[index].image,
-                    id: findedProduct[index].id
+                    name: product.name || "Krevetka",
+                    price: product.price || 6000,
+                    image: product.image || "https://aress.kz/images/simple_products/gallery/product_gallery_63c161319f7ab.jpg",
+                    id: product || " "
                 });
-            });
+            }
             noRecord = false;
+            console.log("WISH_LIST", wishlistItems)
         }
-
+    
         setState({ ...state, loading: false, noRecord: noRecord, wishlistArr: wishlistItems })
     }
-
+    
+    const productId = async (id)=>{
+        props.getProductDetailsRequest(id)
+    }
     const onDeleteItem = async (id) => {
         let wishlistData = await _addToWishlist(id);
         props.addToWishList(wishlistData);
+        
         wishlistSetData()
     }
 
@@ -102,9 +113,11 @@ function WishlistScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
-
+        wishlistData: state.wishlist.wishlistData,
+        detailsData: state.product.detailsData,
     }
 }
+
 
 
 export default connect(mapStateToProps, { addToWishList })(WishlistScreen);

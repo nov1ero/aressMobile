@@ -12,7 +12,7 @@ import {
     OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, HomeSlider,
     HomeCategoryView, SearchBar, NewProduct, FeaturedProduct, BestDeal
 } from '@component';
-// import { HomeSkeleton } from '@skeleton';
+//import { HomeSkeleton } from '@skeleton';
 
 import { addToWishList, getHomeRequest } from '@actions';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -120,7 +120,7 @@ function HomeScreen(props) {
 
                         {/* BestDeal Component */}
                         {/* <BestDeal navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} /> */}
-                        {/* <OtrixDivider size={'sm'} /> */}
+                        <OtrixDivider size={'sm'} />
 
                         {/* TrendingProduct Component */}
                         <FeaturedProduct featuredProducts={homeData.featuredProducts} navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} />

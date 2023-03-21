@@ -21,20 +21,33 @@ import { addToWishList } from '@actions';
 import ProductListDummy from '@component/items/ProductListDummy';
 import { filter } from '@common';
 import { _addToWishlist, _getWishlist, logfunction } from "@helpers/FunctionHelper";
-// import { ProductListSkeleton } from '@skeleton';
+//import { ProductListSkeleton } from '@skeleton';
 
 function ProductListScreen(props) {
     const [state, setState] = React.useState({ selectedFilters: [], wishlistArr: [], filterModelVisible: false, loading: true });
-
-    useEffect(async () => {
-        let wishlistData = await _getWishlist();
-        let loadPage = setTimeout(() => setState({ ...state, loading: false, wishlistArr: wishlistData }), 500);
-
-        return () => {
-            clearTimeout(loadPage);
-        };
-    }, []);
-
+//! Хз правильно или нет?
+useEffect(() => {
+    const [wishlistData, setWishlistData] = useState([]);
+    
+    const fetchData = async () => {
+      try {
+        const data = await fetch(_getWishlist());
+        const wishlistData = await data.json();
+        setWishlistData(wishlistData);
+        setState({ ...state, loading: false, wishlistArr: wishlistData });
+      } catch (error) {
+        console.error('Error fetching wishlist data:', error);
+        setState({ ...state, loading: false, error: true });
+      }
+    };
+  
+    fetchData();
+    return () => clearTimeout(loadPage);
+  }, [wishlistData]);
+  
+  
+  
+//! ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     //when filter tag clicked
     const filterClick = (value) => {
         const { selectedFilters } = state;

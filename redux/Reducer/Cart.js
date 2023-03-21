@@ -7,10 +7,12 @@ const initialState = {
 }
 export default (state = initialState, action) => {
     const { payload } = action;
-    logfunction("PAYLOAD IN REDUCER ", payload)
+    // logfunction("PAYLOAD IN REDUCER ", payload)
     switch (action.type) {
 
         case types.SUCCESS_CART:
+            // console.log("CART_COUNT", payload.cartData.totalCount)
+            // console.log("CART_DATA", payload.cartData.cartProducts)
             return {
                 ...state,
                 cartCount: payload.cartData.totalCount,

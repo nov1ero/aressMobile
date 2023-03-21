@@ -2,96 +2,24 @@ import { types } from "../Action/actionTypes";
 import { logfunction } from "../../helpers/FunctionHelper";
 
 const initialState = {
-    detailsData: {
-        "product": {
-            "product_id": 15,
-            "product_name": {
-                "ru": "Кастрюли"
-            },
-            "brand_name": "Blueline",
-            "store_name": "Ghostrrr",
-            "store_logo_path": "https://aress.kz/images/store",
-            "store_logo": "16602296808c95823dd0579c60baca00e0f1afa357 (2).png",
-            "store_id": 1,
-            "key_features": [],
-            "description": {
-                "ru": "Железные кастрюли"
-            },
-            "tags": null,
-            "rating": 0,
-            "reviews": 0,
-            "attributes": [],
-            "videoThumbnail": null,
-            "videoUrl": null,
-            "total_comments": 0,
-            "total_reviews": 0,
-            "videoThumburl": "https://aress.kz/images/videothumbnails",
-            "thumbnail_path": "https://aress.kz/images/simple_products",
-            "images_path": "https://aress.kz/images/simple_products/gallery",
-            "common_variant": [],
-            "combinations": [
-                {
-                    "id": 15,
-                    "mainprice": 1299,
-                    "offerprice": 1099,
-                    "images": [
-                        {
-                            "image": "product_gallery_63c161319f7ab.jpg"
-                        }
-                    ],
-                    "pricein": "KZT",
-                    "symbol": "₸",
-                    "weight": "0g",
-                    "stock": 100,
-                    "off_in_percent": 0,
-                    "minorderlimit": 1,
-                    "maxorderlimit": 1,
-                    "default": "Yes",
-                    "variants": []
-                }
-            ],
-            "tax_info": "Inclusive of all taxes",
-            "other_services": [],
-            "warranty": null,
-            "special_services": [
-                {
-                    "heading": "Fast Delivery",
-                    "description": "With our partnered courier services your product will be delivered fast"
-                },
-                {
-                    "heading": "Quality Assurance",
-                    "description": "6 Quality checks your product quality is 100% trustable"
-                },
-                {
-                    "heading": "Purchase Protection",
-                    "description": "All your purcahse are secured from our leading payment gateways."
-                }
-            ],
-            "comments": [],
-            "viewallcomment": "View all (0) comments",
-            "ratingState": {
-                "overallrating": 0,
-                "price": 0,
-                "quality": 0,
-                "value": 0
-            },
-            "ratingsAndreviews": [],
-            "viewallreview": "View all (0) reviews",
-            "is_in_wishlist": false
-        },
-        "relatedProducts": null,
-        "hotdeals": []
-    }
-}
-export default (state = initialState, action) => {
-    //    logfunction("STATE LOG ====", action)
+    detailsData:  {"attributes": [], "brand_name": "Blueline", "combinations": [{"default": "Yes", "id": 21, "images": [Array], "mainprice": 2400000, "maxorderlimit": 1, "minorderlimit": 1, "off_in_percent": 0, "offerprice": 0, "pricein": "KZT", "stock": 100, "symbol": "₸", "variants": [Array], "weight": "0g"}], "comments": [], "common_variant": [], "coupans": null, "description": {"ru": "MacBook Air M2 MacBook Air M2 MacBook Air M2 MacBook Air M2 MacBook Air M2 MacBook Air M2"}, "images_path": "https://aress.kz/public/images/simple_products/gallery", "is_in_wishlist": false, "key_features": [], "other_services": [], "product_id": 21, "product_name": {"ru": "MacBook Pro M2"}, "rating": 0, "ratingState": {"overallrating": 0, "price": 0, "quality": 0, "value": 0}, "ratingsAndreviews": [], "reviews": 0, "special_services": [{"description": "With our partnered courier services your product will be delivered fast", "heading": "Fast Delivery"}, {"description": "6 Quality checks your product quality is 100% trustable", "heading": "Quality Assurance"}, {"description": "All your purcahse are secured from our leading payment gateways.", "heading": "Purchase Protection"}], "store_id": 2, "store_logo": "166047596772-729809_collection-of-free-mouse-vector-laboratory-mouse-drawing.png", "store_logo_path": "https://aress.kz/public/images/store", "store_name": "Test", "tags": null, "tax_info": "Inclusive of all taxes", "thumbnail_path": "https://aress.kz/public/images/simple_products", "total_comments": 0, "total_reviews": 0, "videoThumbnail": null, "videoThumburl": "https://aress.kz/public/images/videothumbnails", "videoUrl": null, "viewallcomment": "View all (0) comments", "viewallreview": "View all (0) reviews", "warranty": null},
+    loading: false,
+    error: null
+  };
+
+const productDetailsReducer = (state = initialState, action) => {
+  
     switch (action.type) {
-        case types.GET_PRODUCT_DETAILS_SUCCESS:
-            return {
-                ...state,
-                detailsData: action.payload.data
-            }
-        default:
-            return state;
+      case types.GET_PRODUCT_DETAILS_REQUEST:
+        return { ...state, loading: true };
+      case types.GET_PRODUCT_DETAILS_SUCCESS:
+        //console.log("syuda smotry",action.payload?.data.product)
+        return { ...state, detailsData: action.payload?.data?.product, loading: false, error: null };
+      case types.GET_PRODUCT_DETAILS_FAILURE:
+        return { ...state, loading: false, error: action.payload };
+      default:
+        return state;
     }
-}
+  };
+
+  export default productDetailsReducer;

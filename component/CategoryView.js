@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, } from "react";
 import { View, StyleSheet, Text, FlatList, Image } from 'react-native';
 import { Colors } from '@helpers'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -6,43 +6,59 @@ import CategoryDummy from './items/CategoryDummy';
 import OtrixDivider from './OtrixComponent/OtrixDivider';
 import Fonts from '@helpers/Fonts';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { fetchCategories, fetchCategoriesRequest } from '@actions';
+import { connect, useDispatch } from 'react-redux';
 
 function CategoryView(props) {
+    const { categories} = props;
+    const category = categories
+    
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        //props.fetchCategoriesRequest();
+        dispatch(fetchCategories());
+      }, [dispatch]);
+
     return (
         <>
             <OtrixDivider size={'sm'} />
             <FlatList
                 style={{ padding: wp('0.4%') }}
-                data={CategoryDummy}
+                data={category}
                 scrollEnabled={false}
-                contentContainerStyle={{
-                    flex: 1,
-                }}
+                contentContainerStyle={{flex: 1,}}
                 horizontal={false}
                 numColumns={2}
                 onEndReachedThreshold={0.7}
                 showsVerticalScrollIndicator={false}
-                listKey = {(contact, index) => index.toString()}
-                keyExtractor={(contact, index) => index.toString()}
-                renderItem={({ item, index }) =>
-                    <TouchableOpacity key={index} style={styles.categoryBox} onPress={() => props.navigation.navigate('ProductListScreen', { title: item.name })}>
+                listKey = {(index) => index.toString()}
+                keyExtractor={(item, index) => item.id ? String(item.id) : String(index)}
+                renderItem={({ item }) =>
+                    <TouchableOpacity key={item.id} style={styles.categoryBox} onPress={() => props.navigation.navigate('ProductListScreen', { title: item.title.ru })}>
                         <View style={styles.imageView}>
-                            <Image source={item.image} style={styles.image}
-                            ></Image>
+                            <Image source={{uri: "https://aress.kz/images/category/"+item.image} } style={styles.image}></Image>
                         </View>
                         <View style={styles.infromationView}>
-                            <Text style={styles.categoryName}>{item.name}</Text>
+                            <Text style={styles.categoryName}>{item.title.ru}</Text>
                         </View>
                     </TouchableOpacity>
                 }>
             </FlatList>
         </>
-
-
     )
 }
 
-export default CategoryView;
+
+const mapStateToProps = (state) => ({
+    categories: state.categories.categories,
+  });
+  
+const mapDispatchToProps = (dispatch) => ({
+    fetchCategories: () => dispatch(fetchCategories()),
+});
+  
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryView);
 
 const styles = StyleSheet.create({
     categoryBox: {
@@ -78,7 +94,7 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
         alignSelf: 'center',
         height: hp('18%'),
-        width: wp('36.5%')
+        width: wp('40%')
     },
     infromationView: {
         flex: 0.15,

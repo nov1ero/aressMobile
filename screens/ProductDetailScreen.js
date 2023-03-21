@@ -1,6 +1,7 @@
 import React, { useEffect, } from "react";
 import {
     View,
+    ActivityIndicator,
     TouchableOpacity,
     Text,
     StyleSheet,
@@ -19,23 +20,61 @@ import { bottomCart, checkround2, close } from '@common';
 import { SliderBox } from 'react-native-image-slider-box';
 import { Badge, ScrollView, Button } from "native-base";
 import Fonts from "../helpers/Fonts";
-import { addToCart,getProductDetailsRequest } from '@actions';
+import { addToCart, addToWishList, getProductDetailsRequest } from '@actions';
 import Icon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIconsIcon from 'react-native-vector-icons/MaterialIcons';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Stars from 'react-native-stars';
+import axios from 'axios';
+
+// function fetchProductDetails(productId) {
+//   return axios.get(`/api/details/${productId}`)
+//     .then(response => response.data)
+//     .catch(error => {
+//       console.error(error);
+//       throw error;
+//     });
+// }
+
+// // in the parent component
+// async function handleProductClick(productId) {
+//   try {
+//     const detailsData = await fetchProductDetails(productId);
+//     setDetailsData(detailsData);
+//   } catch (error) {
+//     // handle error
+//   }
+// }
+
 
 const COLORS = ['#3ad35c', Colors.themeColor, '#efcd19', '#ff1e1a'];
 
 function ProductDetailScreen(props) {
-    const [state, setState] = React.useState({ loading: true, productImages:[], productCount: 1, productDetail: props.detailsData?.product, fetchCart: false, selectedColor: 1, showZoom: false, zoomImages: [], msg: '' });
-    const { loading, productDetail, productImages, selectedColor, productCount, zoomImages, showZoom, msg } = state;
-    // const { product } = props;
-    console.log('productDetail', productDetail)
+    const { detailsData, loading, wishlistData } = props;
+    const  productDetail = detailsData;
+    const combinationsProduct = detailsData.combinations;
+    const  productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
+    const [state, setState] = React.useState({ loading: true, productCount: 1, fetchCart: false, selectedColor: 1,productImages:[], showZoom: false, msg: '' });
+    const { selectedColor, productCount, showZoom, msg } = state;
+    console.log("\n\n|-|-|-|-NANME-|-|-|-|", productDetail.product_name.ru)
+    console.log("\n\n|-|-|-|-PRICE-|-|-|-|", combinationsProduct[0].mainprice)
+    console.log("IMAGE ===>", combinationsProduct[0].images[0].image)
+    const image = "https://aress.kz/images/simple_products/gallery/"+combinationsProduct[0].images[0].image
+    console.log("|-|-|-|-IMAGE-|-|-|-|",image)
+    //const { product } = props;
+    
+
+
+    console.log("detailsData",detailsData)
     const _CartData = () => {
-        // setState({ ...state, fetchCart: false })
-        console.log("COUNT ====", props.count)
+        setState({ ...state, fetchCart: false })
+        //console.log("COUNT ====", props.count)
+    }
+
+    const addToWish = async (id) => {
+        let wishlistData = await _addToWishlist(id);
+        props.addToWishList(wishlistData);
     }
 
     const showOutofStock = () => {
@@ -45,22 +84,30 @@ function ProductDetailScreen(props) {
         setState({ ...state, msg: 'Нет в наличии' });
     }
 
-    const _addToCart = () => {
+    const _addToCart = async () => {
         setState({ ...state, fetchCart: true, msg: '' })
-        props.addToCart(productDetail.product_id, productCount)
+        props.addToCart(
+            productDetail.product_id, 
+            productCount, 
+            productDetail.product_name.ru, 
+            combinationsProduct[0].mainprice, 
+            image
+            )
     }
+    
     useEffect(() => {
         const { id } = props.route.params;
         props.getProductDetailsRequest(id);
-        setState(
-            {
-                ...state,
-                productImages: productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image)),
-                loading: false
-            }
-        )
+        setState({
+            ...state,
+            productImages: productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))
+        })
+    }, [productDetail.images_path]);
 
-    }, [getProductDetailsRequest]);
+
+    //console.log('KARTINKI', productImages)
+    
+    
     // useEffect(() => {
     //     const { id } = props.route.params;
 
@@ -92,7 +139,7 @@ function ProductDetailScreen(props) {
 
                     {/* Product Detail View */}
                     {
-                        productDetail && productImages.length &&
+                        productImages.length?
                         <View style={styles.container} >
                             <SliderBox images={productImages}
                                 onCurrentImagePressed={index => setState({ ...state, showZoom: true })}
@@ -113,7 +160,7 @@ function ProductDetailScreen(props) {
                                     margin: 0
                                 }}
                             />
-                        </View>
+                        </View>:<></>
                     }
 
                     {/* Header */}
@@ -146,7 +193,7 @@ function ProductDetailScreen(props) {
                             {/* Color And Heart Icon */}
                             <View style={styles.colorView}>
                                 {/* Color */}
-                                <View style={styles.colorContainer}>
+                                {/* <View style={styles.colorContainer}>
                                     <Text style={styles.containerTxt}>Цвета:</Text>
                                     <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: wp('1%') }}>
 
@@ -163,14 +210,14 @@ function ProductDetailScreen(props) {
                                         </TouchableOpacity>
 
                                     </View>
-                                </View>
+                                </View> */}
 
                                 {/* Heart Icon */}
                                 <View style={styles.heartIconView}>
                                     {
                                         productDetail.isFav ? <TouchableOpacity style={[GlobalStyles.FavCircle, { left: wp('12%'), top: 0 }]} >
                                             <FontAwesomeIcon name="heart" style={GlobalStyles.FavIcon} color={Colors.white} />
-                                        </TouchableOpacity> : <TouchableOpacity style={[GlobalStyles.unFavCircle, { left: wp('12%'), top: 0 }]} >
+                                        </TouchableOpacity> : <TouchableOpacity onPress={() => addToWish()} style={[GlobalStyles.unFavCircle, { left: wp('12%'), top: 0 }]} >
                                             <FontAwesomeIcon name="heart-o" style={[GlobalStyles.unFavIcon, { fontSize: wp('3.8%') }]} color={Colors.secondry_text_color} />
                                         </TouchableOpacity>
                                     }
@@ -223,7 +270,7 @@ function ProductDetailScreen(props) {
                             <View style={GlobalStyles.horizontalLine}></View>
 
                             {/* Rating Container*/}
-                            {/* <RatingComponent productData={productDetail} /> */}
+                            <RatingComponent productData={productDetail} />
 
                             {/* Similar Product Component */}
                             <SimilarProduct navigation={props.navigation} />
@@ -231,7 +278,7 @@ function ProductDetailScreen(props) {
                         </ScrollView>
                     </OtrixContent>
 
-                    {/* Zoom image */}
+                    {/* Zoom image
                     <Modal visible={showZoom}
                         transparent={true}>
                         <ImageViewer imageUrls={zoomImages}
@@ -250,7 +297,7 @@ function ProductDetailScreen(props) {
                                 }
                             }
                         />
-                    </Modal>
+                    </Modal> */}
 
                     {/* Bottom View */}
                     <View style={styles.footerView}>
@@ -278,11 +325,6 @@ function ProductDetailScreen(props) {
 
                 </>
             }
-            {
-                msg != '' &&
-                <Text style={{ textAlign: 'center', backgroundColor: 'red', color: 'white', padding: 10 }}>{msg}</Text>
-
-            }
         </OtrixContainer >
     )
 }
@@ -290,6 +332,7 @@ function ProductDetailScreen(props) {
 function mapStateToProps(state) {
     return {
         detailsData: state.product.detailsData,
+        loading: state.product.loading,
         cartCount: state.cart.cartCount,
     }
 }

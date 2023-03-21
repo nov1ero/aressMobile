@@ -21,7 +21,7 @@ const initialState = {
                 {
                     "id": 2,
                     "title": {
-                        "en": "Электроника"
+                        "ru": "Электроника"
                     },
                     "icon": "fa-camera-retro",
                     "image": "apple_logo_PNG19688.png",
@@ -30,7 +30,7 @@ const initialState = {
                 {
                     "id": 3,
                     "title": {
-                        "en": "Одежда"
+                        "ru": "Одежда"
                     },
                     "icon": "fa fa-universal-access",
                     "image": "1579088345Denim overall skirt 04-01.jpg",
@@ -39,7 +39,7 @@ const initialState = {
                 {
                     "id": 4,
                     "title": {
-                        "en": "Часы"
+                        "ru": "Часы"
                     },
                     "icon": "fa-clock-o",
                     "image": "1579088418GEN 5 SMARTWATCH - THE CARLYLE HR BLACK SILICONE 03-03.jpg",
@@ -48,7 +48,7 @@ const initialState = {
                 {
                     "id": 1,
                     "title": {
-                        "en": "Мебель"
+                        "ru": "Мебель"
                     },
                     "icon": "fa-database",
                     "image": "1579087936Faye Floor Lamp, Brass and Marble 05-02.jpg",
@@ -57,7 +57,7 @@ const initialState = {
                 {
                     "id": 5,
                     "title": {
-                        "en": "Книги"
+                        "ru": "Книги"
                     },
                     "icon": "fa-book",
                     "image": "1593522262top-view-back-school-supplies-with-globe-book_23-2148587140.jpg",
@@ -351,7 +351,7 @@ const initialState = {
     }
 }
 export default (state = initialState, action) => {
-    //    logfunction("STATE LOG ====", action)
+   // logfunction("STATE LOG ====", action)
     switch (action.type) {
         case types.GET_HOME_SUCCESS:
             return {

@@ -6,16 +6,18 @@ import MainScreenReducer from "./MainScreenReducer";
 import Auth from "./Auth"
 import Home from "./Home"
 import Wishlist from "./Wishlist"
+import Categories from "./Categories"
 
-const Reducers = combineReducers({
+const reducers = combineReducers({
     mainScreenInit: MainScreenReducer,
     cart: Cart,
     auth: Auth,
     home: Home,
     product: Product,
-    wishlist: Wishlist
+    wishlist: Wishlist,
+    categories: Categories
 })
 
-export default Reducers;
+export default reducers;
 
 

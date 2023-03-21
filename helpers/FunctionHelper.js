@@ -25,7 +25,7 @@ export function chatSupport() {
 
 const logprint = false
 
-export function logfunction(tag, message) {
+export function  logfunction(tag, message) {
     if (logprint) {
         // console.log(tag, message)
     }
@@ -37,7 +37,7 @@ export async function _getWishlist() {
     return getWishlistData;
 }
 
-export async function _addToWishlist(id) {
+export async function _addToWishlist(id, product) {
     let getWishlistData = await AsyncStorage.getItem('GET_LOCAL_WISHLIST');
     getWishlistData = JSON.parse(getWishlistData);
     let storeToarr;
@@ -59,6 +59,7 @@ export async function _addToWishlist(id) {
     await AsyncStorage.setItem('GET_LOCAL_WISHLIST', JSON.stringify(storeToarr));
     return storeToarr;
 }
+
 
 export async function _getLocalCart() {
     let data = await AsyncStorage.getItem('CART_DATA');

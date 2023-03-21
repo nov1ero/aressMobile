@@ -9,6 +9,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 function ProductView(props) {
     const data = props.data;
+    const addToWishlist = async (id) => {
+        props.addToWishlist(id);
+        // logfunction(" wishlist Data ", wishlistData)
+    }
     // console.log('immm', data.thumbnail_path + "/" + data.thumbnail)
     const wishlistArr = props.wishlistArray ? props.wishlistArray : null;
     return (

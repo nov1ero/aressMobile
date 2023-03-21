@@ -16,8 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "../helpers/Fonts";
 
 function EditProfileScreen(props) {
-    const [state, setData] = React.useState({ first_name: 'Aress', last_name: "User", email: "Aress@mail.com", phone: "9898989898", submited: false });
-
+    const [state, setState] = React.useState({ first_name: 'Aress', last_name: "User", email: "Aress@mail.com", phone: "9898989898", submited: false });
     const { first_name, last_name, email, phone, submited } = state;
     return (
         <OtrixContainer>
@@ -38,9 +37,12 @@ function EditProfileScreen(props) {
                 {/* Profile  Start from here */}
                 <FormControl isRequired isInvalid={submited && first_name == '' ? true : false}>
                     <Input variant="outline"
+                        type="text"
                         value={first_name}
                         placeholder="First Name" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setState({ ...state, first_name: value })}
+                             
+                        
                     />
                     <FormControl.ErrorMessage
                         leftIcon={<InfoOutlineIcon size="xs" />}
@@ -52,6 +54,7 @@ function EditProfileScreen(props) {
                 <OtrixDivider size={'md'} />
                 <FormControl >
                     <Input variant="outline"
+                        type="text"
                         value={last_name}
                         placeholder="Last Name" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setState({ ...state, last_name: value })}
@@ -61,6 +64,7 @@ function EditProfileScreen(props) {
 
                 <FormControl isRequired isInvalid={submited && email == '' ? true : false}>
                     <Input variant="outline"
+                        type="text"
                         value={email}
                         keyboardType="email-address"
                         placeholder="Email Address" style={GlobalStyles.textInputStyle}
@@ -76,6 +80,7 @@ function EditProfileScreen(props) {
 
                 <FormControl isRequired isInvalid={submited && phone == '' ? true : false}>
                     <Input variant="outline"
+                        type="text"
                         value={phone}
                         keyboardType="number-pad"
                         placeholder="Mobile Number" style={GlobalStyles.textInputStyle}

@@ -21,9 +21,9 @@ function CategoryScreen(props) {
 
             {/* Header */}
             <OtrixHeader customStyles={{ backgroundColor: Colors.light_white }}>
-                {/* <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => props.navigation.goBack()}>
+                <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => props.navigation.goBack()}>
                     <OtirxBackButton />
-                </TouchableOpacity> */}
+                </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 0.90 }]}>
                     <Text style={GlobalStyles.headingTxt}>Categories</Text>
                 </View>

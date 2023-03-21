@@ -3,6 +3,7 @@ import {
     View,
     TouchableOpacity,
     Text,
+    ScrollView,
     StyleSheet, 
     Modal
 } from "react-native";
@@ -32,16 +33,17 @@ function CheckoutScreen(props) {
 
         //find and create array
         cartProducts && cartProducts.length > 0 && cartProducts.forEach(function (item, index) {
-            let findedProduct = ProductListDummy.filter(product => product.id == item.product_id);
+            let foundProduct = ProductListDummy.filter(product => product.id == item.product_id);
             cartItems.push({
                 quantity: item.quantity,
-                name: findedProduct[index].name,
-                price: findedProduct[index].price,
-                image: findedProduct[index].image,
-                id: findedProduct[index].id
+                name: foundProduct[index].name || " ",
+                price: foundProduct[index].price || " ",
+                image: foundProduct[index].image || " ",
+                id: foundProduct[index].id || " "
             });
-            let amt = parseInt(findedProduct[0].price.replace('$', ''));
-            sumAmount += amt * item.quantity;
+            //! поменять 30 на 'amt'
+            //let amt = parseInt(foundProduct[0].price.replace('$', ''));
+            sumAmount += 30 * item.quantity;
         });
 
         setState({ ...state, noRecord: cartProducts.length > 0 ? false : true, loading: false, cartProducts: cartItems, sumAmount: sumAmount, });
