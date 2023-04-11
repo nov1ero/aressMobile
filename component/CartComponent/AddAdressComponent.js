@@ -45,7 +45,7 @@ function AddAdressComponent(props) {
                         </View>
                     </TouchableOpacity>
                     <View style={[GlobalStyles.headerCenter]}>
-                        <Text style={GlobalStyles.headingTxt}>{'Add Address'}</Text>
+                        <Text style={GlobalStyles.headingTxt}>{'Добавь адрес'}</Text>
                     </View>
                     <TouchableOpacity style={styles.headerRight}  >
                         {/* <Text style={styles.clearTxt}> Clear All</Text> */}
@@ -58,10 +58,10 @@ function AddAdressComponent(props) {
                     <FormControl isRequired isInvalid={submited && city == '' ? true : false}>
                         <Input variant="outline"
                             value={name}
-                            placeholder="Name" style={GlobalStyles.textInputStyle}
+                            placeholder="Имя" style={GlobalStyles.textInputStyle}
                             onChangeText={(value) => setState({ ...state, name: value })}
                         />
-                        <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Error Name</FormControl.ErrorMessage>
+                        <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Ошибка</FormControl.ErrorMessage>
                     </FormControl>
                     <OtrixDivider size={'sm'} />
                     <FormControl isRequired isInvalid={submited && country == '' ? true : false}>
@@ -69,7 +69,7 @@ function AddAdressComponent(props) {
                             selectedValue={country}
                             minWidth="200"
                             accessibilityLabel="Select Country"
-                            placeholder="Select Country"
+                            placeholder="выбрать страну"
                             _selectedItem={{
                                 bg: "teal.600",
                                 endIcon: <CheckIcon size="5" />,
@@ -88,7 +88,7 @@ function AddAdressComponent(props) {
                     <FormControl isRequired isInvalid={submited && city == '' ? true : false}>
                         <Input variant="outline"
                             value={city}
-                            placeholder="City" style={GlobalStyles.textInputStyle}
+                            placeholder="Город" style={GlobalStyles.textInputStyle}
                             onChangeText={(value) => setState({ ...state, city: value })}
                         />
                         <FormControl.ErrorMessage
@@ -102,7 +102,7 @@ function AddAdressComponent(props) {
                     <FormControl isRequired isInvalid={submited && postcode == '' ? true : false}>
                         <Input variant="outline"
                             value={postcode}
-                            placeholder="Postcode" style={GlobalStyles.textInputStyle}
+                            placeholder="Почтой индекс" style={GlobalStyles.textInputStyle}
                             onChangeText={(value) => setState({ ...state, postcode: value })}
                         />
                         <FormControl.ErrorMessage
@@ -116,7 +116,7 @@ function AddAdressComponent(props) {
                     <FormControl isRequired isInvalid={submited && address1 == '' ? true : false}>
                         <TextArea
                             value={address1}
-                            variant="outline" placeholder="Address 1" style={GlobalStyles.textAreaInputStyle}
+                            variant="outline" placeholder="Адрес 1" style={GlobalStyles.textAreaInputStyle}
                             onChangeText={(value) => setState({ ...state, address1: value, submited: false })}
                         />
                         <FormControl.ErrorMessage
@@ -129,7 +129,7 @@ function AddAdressComponent(props) {
                     <OtrixDivider size={'sm'} />
                     <FormControl isRequired >
                         <Input variant="outline" value={address2}
-                            placeholder="Address 2" style={GlobalStyles.textAreaInputStyle}
+                            placeholder="Адрес 2" style={GlobalStyles.textAreaInputStyle}
                             onChangeText={(value) => setState({ ...state, address2: value })}
                         />
 
@@ -143,7 +143,7 @@ function AddAdressComponent(props) {
                     style={[GlobalStyles.button, { marginHorizontal: wp('4%'), top: hp('4.5%') }]}
                     onPress={() => submit()}
                 >
-                    <Text style={GlobalStyles.buttonText}>Add Address</Text>
+                    <Text style={GlobalStyles.buttonText}>Добавить адрес</Text>
                 </Button>
             </View>
 

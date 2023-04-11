@@ -118,7 +118,7 @@ function CheckoutScreen(props) {
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}>  Checkout</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Оформление</Text>
                 </View>
             </OtrixHeader>
 
@@ -130,7 +130,7 @@ function CheckoutScreen(props) {
                         <View style={{ position: 'relative' }}>
                             <View style={[styles.ract, { borderColor: step == 1 ? Colors.themeColor : 'transparent' }]}>
 
-                                <Text style={[styles.indicatorText, { color: step == 1 ? Colors.themeColor : Colors.secondry_text_color }]}>Address</Text>
+                                <Text style={[styles.indicatorText, { color: step == 1 ? Colors.themeColor : Colors.secondry_text_color }]}>Адрес</Text>
                             </View>
                             <View style={[styles.tri]}>
                                 <View style={[styles.arrow, { borderColor: step == 1 ? Colors.themeColor : 'transparent' }]}>
@@ -143,7 +143,7 @@ function CheckoutScreen(props) {
                     <View style={styles.indicator1}>
                         <View style={{ borderColor: step == 2 ? Colors.themeColor : 'transparent' }}>
                             <View style={[styles.ract, { borderColor: step == 2 ? Colors.themeColor : 'transparent' }]}>
-                                <Text style={[styles.indicatorText, { color: step == 2 ? Colors.themeColor : Colors.secondry_text_color }]}>Payment</Text>
+                                <Text style={[styles.indicatorText, { color: step == 2 ? Colors.themeColor : Colors.secondry_text_color }]}>Оплата</Text>
                             </View>
                             <View style={[styles.tri]}>
                                 <View style={[styles.arrow, { borderColor: step == 2 ? Colors.themeColor : 'transparent' }]}>
@@ -158,7 +158,7 @@ function CheckoutScreen(props) {
             {/* Address Content start from here */}
             {step == 1 && <>
                 <OtrixDivider size={"md"} />
-                <Text style={styles.deliveryTitle}>Delivery Address</Text>
+                <Text style={styles.deliveryTitle}>Адрес доставки</Text>
                 <OtrixDivider size={"sm"} />
                 <View style={styles.addressContent}>
                     {/*horizontal address* */}
@@ -198,7 +198,7 @@ function CheckoutScreen(props) {
             {
                 step == 1 && <OtrixContent>
                     <OtrixDivider size={"lg"} />
-                    <Text style={styles.summayTitle}>Order Summary</Text>
+                    <Text style={styles.summayTitle}>Краткое описание заказа</Text>
                     <OtrixDivider size={"sm"} />
                     <View style={GlobalStyles.horizontalLine}></View>
                     <>
@@ -231,7 +231,7 @@ function CheckoutScreen(props) {
                         <Text style={styles.offerTxt}>Get 10% Off With Credit Card</Text>
                     </View>
                     <OtrixDivider size={"md"} />
-                    <Text style={styles.paymentMethodTitle}>Payment Methods</Text>
+                    <Text style={styles.paymentMethodTitle}>Методы оплаты</Text>
                     <OtrixDivider size={"sm"} />
                     {
                         PaymentMethodsDummy.map((item, index) =>
@@ -254,7 +254,7 @@ function CheckoutScreen(props) {
             <View style={styles.checkoutView}>
                 <OtrixDivider size={'sm'} />
                 <View style={styles.totalView}>
-                    <Text style={styles.leftTxt}>Total :</Text>
+                    <Text style={styles.leftTxt}>Всего :</Text>
                     <Text style={[styles.rightTxt, { color: Colors.link_color, fontSize: wp('5.5%') }]}>{totalAmt}</Text>
                     {
                         step == 1 ?
@@ -265,7 +265,7 @@ function CheckoutScreen(props) {
                                 style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('1%'), flex: 0.40, alignSelf: 'flex-end' }]}
                                 onPress={() => setState({ ...state, step: 2 })}
                             >
-                                <Text style={GlobalStyles.buttonText}>Procced To Pay</Text>
+                                <Text style={GlobalStyles.buttonText}>Перейти к оплате</Text>
                             </Button>
                             : <Button
                                 size="md"
