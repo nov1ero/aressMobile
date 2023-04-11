@@ -1,7 +1,22 @@
-import { call, put, takeEvery } from "redux-saga/effects";
+import { call, put, takeEvery, select } from "redux-saga/effects";
 import { types } from "@actions/actionTypes";
+import { Alert } from 'react-native';
 import {
-    getHomeSuccess, getProductDetailsSuccess, successInt, successCart, successCheckout, authStatus, successWishlist, getCategoriesFailure, getCategoriesSuccess, fetchCategoriesRequest
+    getHomeSuccess, 
+    loginFailure, 
+    registerSuccess, 
+    loginSuccess, 
+    getProductDetailsSuccess, 
+    successInt, 
+    successCart, 
+    successCheckout, 
+    authStatus, 
+    successWishlist, 
+    getCategoriesFailure, 
+    getCategoriesSuccess, 
+    fetchCategoriesRequest,
+    profileSet,
+    isAuth
 } from "@actions";
 // import { AsyncStorage } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,18 +26,21 @@ import ProductView from "../../component/ProductCompnent/ProductView";
 
 export function* watchGeneralRequest() {
     yield takeEvery(types.GET_PRODUCT_DETAILS_REQUEST, getProductDetailsData);
-    // yield takeEvery(types.GET_HOME_REQUEST, getHomeData);
     yield takeEvery(types.GET_HOME_REQUEST, getHomeData);
     yield takeEvery(types.REQUEST_INIT, requestInit);
     yield takeEvery(types.ADD_TO_CART, addToCart);
     yield takeEvery(types.ADD_TO_WISHLIST, addToWishlist);
+    yield takeEvery(types.REMOVE_FROM_WISHLIST, removeFromWishlist);
     yield takeEvery(types.REMOVE_CART, removeFromCart);
     yield takeEvery(types.INCREMENT_QUANTITY, incrementQuantity);
-    yield takeEvery(types.DEREMENT_QUANTITY, decrementQuantity);
+    yield takeEvery(types.DECREMENT_QUANTITY, decrementQuantity);
     yield takeEvery(types.PROCEED_CHECKOUT, proceedCheckout);
-    yield takeEvery(types.DO_LOGIN, doLogin);
+    // yield takeEvery(types.DO_LOGIN, doLogin);
     yield takeEvery(types.DO_LOGOUT, doLogout);
     yield takeEvery(types.FETCH_CATEGORIES, fetchCategoriesSaga);
+    yield takeEvery(types.LOGIN_REQUEST, login_Request);
+    yield takeEvery(types.REGISTER_REQUEST, register_Request);
+    yield takeEvery(types.PROFILE_REQUEST, profile_Request);
     //yield takeEvery(types.CART_FETCH_PRODUCT_DETAILS_REQUEST, fetchProductDetails);
 }
 
@@ -33,7 +51,7 @@ function* requestInit(action) {
     try {
 
         // ************** If you want to login based home page then do stuff here ****************
-
+        // console.log("__INIT__" , action.payload.userAuth)
         // if (action.payload.userAuth) {
         //     yield put(successInt('HomeScreen'));
         // }
@@ -46,125 +64,196 @@ function* requestInit(action) {
         //AsyncStorage.removeItem('IS_AUTH');
 
         //get local login data
-        let getAuth = yield call(AsyncStorage.getItem, "IS_AUTH")
-        // logfunction("IS LODDED ", getAuth)
-        if (getAuth == 1) {
-            yield put(authStatus(true));
-        }
-        else {
-            yield put(authStatus(false));
-        }
+        // let getAuth = yield call(AsyncStorage.getItem, "IS_AUTH")
+        // // logfunction("IS LODDED ", getAuth)
+        // if (getAuth == 1) {
+        //     yield put(authStatus(true));
+        // }
+        // else {
+        //     yield put(authStatus(false));
+        // }
 
-        yield put(successInt('MainScreen'));
+        yield put(successInt('HomeScreen'));
 
-        //cart count set
-        let getLocalCart = yield call(AsyncStorage.getItem, "CART_DATA")
-        // logfunction("LOCAL CART  ", JSON.parse(getLocalCart));
-        getLocalCart = JSON.parse(getLocalCart);
-        if (getLocalCart) {
-            yield put(successCart(getLocalCart));
-        }
+        
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        if(access_token){
+          yield put(isAuth(true))
 
-        //Wishlist count set
-        let getLocalWishlist = yield call(AsyncStorage.getItem, "GET_LOCAL_WISHLIST");
-        // logfunction("LOCAL Wishlist  ", JSON.parse(getLocalWishlist));
-        getLocalWishlist = JSON.parse(getLocalWishlist);
-        if (getLocalWishlist) {
-            let wishData = { totalCount: getLocalWishlist.length, wishlistData: getLocalWishlist }
-            yield put(successWishlist(wishData));
-        }
+        var profHeaders = new Headers();
+        profHeaders.append("Authorization", "Bearer" + " "+ access_token)
+       
+
+        var requestOptions = {
+            method: 'GET',
+            headers: profHeaders,
+            redirect: 'follow'
+          };
+          
+          const profResponse = yield fetch("https://aress.kz/api/myprofile?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", requestOptions)
+          const profData = yield profResponse.json(); 
+          yield put(profileSet(profData))
+          console.log("PROF_DATA", data)
+
+
+          var getHeaders = new Headers();
+          getHeaders.append("Accept", "application/json");
+          getHeaders.append("Authorization", "Bearer" + " "+ access_token)
+          var requestOptions = {
+              method: 'GET',
+              headers: getHeaders,
+            };
+  
+          //cart count set
+          const cart_response =  yield fetch('https://aress.kz/api/cart?currency=KZT', requestOptions);
+          const carData = yield cart_response.json();
+          console.log("CART_DATA", carData)
+          if (carData.status == "fail") {
+            yield call(Alert.alert, 'Ошибка', "Корзина не прогрузилась");
+          }else if(carData.status == "success" && carData.msg=="Your cart is empty !"){
+            let data = { cartCount: 0, cartData: [] }
+            yield put(successCart(data));
+          }else{
+            let data = { cartCount: carData.products.length, cartData: carData.products }
+              yield put(successCart(data));
+          }
+  
+          //Wishlist count set
+            const response =  yield fetch('https://aress.kz/api/wishlist?currency=KZT', requestOptions);
+            const data = yield response.json(); 
+            
+            if (data) {
+              let wishData = { totalCount: data.totalitem, wishlistData: data.items }
+              console.log("WISH_DATA", wishData)
+              yield put(successWishlist(wishData));
+          }}else{
+            console.log("не авторизован")
+          }
+         
 
 
     } catch (e) {
-        logfunction(e)
+        console.log("requestInitError",e)
+        // logfunction(e)
     }
 }
 
 function* addToCart(action) {
     try {
-        const { payload } = action;
-        logfunction("Payload ==", payload)
-        //  
-        let getLocalCart = yield call(AsyncStorage.getItem, "CART_DATA")
-        // logfunction("LOCAL CART  ", JSON.parse(getLocalCart));
-        console.log("\n\n SAGA CART", getLocalCart);
-        getLocalCart = JSON.parse(getLocalCart);
-        console.log("\n\n SAGA PAYLOAD", payload);
-        if (getLocalCart != null) {
-            // let findProduct = getLocalCart.cartProducts.filter(item => item.product_id.indexOf(payload.id) > -1);
-            let findProductIndex = getLocalCart.cartProducts.findIndex((item) => item.product_id === payload.id);
-            
-            let storeProducts = getLocalCart.cartProducts;
-            if (findProductIndex > -1) {
-                let quantity = parseInt(getLocalCart.cartProducts[findProductIndex].quantity);
-                // logfunction("QTY", quantity)
-                getLocalCart.cartProducts.splice(findProductIndex, 1);
-                storeProducts.push({
-                    product_id: payload.id, 
-                    quantity: quantity + payload.quantity,
-                    name: payload.name,
-                    price: payload.price,
-                    image: payload.image
+      const isInSystem = yield select(state => state.auth.isAuthenticated);
+      console.log("ИС_ИН_СИСТЕМ", isInSystem)
 
-                });
-            }
-            else {
-                storeProducts.push({
-                    product_id: payload.id, 
-                    quantity: payload.quantity,
-                    name: payload.name,
-                    price: payload.price,
-                    image: payload.image
-                });
-            }
-            let totalQty = parseInt(getLocalCart.totalCount);
-            // logfunction("TOTAL ", totalQty)
-            let storeArr = { cartProducts: storeProducts, totalCount: totalQty + payload.quantity };
-            // logfunction("FINAL ARRR ", storeArr)
-            AsyncStorage.setItem('CART_DATA', JSON.stringify(storeArr));
-            yield put(successCart(storeArr))
-        }
-        else {
-            let storeArr = { cartProducts: [{ product_id: payload.id, quantity: payload.quantity, name: payload.name, price: payload.price, image: payload.image }], totalCount: payload.quantity };
-            // logfunction("storeArr ", storeArr);
-            AsyncStorage.setItem('CART_DATA', JSON.stringify(storeArr));
-            yield put(successCart(storeArr));
-        }
+      if(isInSystem == true){
 
+        const id = action.payload
+        console.log("ID_CART", id)
+        
+        let access_token = yield call(AsyncStorage.getItem, 'access_token')
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "simple_pro_id": id,
+            "type": "s",
+            "quantity": 1,
+            "currency": "KZT"
+          });
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        };
+
+          const response =  yield fetch('https://aress.kz/api/addtocart?currency=KZT&type=s&quantity=1&simple_pro_id='+id, requestOptions);
+          const data = yield response.json(); 
+          console.log("CART_ADD", data)
+          yield call(Alert.alert, 'Успех', 'Предмет добавлен в Корзину');
+
+        
+        var getHeaders = new Headers();
+        getHeaders.append("Accept", "application/json");
+        getHeaders.append("Authorization", "Bearer" + " "+ access_token)
+        // console.log("124235", access_token)
+        var getRequestOptions = {
+            method: 'GET',
+            headers: getHeaders,
+          };
+
+          const cart_response =  yield fetch('https://aress.kz/api/cart?currency=KZT', getRequestOptions);
+        const carData = yield cart_response.json();
+        console.log("CART_DATA", carData)
+        if (carData) {
+            let data = { cartCount: carData.products.length, cartData: carData.products }
+
+            yield put(successCart(data));
+        }
+      }else{
+        yield call(Alert.alert, 'Вы не авторизованы в системе', 'Войдите в систему');
+      }
+
+          
     } catch (e) {
-        logfunction('ERROR =', e)
+        console.log('ERROR NAHUI =', e);
+        yield call(Alert.alert, 'Ошибка', 'Что-то пошло не так!');
     }
 }
 
 function* removeFromCart(action) {
     try {
-        const { payload } = action;
-        let newArr = [];
-        let getLocalCart = yield call(AsyncStorage.getItem, "CART_DATA")
-        getLocalCart = JSON.parse(getLocalCart);
-        let finalCount = getLocalCart.totalCount;
-        // logfunction("finalCount", finalCount)
-        // logfunction("getLocalCart", getLocalCart)
-        getLocalCart.cartProducts.forEach(function (item, index) {
-            if (item.product_id != payload.id) {
-                newArr.push(item);
+        const id = action.payload.id
+        console.log("REMOVE_ID", id)
+        
+        let access_token = yield call(AsyncStorage.getItem, 'access_token')
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token);
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "cartid": id
+          });
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw
+          };
+
+          const response =  yield fetch('https://aress.kz/api/remove/cart/item', requestOptions);
+          const data = yield response.json(); 
+          console.log("REMOVE_ID", data)
+          yield call(Alert.alert, 'Успех', 'Предмет убран из Корзины');
+
+        
+          var getHeaders = new Headers();
+          getHeaders.append("Accept", "application/json");
+          getHeaders.append("Authorization", "Bearer" + " "+ access_token)
+          var requestOptions = {
+              method: 'GET',
+              headers: getHeaders,
+            };
+          const cart_response =  yield fetch('https://aress.kz/api/cart?currency=KZT', requestOptions);
+          const carData = yield cart_response.json();
+          console.log("CART_DATA", carData)
+          if (carData) {
+            if (carData.status == "fail") {
+              yield call(Alert.alert, 'Ошибка', "Корзина не прогрузилась");
+            }else if(carData.status == "success" && carData.msg=="Your cart is empty !"){
+              let data = { cartCount: 0, cartData: [] }
+              yield put(successCart(data));
+            }else{
+              let data = { cartCount: carData.products.length, cartData: carData.products }
+                yield put(successCart(data));
             }
-            else {
-                finalCount -= item.quantity;
-                // logfunction("ITEM TO DEELTE", item)
-            }
-        });
+          }
 
-        // logfunction("QUANTITY ", finalCount)
-
-        // logfunction("NEW ARRR", newArr)
-        let storeArr = { cartProducts: newArr, totalCount: finalCount };
-        // logfunction("ARR TO STORE ", storeArr)
-        AsyncStorage.setItem('CART_DATA', JSON.stringify(storeArr));
-        yield put(successCart(storeArr));
-
+          
+        // yield put(successWishlist({ totalCount: data.totalCount, data. }));
     } catch (e) {
-         logfunction('ERROR =', e)
+        console.log('ERROR NAHUI =', e);
+        yield call(Alert.alert, 'Ошибка', 'Что-то пошло не так!');
     }
 }
 
@@ -256,10 +345,99 @@ function* proceedCheckout(action) {
 
 function* addToWishlist(action) {
     try {
-        let wishData = { totalCount: action.payload.data.length, wishlistData: action.payload.data }
-        yield put(successWishlist(wishData));
+      const isInSystem = yield select(state => state.auth.isAuthenticated);
+      console.log("ИС_ИН_СИСТЕМ", isInSystem)
+
+      if(isInSystem == true){
+        const id = action.payload.id
+        // const accessToken = useSelector(state => state.auth.access_token);
+        // console.log("TOKENS", accessToken)
+        let access_token = yield call(AsyncStorage.getItem, 'access_token')
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+          };
+
+          const response =  yield fetch('https://aress.kz/api/wishlist/add/'+ id, requestOptions);
+          const data = yield response.json(); 
+          yield call(Alert.alert, 'Успех', 'Предмет добавлен в Избранное');
+
+        
+        var getHeaders = new Headers();
+        getHeaders.append("Accept", "application/json");
+        getHeaders.append("Authorization", "Bearer" + " "+ access_token)
+        // console.log("124235", access_token)
+        var getRequestOptions = {
+            method: 'GET',
+            headers: getHeaders,
+          };
+
+          const getResponse =  yield fetch('https://aress.kz/api/wishlist?currency=KZT', getRequestOptions);
+          const getData = yield getResponse.json(); 
+          
+          if (getData) {
+            let wishData = { totalCount: getData.totalitem, wishlistData: getData.items }
+            yield put(successWishlist(wishData));
+        }
+      }else{
+        yield call(Alert.alert, 'Вы не авторизованы в системе', 'Войдите в систему');
+      }
+
+        
+
+          
     } catch (e) {
-        logfunction('ERROR =', e)
+        console.log('ERROR NAHUI =', e);
+    }
+}
+
+function* removeFromWishlist(action) {
+    try {
+        const id = action.payload
+        
+        let access_token = yield call(AsyncStorage.getItem, 'access_token')
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+          };
+
+          const response =  yield fetch('https://aress.kz/api/wishlist/remove/'+ id, requestOptions);
+          const data = yield response.json(); 
+          console.log("REMOVE", data)
+          yield call(Alert.alert, 'Успех', 'Предмет убран из Избраного');
+
+        
+        var getHeaders = new Headers();
+        getHeaders.append("Accept", "application/json");
+        getHeaders.append("Authorization", "Bearer" + " "+ access_token)
+        // console.log("124235", access_token)
+        var getRequestOptions = {
+            method: 'GET',
+            headers: getHeaders,
+          };
+
+          const getResponse =  yield fetch('https://aress.kz/api/wishlist?currency=KZT', getRequestOptions);
+          const getData = yield getResponse.json(); 
+          
+          if (getData) {
+            let wishData = { totalCount: getData.totalitem, wishlistData: getData.items }
+            console.log("GET_WISH_DATA", wishData)
+            yield put(successWishlist(wishData));
+        }
+
+          
+        // yield put(successWishlist({ totalCount: data.totalCount, data. }));
+    } catch (e) {
+        console.log('ERROR NAHUI =', e);
+        yield call(Alert.alert, 'Ошибка', 'Что-то пошло не так!');
     }
 }
 
@@ -280,28 +458,70 @@ function* getProductDetailsData(action) {
         );
         //console.log("DOM", detailsData.data)
         
-        yield delay(1000)
+        // yield delay(1000)
         yield put(getProductDetailsSuccess(detailsData.data));
     } catch (e) {
         logfunction('ERROR =', e)
     }
 }
 
-function* doLogin(action) {
+function* login_Request(action) {
     try {
-        const { payload } = action;
-        AsyncStorage.setItem('IS_AUTH', '1');
-        yield put(authStatus(true));
-    } catch (e) {
-        logfunction('ERROR =', e)
-    }
-}
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+            "email": action.payload.email,
+            "password": action.payload.password
+          });
+
+          console.log("FORM_DATA", raw)
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+          };
+
+          const response =  yield fetch('https://aress.kz/api/login?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99', requestOptions);
+          const data = yield response.json(); 
+          console.log("DATA", data)
+          if(data.status == 'fail'){
+            yield call(Alert.alert, 'Ошибка', data.msg);
+
+          }
+          if (data.access_token && data.refresh_token) {
+            yield put(loginSuccess(data));
+            yield put(isAuth(true))
+            yield AsyncStorage.setItem('access_token', data.access_token);
+            yield AsyncStorage.setItem('refresh_token', data.refresh_token);
+            yield AsyncStorage.setItem('expires_in', JSON.stringify(data.expires_in));
+          } else {
+            yield put(loginFailure('Invalid response'));
+          }
+        } catch (error) {
+          console.log("error", error)
+          yield put(loginFailure(error));
+        }
+  }
 
 function* doLogout(action) {
     try {
-        const { payload } = action;
-        AsyncStorage.removeItem('IS_AUTH');
-        yield put(authStatus(false));
+
+      const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
+      
+      const response = yield fetch("https://aress.kz/api/logout", requestOptions);
+      const data = yield response.json();
+      console.log("LogOut", data)
+      yield call(AsyncStorage.removeItem, 'access_token')
+      yield put(isAuth(false))
     } catch (e) {
         logfunction('ERROR =', e)
     }
@@ -319,6 +539,72 @@ export function* fetchCategoriesSaga() {
         yield put(getCategoriesFailure(error.message));
     }
   }
+  function* register_Request(action) {
+    try {
+        reg_data = action.payload
+        
+        console.log("REG_DATA", reg_data)
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        var raw = JSON.stringify(
+          {
+              "name": reg_data.firstName+" "+reg_data.lastName,
+              "email": reg_data.email,
+              "mobile": reg_data.mobileNumber,
+              "password": reg_data.password
+          }
+        );
+        console.log("RAW", raw)
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        const response = yield fetch("https://aress.kz/api/register", requestOptions);
+        const data = yield response.json();
+        console.log("data", data)
+        console.log("REGISTR_DATA", data)
+        if(data.status == 'fail'){
+          yield call(Alert.alert, 'Ошибка', data.msg);
+        }else{
+          yield put(registerSuccess())
+          yield call(Alert.alert, 'Успех', 'Регистрация прошла успешно');
+        }
+        } catch (e) {
+            logfunction('ERROR =', e)
+            yield call(Alert.alert, 'Ошибка', e);
+            console.log("ERROR ==> ", e)
+        }
+  }
+
+  function* profile_Request() {
+    try {
+
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+       
+
+        var requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow'
+          };
+          
+          const response = yield fetch("https://aress.kz/api/myprofile?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", requestOptions)
+          const data = yield response.json(); 
+          yield put(profileSet(data))
+          console.log("PROF_DATA", data)
+        } catch (e) {
+            logfunction('ERROR =', e)
+            yield call(Alert.alert, 'Ошибка', 'Что-то пошло не так!');
+        }
+  }
+
+
 
 // export function* fetchProductDetails(action) {
 //     try {

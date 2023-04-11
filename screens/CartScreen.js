@@ -21,6 +21,7 @@ import axios from 'axios';
 
 function CheckoutScreen(props) {
     const [state, setState] = React.useState({ loading: true, cartArr: [], cartProducts: [], sumAmount: 0, isApplied: false, validCode: false, couponCode: null, noRecord: false });
+    const { cartData } = props;
 
     const applyCouponCode = () => {
         const { couponCode } = state;
@@ -50,35 +51,35 @@ function CheckoutScreen(props) {
     }
 
     const calculateCart = () => {
-        const { cartData } = props;
         let cartProducts = cartData;
         console.log("CART__DATA", cartProducts)
         let cartItems = [];
         let sumAmount = 0;
 
+
         //find and create array
-        cartProducts && cartProducts.length > 0 && cartProducts.forEach(function (item, index) {
-            let foundProduct = cartProducts.filter(product => product.id == item.product_id);
+        cartProducts && cartData.length > 0 && cartProducts.forEach(function (item, index) {
             cartItems.push({
-                quantity: item.quantity,
-                name: item.name || " ",
-                price: item.price || " ",
-                image: item.image || " ",
-                id: item.product_id || " "
+                cartid: item.cartid,
+                quantity: item.qty,
+                name: item.productname.ru || " ",
+                price: item.offerprice? item.offerprice: item.mainprice,
+                image: item.thumbnail_path+"/"+item.thumbnail? item.thumbnail_path+"/"+item.thumbnail: " ",
+                id: item.productid || " "
             });
             console.log("ITEMS", cartItems)
-            //! поменять 30 на 'amt'
-            let amt = item.price?item.price:0;
+            
+            let amt = item.offerprice? item.offerprice: item.mainprice;
             //productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
-            sumAmount += amt * item.quantity;
+            sumAmount += amt * item.qty;
         });
 
-        setState({ ...state, noRecord: cartProducts.length > 0 ? false : true, loading: false, cartProducts: cartItems, sumAmount: sumAmount, });
+        setState({ ...state, noRecord: cartData != [] ? false : true, loading: false, cartProducts: cartItems, sumAmount: sumAmount, });
     }
 
     useEffect(() => {
         calculateCart();
-    }, []);
+    }, [cartData]);
     
 
     const { cartProducts, sumAmount, couponCode, loading, isApplied, validCode, noRecord } = state;

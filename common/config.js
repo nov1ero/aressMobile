@@ -27,6 +27,7 @@ export const bottomProfile = require('../assets/images/bottomtab/Bottom_Profile.
 export const bottomProfileFill = require('../assets/images/bottomtab/Bottom_Profile_Fill.png')
 export const bottomSetting = require('../assets/images/bottomtab/Bottom_Setting.png')
 export const bottomSettingFill = require('../assets/images/bottomtab/Bottom_Setting_Fill.png')
+export const heartFill = require('../assets/images/bottomtab/heartB.png')
 
 //social images
 export const google = require('../assets/images/google.png');
@@ -80,6 +81,7 @@ export const circle = require('../assets/images/circle.png');
 export const checked = require('../assets/images/checked.png');
 export const avatarImg = require('../assets/images/man.jpg');
 export const heart = require('../assets/images/heart.png');
+export const heartNotFocus = require('../assets/images/heartNotFocus.png');
 export const avatarImg2 = require('../assets/images/user.png');
 
 

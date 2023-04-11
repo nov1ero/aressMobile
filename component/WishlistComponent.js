@@ -11,7 +11,7 @@ import MatIcon from 'react-native-vector-icons/FontAwesome5';
 function WishlistComponent(props) {
     let cartProduct = props.products;
     console.log("cartProduct",cartProduct)
-    const PriceQuantity = (price, quantity) => {
+    const Price = (price) => {
         let amt = price;
         return '₸ ' + amt;
     }
@@ -30,13 +30,13 @@ function WishlistComponent(props) {
                                 <TouchableOpacity onPress={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })}>
                                     <Text style={styles.name}>{item.name}</Text>
                                 </TouchableOpacity>
-                                <Text style={styles.price}>{PriceQuantity(item.price, item.quantity)}</Text>
+                                <Text style={styles.price}>{Price(item.price, item.quantity)}</Text>
                                 <View style={styles.plusminus}>
                                     <Text style={styles.quantityTxt}>{item.quantity}</Text>
                                 </View>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.deleteIcon} onPress={() => props.deleteItem(item.id)}>
+                        <TouchableOpacity style={styles.deleteIcon} onPress={() => props.deleteItem(item.wishlist_id)}>
                             <MatIcon name="trash" style={styles.delete} />
                         </TouchableOpacity>
                     </View>
@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         height: undefined,
         aspectRatio: 1,
+        borderRadius: wp('1.5%'),
         width: wp('21.5%')
     },
     infromationView: {
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     name: {
         textAlign: 'center',
         color: Colors.secondry_text_color,
-        fontSize: wp('3.8%'),
+        fontSize: wp('6%'),
         fontFamily: Fonts.Font_Bold,
     },
     price: {
@@ -131,7 +132,8 @@ const styles = StyleSheet.create({
         marginRight: wp('2%')
     },
     delete: {
-        fontSize: wp('3.6%'),
+        marginTop: 10,
+        fontSize: wp('5%'),
         color: Colors.secondry_text_color
     }
 });

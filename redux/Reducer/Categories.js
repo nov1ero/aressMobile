@@ -12,7 +12,7 @@ export default (state = initialState, action) => {
         case types.FETCH_CATEGORIES_REQUEST:
                 return { ...state, loading: true };
         case types.GET_CATEGORIES_SUCCESS:
-            console.log('Categories', action.payload.categories.categories)
+            // console.log('Categories', action.payload.categories.categories)
              return {
                  ...state,
                  categories: action.payload.categories.categories,

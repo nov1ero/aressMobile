@@ -3,18 +3,18 @@ import { Platform, StyleSheet, Image, Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import {
     SplashScreen, HomeScreen, SettingScreen, LoginScreen, RegisterScreen, ForgotPasswordScreen, CategoryScreen,
     CartScreen, ProfileScreen, ProductListScreen, ProductDetailScreen, CheckoutScreen, EditProfileScreen, ChangePasswordScreen,
     ManageAddressScreen, WishlistScreen, OrderScreen, OrderDetailScreen, LanguageScreen, TermsandconditionScreen, PrivacyPolicyScreen,
     NotificationScreen, SearchScreen
 } from './screens/index';
-import { bottomHome, bottomHomeFill, bottomCategory, bottomCategoryFill, bottomCart, bottomProfile, bottomProfileFill, bottomSetting, bottomSettingFill } from '@common';
+import { bottomHome, heartNotFocus, bottomHomeFill, bottomCategory, bottomCategoryFill, bottomCart, bottomProfile, bottomProfileFill, bottomSetting, bottomSettingFill, heartFill } from '@common';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Colors, GlobalStyles } from '@helpers'
 import { Badge } from "native-base"
-import Fonts from './helpers/Fonts';
+// import Fonts from './helpers/Fonts';
 import { _roundDimensions } from './helpers/util';
 
 const SettingStack = createStackNavigator();
@@ -43,7 +43,8 @@ function AuthNavigator() {
 const BottomTab = createBottomTabNavigator();
 function MyTabs(props) {
     let cartCount = props.cartCounts;
-    let authStatus = props.auth;
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+    console.log("IS_AUTH_IS", isAuthenticated)
     return (
         <BottomTab.Navigator
             initialRouteName="HomeScreen"
@@ -67,17 +68,19 @@ function MyTabs(props) {
                         />
                     ),
                 }} />
-            <BottomTab.Screen name="CategoryScreen" component={CategoryScreen} 
+            
+            <BottomTab.Screen name="WishlistScreen" component={WishlistScreen} 
                 options={{
                     headerShown: false,
                     tabBarIcon: ({ focused, tintColor }) => (
                         <Image
                             square
-                            source={focused ? bottomCategoryFill : bottomCategory}
+                            source={focused ? heartFill : heartNotFocus}
                             style={[styles.bottomTabIcon]}
                         />
                     ),
                 }} />
+            
             <BottomTab.Screen name="CartScreen" component={CartScreen} 
                 options={{
                     headerShown: false,
@@ -111,7 +114,18 @@ function MyTabs(props) {
                         </View>
                     ),
                 }} />
-            < BottomTab.Screen name="ProfileScreen" component={authStatus == true ? ProfileScreen : AuthNavigator} 
+            <BottomTab.Screen name="CategoryScreen" component={CategoryScreen} 
+                options={{
+                    headerShown: false,
+                    tabBarIcon: ({ focused }) => (
+                        <Image
+                            square
+                            source={focused ? bottomCategoryFill : bottomCategory}
+                            style={[styles.bottomTabIcon]}
+                        />
+                    ),
+                }} />
+            < BottomTab.Screen name="ProfileScreen" component={isAuthenticated == true ? ProfileScreen : AuthNavigator} 
                 options={{
                     headerShown: false,
                     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -124,7 +138,7 @@ function MyTabs(props) {
                         />
                     ),
                 }} />
-            < BottomTab.Screen name="SettingScreen" component={SettingStackNavigation} 
+            {/* < BottomTab.Screen name="SettingScreen" component={SettingStackNavigation} 
                 options={{
                     headerShown: false,
                     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -135,7 +149,7 @@ function MyTabs(props) {
                             style={[styles.bottomTabIcon]}
                         />
                     ),
-                }} /> 
+                }} />  */}
 
         </BottomTab.Navigator >
     );
@@ -146,7 +160,7 @@ function MyTabs(props) {
 
 const Stack = createStackNavigator();
 function AppNavigator(props) {
-    const { cartCount, authStatus } = props;
+    const { cartCount, isAuthenticated } = props;
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="SplashScreen">
@@ -155,13 +169,30 @@ function AppNavigator(props) {
                         headerShown: false,
                     }}
                 />
-                <Stack.Screen {...props} name="MainScreen" component={() => <MyTabs cartCounts={cartCount} auth={authStatus}></MyTabs>} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, }} countProp={cartCount} initialParams={{ 'count': cartCount }} />
+                <Stack.Screen
+  name="HomeScreen"
+  options={{
+    headerShown: false,
+    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+  }}
+>
+  {(props) => (
+    <MyTabs
+      {...props}
+      cartCounts={cartCount}
+      auth={isAuthenticated}
+      countProp={cartCount}
+      initialParams={{ count: cartCount }}
+    />
+  )}
+</Stack.Screen>
                 <Stack.Screen name="LoginScreen" component={AuthNavigator} options={{ headerShown: false, }} />
                 <Stack.Screen name="ProductListScreen" component={ProductListScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, }} />
                 <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{ headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, }} />
                 <Stack.Screen name="CheckoutScreen" component={CheckoutScreen} options={{
                     headerShown: false, cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                 }} />
+                
                 <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{
                     headerShown: false,
                     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
@@ -206,7 +237,7 @@ function AppNavigator(props) {
 function mapStateToProps(state) {
     return {
         cartCount: state.cart.cartCount ? state.cart.cartCount : null,
-        authStatus: state.auth.authStatus
+        isAuthenticated: state.auth.isAuthenticated
     }
 }
 
@@ -215,8 +246,8 @@ export default connect(mapStateToProps, {})(AppNavigator);
 
 const styles = StyleSheet.create({
     bottomTabIcon: {
-        height: wp('6%'),
-        width: wp('6%'),
+        height: wp('7%'),
+        width: wp('7%'),
     },
     tabbarStyle: {
         backgroundColor: Colors.white,
@@ -242,6 +273,6 @@ const styles = StyleSheet.create({
     },
     countText: {
         color: Colors.link_color,
-        fontFamily: Fonts.Font_Bold
+        // fontFamily: Fonts.Font_Bold
     }
 });

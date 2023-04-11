@@ -1,4 +1,4 @@
-import React, { useEffect, } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     TouchableOpacity,
@@ -24,16 +24,15 @@ import { _addToWishlist, _getWishlist, logfunction } from "@helpers/FunctionHelp
 //import { ProductListSkeleton } from '@skeleton';
 
 function ProductListScreen(props) {
-    const [state, setState] = React.useState({ selectedFilters: [], wishlistArr: [], filterModelVisible: false, loading: true });
-//! Хз правильно или нет?
-useEffect(() => {
-    const [wishlistData, setWishlistData] = useState([]);
+    const [state, setState] = useState({ selectedFilters: [], wishlistArr: [], filterModelVisible: false, loading: true });
+
+    //! Хз правильно или нет?
+    useEffect(() => {
     
     const fetchData = async () => {
       try {
         const data = await fetch(_getWishlist());
         const wishlistData = await data.json();
-        setWishlistData(wishlistData);
         setState({ ...state, loading: false, wishlistArr: wishlistData });
       } catch (error) {
         console.error('Error fetching wishlist data:', error);

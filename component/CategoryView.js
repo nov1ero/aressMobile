@@ -35,7 +35,7 @@ function CategoryView(props) {
                 listKey = {(index) => index.toString()}
                 keyExtractor={(item, index) => item.id ? String(item.id) : String(index)}
                 renderItem={({ item }) =>
-                    <TouchableOpacity key={item.id} style={styles.categoryBox} onPress={() => props.navigation.navigate('ProductListScreen', { title: item.title.ru })}>
+                    <TouchableOpacity key={item.id} style={styles.categoryBox} onPress={() => props.navigation.navigate('ProductListScreen', { title: item.title })}>
                         <View style={styles.imageView}>
                             <Image source={{uri: "https://aress.kz/images/category/"+item.image} } style={styles.image}></Image>
                         </View>

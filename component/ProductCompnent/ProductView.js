@@ -60,9 +60,9 @@ function ProductView(props) {
                 <></>
             }
             {
-                wishlistArr && wishlistArr.length > 0 && wishlistArr.includes(data.productid) ? <TouchableOpacity style={GlobalStyles.FavCircle} onPress={() => props.addToWishlist(data.productid)} >
+                wishlistArr && wishlistArr.length > 0 && wishlistArr.includes(data.productid) ? <TouchableOpacity style={GlobalStyles.FavCircle} onPress={() => addToWishlist({ id: data.productid, name: data.productname.ru, price: data.offerprice || data.mainprice, image: data.thumbnail_path + "/" + data.thumbnail })} >
                     <Icon name="heart" style={GlobalStyles.unFavIcon} color={Colors.white} />
-                </TouchableOpacity> : <TouchableOpacity style={GlobalStyles.unFavCircle} onPress={() => props.addToWishlist(data.productid)}>
+                </TouchableOpacity> : <TouchableOpacity style={GlobalStyles.unFavCircle} onPress={() => addToWishlist({ id: data.productid, name: data.productname.ru, price: data.offerprice || data.mainprice, image: data.thumbnail_path + "/" + data.thumbnail })}>
                     <Icon name="heart-o" style={GlobalStyles.unFavIcon} color={Colors.secondry_text_color} />
                 </TouchableOpacity>
             }

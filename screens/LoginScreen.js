@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useImperativeHandle, useState, memo, useRef } from "react";
 import {
     View,
     StyleSheet,
+    KeyboardAvoidingView,
     TouchableOpacity
 } from "react-native";
+import { TextInput, ScrollView } from 'react-native';
+
 import {
     OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, OtrixSocialContainer
 } from '@component';
@@ -13,55 +16,84 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { GlobalStyles, Colors } from '@helpers'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "../helpers/Fonts";
-import { doLogin } from '@actions';
+import { loginRequest } from '@actions';
+import { debounce } from 'lodash';
+// import { Input } from '@chakra-ui/input';
 
 function LoginScreen(props) {
 
 
-    const [formData, setData] = React.useState({ email: "", password: "" });
-    const [state, setDatapassword] = React.useState({ secureEntry: true });
+    // const [formEmail, setEmail] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [state, setDatapassword] = useState({ secureEntry: true });
+    const isAuthenticated = props.isAuthenticated;
+    const [Disabled, setIsDisabled] = useState(false);
+
+  const handlePress = () => {
+    setIsDisabled(true);
+    props.loginRequest({email:email, password:password});
+  };
+
+  const handleEmailChange = (value) => {
+    setEmail(value);
+    setIsDisabled(false);
+  }
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+    setIsDisabled(false);
+  }
 
     useEffect(() => {
-    }, [
-        props.navigation.navigate('ProfileScreen')
-    ]);
+        if(isAuthenticated == true){
+            
+            props.navigation.navigate('HomeScreen')
+        }
+    }, [isAuthenticated]);
 
-    const { email, password } = formData;
+
     return (
+        // <ScrollView keyboardShouldPersistTaps="always">
         <OtrixContainer>
 
             {/* Header */}
             <OtrixHeader customStyles={GlobalStyles.authHeader}>
-                <Text style={[GlobalStyles.authtabbarText]}>Login Account</Text>
-                <Text style={GlobalStyles.authSubText}>Enter your email and password to login</Text>
+                <Text style={[GlobalStyles.authtabbarText]}>Войти</Text>
+                <Text style={GlobalStyles.authSubText}>Введите вашу почту и пароль чтобы войти</Text>
             </OtrixHeader>
             <OtrixDivider size={'md'} />
 
             {/* Content Start from here */}
-            <OtrixContent>
-
+            <OtrixContent >
                 {/* Login Form Start from here */}
                 <FormControl isRequired>
-                    <Input variant="outline" placeholder="Email Address" style={[GlobalStyles.textInputStyle]}
-                        onChangeText={(value) => setData({ ...formData, email: value })}
+                    <Input
+                        variant="outline" 
+                        placeholder="Почта" 
+                        onChangeText={handleEmailChange}
+                        style={[GlobalStyles.textInputStyle]}
                     />
-                    <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Error Name</FormControl.ErrorMessage>
+                    <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Неправильная почта</FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'sm'} />
                 <FormControl isRequired style={{ backgroundColor: Colors.white }}>
-                    <Input variant="outline" placeholder="Password" style={[GlobalStyles.textInputStyle,]}
-                        onChangeText={(value) => setData({ ...formData, password: value })}
+                    <Input 
+                        variant="outline" 
+                        placeholder="Пароль" 
+                        style={[GlobalStyles.textInputStyle,]}
+                        value={password}
                         secureTextEntry={state.secureEntry}
+                        onChangeText={handlePasswordChange}
                         InputRightElement={
                             <TouchableOpacity onPress={() => setDatapassword({ ...state, secureEntry: !state.secureEntry })} style={[{ marginRight: wp('3%'), padding: 3 }]}>
                                 <Icon name={state.secureEntry == true ? "eye" : "eye-off"} size={18} color={Colors.secondry_text_color} />
                             </TouchableOpacity>
                         }
                     />
-                    <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Error Name</FormControl.ErrorMessage>
+                    <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Неправильный пароль</FormControl.ErrorMessage>
                 </FormControl>
                 <TouchableOpacity onPress={() => props.navigation.navigate('ForgotPasswordScreen')}>
-                    <Text style={styles.forgotPassword}>Forgot Password?</Text>
+                    <Text style={styles.forgotPassword}>Забыли пароль?</Text>
                 </TouchableOpacity>
                 <OtrixDivider size={'md'} />
                 <Button
@@ -69,33 +101,38 @@ function LoginScreen(props) {
                     variant="solid"
                     bg={Colors.themeColor}
                     style={GlobalStyles.button}
-                    onPress={() => props.doLogin({ email: email, password: password })}
+                    isDisabled={Disabled}
+                    onPress={handlePress}
                 >
-                    <Text style={GlobalStyles.buttonText}>Login Now</Text>
+                    <Text style={GlobalStyles.buttonText}>Войти</Text>
                 </Button>
                 <OtrixDivider size={'md'} />
                 <View style={styles.registerView}>
-                    <Text style={styles.registerTxt}>Don't have an account? </Text>
+                    <Text style={styles.registerTxt}>Все еще нет аккаунта?</Text>
                     <TouchableOpacity onPress={() => props.navigation.navigate('RegisterScreen')}>
-                        <Text style={styles.signupTxt}> Sign Up </Text>
+                        <Text style={styles.signupTxt}> Регистрация </Text>
                     </TouchableOpacity>
                 </View>
                 <OtrixDivider size={'md'} />
                 {/* Social Container Component */}
-                <OtrixSocialContainer />
+                {/* <OtrixSocialContainer /> */}
 
             </OtrixContent>
 
         </OtrixContainer >
+        // </ScrollView>
     )
 
 }
 
-function mapStateToProps({ params }) {
-    return {}
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAuthenticated,
+        
+    }
 }
 
-export default connect(mapStateToProps, { doLogin })(LoginScreen);
+export default memo(connect(mapStateToProps, { loginRequest })(LoginScreen));
 
 const styles = StyleSheet.create({
     forgotPassword: {

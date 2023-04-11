@@ -25,6 +25,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 function ProfileScreen(props) {
     const [state, setState] = React.useState({ profileImage: '' });
+    const data = props.data
 
     const openImagePicker = async (res) => {
         setState({
@@ -59,15 +60,15 @@ function ProfileScreen(props) {
                     }
                 </TouchableOpacity>
                 <OtrixDivider size={'sm'} />
-                <Text style={styles.username}>Aress User</Text>
-                <Text style={styles.email}>Aress@mail.com</Text>
+                <Text style={styles.username}>{data.name}</Text>
+                <Text style={styles.email}>{data.email}</Text>
 
             </View>
 
             {/* Header */}
             <View style={{ flexDirection: 'row', position: 'absolute', marginTop: hp('2%') }}>
                 <TouchableOpacity style={[GlobalStyles.headerLeft, { zIndex: 999999999, flex: 0.90, alignItems: 'flex-start' }]} onPress={() => props.navigation.goBack()}>
-                    <Text style={GlobalStyles.headingTxt}>  My Profile</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Мой профиль</Text>
                 </TouchableOpacity>
             </View>
 
@@ -80,7 +81,7 @@ function ProfileScreen(props) {
                         <Icon name="user-edit" style={styles.icon} />
                     </View>
                     <View style={styles.center}>
-                        <Text style={styles.listTitle}>Edit Profile</Text>
+                        <Text style={styles.listTitle}>Изменить профиль</Text>
                     </View>
                     <View style={styles.rightSide}>
                         <MatIcon name="arrow-forward-ios" style={styles.rightIcon} />
@@ -91,7 +92,7 @@ function ProfileScreen(props) {
                         <Fontisto name="heart" style={styles.icon} />
                     </View>
                     <View style={styles.center}>
-                        <Text style={styles.listTitle}>Wishlist</Text>
+                        <Text style={styles.listTitle}>Избранное</Text>
                     </View>
                     <View style={styles.rightSide}>
                         <MatIcon name="arrow-forward-ios" style={styles.rightIcon} />
@@ -102,7 +103,7 @@ function ProfileScreen(props) {
                         <Icon name="address-book" style={[styles.icon, { fontSize: wp('5.4%') }]} />
                     </View>
                     <View style={styles.center}>
-                        <Text style={styles.listTitle}>Manage Address</Text>
+                        <Text style={styles.listTitle}>Изменить адресс</Text>
                     </View>
                     <View style={styles.rightSide}>
                         <MatIcon name="arrow-forward-ios" style={styles.rightIcon} />
@@ -113,7 +114,7 @@ function ProfileScreen(props) {
                         <Fontisto name="shopping-bag-1" style={[styles.icon, { fontSize: wp('5.4%') }]} />
                     </View>
                     <View style={styles.center}>
-                        <Text style={styles.listTitle}>My Orders</Text>
+                        <Text style={styles.listTitle}>Мои покупки</Text>
                     </View>
                     <View style={styles.rightSide}>
                         <MatIcon name="arrow-forward-ios" style={styles.rightIcon} />
@@ -125,7 +126,7 @@ function ProfileScreen(props) {
                         <Fontisto name="locked" style={styles.icon} />
                     </View>
                     <View style={styles.center}>
-                        <Text style={styles.listTitle}>Change Password</Text>
+                        <Text style={styles.listTitle}>Изменить пароль</Text>
                     </View>
                     <View style={styles.rightSide}>
                         <MatIcon name="arrow-forward-ios" style={styles.rightIcon} />
@@ -134,7 +135,7 @@ function ProfileScreen(props) {
 
                 <TouchableOpacity style={styles.listView} onPress={() => {
                     props.doLogout(),
-                        Toast.show('Successfully Logout', {
+                        Toast.show('До скорой встречи!', {
                             duration: 2000,
                             position: Toast.positions.CENTER,
                             shadow: true,
@@ -150,7 +151,7 @@ function ProfileScreen(props) {
                         <AntDesign name="logout" style={styles.icon} />
                     </View>
                     <View style={styles.center}>
-                        <Text style={styles.listTitle}>Logout</Text>
+                        <Text style={styles.listTitle}>Выйти</Text>
                     </View>
                     <View style={styles.rightSide}>
                         <MatIcon name="arrow-forward-ios" style={styles.rightIcon} />
@@ -167,6 +168,7 @@ function ProfileScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
+        data: state.profile
 
     }
 }

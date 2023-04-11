@@ -37,28 +37,33 @@ export async function _getWishlist() {
     return getWishlistData;
 }
 
-export async function _addToWishlist(id, product) {
+export async function _addToWishlist(id, name, price, image) {
+
+    
     let getWishlistData = await AsyncStorage.getItem('GET_LOCAL_WISHLIST');
     getWishlistData = JSON.parse(getWishlistData);
     let storeToarr;
     if (getWishlistData != null && getWishlistData.length > 0) {
-        if (!getWishlistData.includes(id)) {
-            getWishlistData.push(id)
+        const existingIndex = getWishlistData.findIndex((item) => item.id === id);
+        if (existingIndex === -1) {
+            // Product not in wishlist yet, add it to the list
+            const product = { id, name, price, image };
+            getWishlistData.push(product);
+            storeToarr = getWishlistData;
+        } else {
+            // Product already in wishlist, remove it from the list
+            getWishlistData.splice(existingIndex, 1);
+            storeToarr = getWishlistData;
         }
-        else {
-            const index = getWishlistData.indexOf(id);
-            if (index > -1) {
-                getWishlistData.splice(index, 1);
-            }
-        }
-        storeToarr = getWishlistData
-    }
-    else {
-        storeToarr = [id]
+    } else {
+        // Wishlist is empty, add the product to the list
+        const product = { id, name, price, image };
+        storeToarr = [product];
     }
     await AsyncStorage.setItem('GET_LOCAL_WISHLIST', JSON.stringify(storeToarr));
     return storeToarr;
 }
+
 
 
 export async function _getLocalCart() {

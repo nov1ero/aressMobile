@@ -21,14 +21,13 @@ import { Avatar, Badge } from "native-base";
 import { heart, offerBanner, avatarImg, avatarImg2 } from '@common';
 import Fonts from "@helpers/Fonts";
 import { _roundDimensions } from '@helpers/util';
-import { _addToWishlist, logfunction } from "@helpers/FunctionHelper";
+// import { _addToWishlist, logfunction } from "@helpers/FunctionHelper";
 
 function HomeScreen(props) {
     const [state, setState] = React.useState({ notificationCount: 9, loading: true });
 
     const addToWish = async (id) => {
-        let wishlistData = await _addToWishlist(id);
-        props.addToWishList(wishlistData);
+        props.addToWishList(id);
     }
 
     useEffect(() => {

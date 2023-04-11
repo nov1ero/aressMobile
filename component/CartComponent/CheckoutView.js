@@ -9,9 +9,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 function CheckoutView(props) {
     let cartProduct = props.products;
     const PriceQuantity = (price, quantity) => {
-        let amt = parseFloat(price.replace('$', ''));
-        // let qty = parseInt(quantity);
-        return '$' + amt;
+        let amt = price;
+        let qty = quantity;
+        return '₸ ' + amt;
     }
     return (
         <>
@@ -21,7 +21,7 @@ function CheckoutView(props) {
                     <View style={styles.cartContent} key={item.id}>
                         <View style={styles.cartBox} >
                             <View style={styles.imageView}>
-                                <Image source={item.image} style={styles.image}
+                                <Image source={{uri: item.image}} style={styles.image}
                                 ></Image>
                             </View>
                             <View style={styles.infromationView}>

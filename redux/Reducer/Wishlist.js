@@ -3,19 +3,19 @@ import { logfunction } from "../../helpers/FunctionHelper";
 
 const initialState = {
     wishlistCount: 0,
-    wishlistData: null
+    wishlistData: []
 }
 export default (state = initialState, action) => {
-    const { payload } = action;
     switch (action.type) {
         case types.SUCCESS_WISHLIST:
-            console.log("WISH_DATS", payload.wishlistData.wishlistData)
-            return {
-                ...state,
-                wishlistCount: payload.wishlistData.totalCount,
-                wishlistData: payload.wishlistData.wishlistData
-            }
+          // console.log('REDUCER', action.payload)
+          return {
+            ...state,
+            wishlistCount: action.payload.totalCount,
+            wishlistData: action.payload.wishlistData
+          };
         default:
-            return state;
-    }
+          return state;
+      }
+    
 }

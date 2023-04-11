@@ -25,7 +25,7 @@ function SearchBar(props) {
                 <Input w={{
                     base: "100%",
                     md: "25%"
-                }} InputLeftElement={<Icon name="search" style={styles.searchIcon} />} style={{ display: 'flex', width: "100%" }} placeholder="Search Products" style={[styles.textInputSearchStyle,]} isDisabled="true" />
+                }} InputLeftElement={<Icon name="search" style={styles.searchIcon} />} style={{ display: 'flex', width: "100%" } [styles.textInputSearchStyle]} placeholder="Search Products" isDisabled="true" />
                 
             </View>
 

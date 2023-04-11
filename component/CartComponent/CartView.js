@@ -44,7 +44,7 @@ function CartView(props) {
                                 </View>
                             </View>
                         </View>
-                        <TouchableOpacity style={styles.deleteIcon} onPress={() => props.deleteItem(item.id)}>
+                        <TouchableOpacity style={styles.deleteIcon} onPress={() => props.deleteItem(item.cartid)}>
                             <MatIcon name="trash" style={styles.delete} />
                         </TouchableOpacity>
                     </View>

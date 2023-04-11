@@ -27,23 +27,27 @@ function CheckoutScreen(props) {
     const [state, setState] = React.useState({ loading: true, cartArr: [], showAdd: false, cartProducts: [], sumAmount: 0, noRecord: false, addresses: DummyAddress, selctedAddress: DummyAddress[0].id, showEdit: false, editAddressData: [], step: 1, selectedPaymentMethod: 4, paymentSuccessModal: false });
 
     const calculateCart = () => {
-        let cartProducts = props.cartData;
+        const { cartData } = props;
+        let cartProducts = cartData;
+        console.log("CART__DATA", cartProducts)
         let cartItems = [];
         let sumAmount = 0;
 
         //find and create array
         cartProducts && cartProducts.length > 0 && cartProducts.forEach(function (item, index) {
-            let foundProduct = ProductListDummy.filter(product => product.id == item.product_id);
+            let foundProduct = cartProducts.filter(product => product.id == item.product_id);
             cartItems.push({
                 quantity: item.quantity,
-                name: foundProduct[index].name || " ",
-                price: foundProduct[index].price || " ",
-                image: foundProduct[index].image || " ",
-                id: foundProduct[index].id || " "
+                name: item.name || " ",
+                price: item.price || " ",
+                image: item.image || " ",
+                id: item.product_id || " "
             });
+            console.log("ITEMS", cartItems)
             //! поменять 30 на 'amt'
-            //let amt = parseInt(foundProduct[0].price.replace('$', ''));
-            sumAmount += 30 * item.quantity;
+            let amt = item.price?item.price:0;
+            //productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
+            sumAmount += amt * item.quantity;
         });
 
         setState({ ...state, noRecord: cartProducts.length > 0 ? false : true, loading: false, cartProducts: cartItems, sumAmount: sumAmount, });

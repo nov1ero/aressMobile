@@ -21,7 +21,7 @@ function OtrixSocialContainer(props) {
             />
             <Text
                 style={styles.dividerTxt}>
-                OR
+                Или
             </Text>
         </View>
 

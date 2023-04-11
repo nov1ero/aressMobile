@@ -15,57 +15,48 @@ import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "@helpers/Fonts";
-import { addToWishList, getProductDetailsRequest } from '@actions';
-import { _getWishlist, _addToWishlist } from "@helpers/FunctionHelper";
-import ProductListDummy from '@component/items/ProductListDummy';
+import { addToWishList, removeFromWishlist } from '@actions';
+import MatIcon from 'react-native-vector-icons/FontAwesome5';
+import { marginLeft, marginRight } from "styled-system";
+// import { _getWishlist, _addToWishlist } from "@helpers/FunctionHelper";
 
 function WishlistScreen(props) {
     const [state, setState] = React.useState({ loading: true, noRecord: false, wishlistArr: [], wishlistData: null });
     const { wishlistData } = props;
     
-
+    
     const wishlistSetData = async () => {
-        const {detailsData} = props;
-        console.log("PRODUCT", detailsData)
-        const  productDetail = detailsData;
         console.log("WISH_DATA", wishlistData)
     
         let noRecord = true;
         let wishlistItems = [];
-        if (wishlistData && wishlistData.length > 0) {
-            for (const id of wishlistData) {
-                // Retrieve product details from some source (e.g. an API or a local data store)
-                const product = await detailsData;
-                console.log("Product", product)
-                wishlistItems.push({
-                    name: product.name || "Krevetka",
-                    price: product.price || 6000,
-                    image: product.image || "https://aress.kz/images/simple_products/gallery/product_gallery_63c161319f7ab.jpg",
-                    id: product || " "
-                });
-            }
+        wishlistData && wishlistData.length > 0 && wishlistData.forEach(function (item, index) {
+            wishlistItems.push({
+                wishlist_id: item.wishlist_id? item.wishlist_id: index,
+                name: item.productname.ru? item.productname.ru : "Something went wrong",
+                price: item.offerprice?item.offerprice: item.mainprice,
+                image: item.thumb_path+"/"+item.thumbnail? item.thumb_path+"/"+item.thumbnail : "https://t4.ftcdn.net/jpg/03/08/92/49/360_F_308924911_jsWAfFOqdSGglzvF7zcNcXIo06eS7Wch.jpg",
+                id: item.productid
+            });
+    })
             noRecord = false;
             console.log("WISH_LIST", wishlistItems)
-        }
+
     
         setState({ ...state, loading: false, noRecord: noRecord, wishlistArr: wishlistItems })
-    }
     
-    // const productId = async (id)=>{
-    //     props.getProductDetailsRequest(id)
-    // }
-    const onDeleteItem = async (id) => {
-        let wishlistData = await _addToWishlist(id);
-        props.addToWishList(wishlistData);
-        // props.getProductDetailsRequest(id)
-        wishlistSetData()
     }
 
-    useEffect(() => {
-        const { id } = props.wishlistData;
-        props.getProductDetailsRequest(id);
+    const onDeleteItem = async (id) => {
+        await props.removeFromWishlist(id);
         wishlistSetData()
-    }, []);
+    }
+      
+
+    useEffect(() => {
+
+        wishlistSetData()
+    }, [wishlistData]);
 
     const { wishlistArr, loading, noRecord } = state;
     return (
@@ -83,10 +74,6 @@ function WishlistScreen(props) {
 
             {/* Content Start from here */}
             <OtrixContent >
-                {/* Cart Component Start from here
-                                    // <CartView navigation={props.navigation} products={cartProducts} deleteItem={onDeleteItem} decrementItem={decrement} incrementItem={increment} />
-
-                */}
                 {
                     !noRecord && !loading &&
                     <WishlistComponent navigation={props.navigation} products={wishlistArr} deleteItem={onDeleteItem} />
@@ -119,10 +106,15 @@ function mapStateToProps(state) {
         detailsData: state.product.detailsData,
     }
 }
+const mapDispatchToProps = (dispatch) => {
+    return {
+      removeFromWishlist: (id) => dispatch(removeFromWishlist(id))
+    };
+  };
 
 
 
-export default connect(mapStateToProps, { addToWishList, getProductDetailsRequest })(WishlistScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(WishlistScreen);
 
 const styles = StyleSheet.create({
     noRecord: {
@@ -136,5 +128,9 @@ const styles = StyleSheet.create({
         marginVertical: hp('1.5%'),
         fontFamily: Fonts.Font_Semibold,
         color: Colors.secondry_text_color
+    },
+    trash:{
+        marginRight: 50,
+        fontSize: 15
     }
 });

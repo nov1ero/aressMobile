@@ -98,7 +98,7 @@ function EditProfileScreen(props) {
                     variant="solid"
                     bg={Colors.themeColor}
                     style={GlobalStyles.button}
-                    onPress={() => props.navigation.navigate('MainScreen')}
+                    onPress={() => props.navigation.navigate('HomeScreen')}
                 >
                     <Text style={GlobalStyles.buttonText}>Update</Text>
                 </Button>

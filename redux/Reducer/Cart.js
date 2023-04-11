@@ -15,8 +15,8 @@ export default (state = initialState, action) => {
             // console.log("CART_DATA", payload.cartData.cartProducts)
             return {
                 ...state,
-                cartCount: payload.cartData.totalCount,
-                cartData: payload.cartData.cartProducts
+                cartCount: payload.cartCount,
+                cartData: payload.cartData
             }
         case types.SUCCESS_CHECKOUT:
             return {

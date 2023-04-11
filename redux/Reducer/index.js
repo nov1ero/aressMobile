@@ -7,6 +7,7 @@ import Auth from "./Auth"
 import Home from "./Home"
 import Wishlist from "./Wishlist"
 import Categories from "./Categories"
+import Profile from "./Profile";
 
 const reducers = combineReducers({
     mainScreenInit: MainScreenReducer,
@@ -15,7 +16,8 @@ const reducers = combineReducers({
     home: Home,
     product: Product,
     wishlist: Wishlist,
-    categories: Categories
+    categories: Categories,
+    profile: Profile,
 })
 
 export default reducers;

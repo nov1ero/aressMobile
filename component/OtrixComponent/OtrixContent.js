@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, SafeAreaView} from 'react-native';
-import { ScrollView } from 'react-native-virtualized-view';
+import { ScrollView } from 'react-native';
 import { GlobalStyles, Colors } from '@helpers'
 
 function OtrixContent(props) {
@@ -11,7 +11,6 @@ function OtrixContent(props) {
             scrollEventThrottle={10}
             bounces={false}
             scrollEnabled={true}
-            nestedScrollEnabled={true}
             style={[GlobalStyles.contentView, props.customStyles]} >
             {
                 props.children

@@ -4,9 +4,9 @@ import {
     StyleSheet,
     TouchableOpacity
 } from "react-native";
-import { requestInit } from '@actions';
+import { requestInit, registerRequest } from '@actions';
 import {
-    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, OtrixSocialContainer
+    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, OtrixSocialContainer, CustomTextInput
 } from '@component';
 import { Input, Text, FormControl, Button } from "native-base"
 import { connect } from 'react-redux';
@@ -17,21 +17,30 @@ import Fonts from "@helpers/Fonts";
 
 function RegisterScreen(props) {
     const [formData, setData] = React.useState({});
+    // const [errors, setErrors] = React.useState({});
     const [state, setDatapassword] = React.useState({ secureEntry: true });
+    const regSuccess = props.regSuccess;
+
+    // const handleOnChangeText = (fieldName, value) => {
+    //     setData({ ...formData, [fieldName]: value });
+    //     setErrors({ ...errors, [fieldName]: '' });
+    //   };
 
 
     useEffect(() => {
-
-
-    }, []);
+        console.log("Reg",regSuccess)
+        if(regSuccess == true){
+            props.navigation.navigate('LoginScreen')
+        }
+    }, [regSuccess]);
 
     return (
         <OtrixContainer>
 
             {/* Header */}
             <OtrixHeader customStyles={GlobalStyles.authHeader}>
-                <Text style={[GlobalStyles.authtabbarText]}>Register Account</Text>
-                <Text style={GlobalStyles.authSubText}>Create account to continue shopping with Aress</Text>
+                <Text style={[GlobalStyles.authtabbarText]}>Регистрация</Text>
+                <Text style={GlobalStyles.authSubText}>Создайте аккаунт чтобы совершать покупки с Aress</Text>
             </OtrixHeader>
             <OtrixDivider size={'md'} />
 
@@ -40,21 +49,21 @@ function RegisterScreen(props) {
 
                 {/* Registration Form Start from here */}
                 <FormControl isRequired>
-                    <Input variant="outline" placeholder="First Name" style={GlobalStyles.textInputStyle}
+                    <Input variant="outline" placeholder="Имя" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setData({ ...formData, firstName: value })}
                     />
                     <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Error Name</FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'sm'} />
                 <FormControl isRequired>
-                    <Input variant="outline" placeholder="Last Name" style={GlobalStyles.textInputStyle}
+                    <Input variant="outline" placeholder="Фамилия" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setData({ ...formData, lastName: value })}
                     />
                     <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Error Name</FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'sm'} />
                 <FormControl isRequired>
-                    <Input variant="outline" placeholder="Email Address" style={GlobalStyles.textInputStyle}
+                    <Input variant="outline" placeholder="Электронная Почта" style={GlobalStyles.textInputStyle}
                         keyboardType="email-address"
                         onChangeText={(value) => setData({ ...formData, email: value })}
                     />
@@ -62,14 +71,14 @@ function RegisterScreen(props) {
                 </FormControl>
                 <OtrixDivider size={'sm'} />
                 <FormControl isRequired>
-                    <Input variant="outline" keyboardType="number-pad" placeholder="Mobile Number" style={GlobalStyles.textInputStyle}
+                    <Input variant="outline" keyboardType="number-pad" placeholder="Тел. номер" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setData({ ...formData, mobileNumber: value })}
                     />
                     <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Error Name</FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'sm'} />
                 <FormControl isRequired>
-                    <Input variant="outline" placeholder="Password" style={GlobalStyles.textInputStyle}
+                    <Input variant="outline" placeholder="Пароль" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setData({ ...formData, password: value })}
                         secureTextEntry={state.secureEntry}
                         InputRightElement={
@@ -82,7 +91,7 @@ function RegisterScreen(props) {
                 </FormControl>
                 <OtrixDivider size={'sm'} />
                 <FormControl isRequired>
-                    <Input variant="outline" placeholder="Confirm Password" style={GlobalStyles.textInputStyle}
+                    <Input variant="outline" placeholder="Подтверлите пароль" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setData({ ...formData, cpassword: value })}
                         secureTextEntry={state.secureEntry}
                         InputRightElement={
@@ -99,21 +108,23 @@ function RegisterScreen(props) {
                     variant="solid"
                     bg={Colors.themeColor}
                     style={GlobalStyles.button}
-                    onPress={() => props.navigation.navigate('LoginScreen')}
+                    onPress={() => {
+                        props.registerRequest(formData)
+                    }}
                 >
-                    <Text style={GlobalStyles.buttonText}>Register Now</Text>
+                    <Text style={GlobalStyles.buttonText}>Зарегистрироваться</Text>
                 </Button>
                 <OtrixDivider size={'md'} />
                 <View style={styles.registerView}>
-                    <Text style={styles.registerTxt}>Already have an account? </Text>
+                    <Text style={styles.registerTxt}>Уже есть аккаунт? </Text>
                     <TouchableOpacity onPress={() => props.navigation.navigate('LoginScreen')}>
-                        <Text style={styles.signupTxt}> Sign In </Text>
+                        <Text style={styles.signupTxt}> Войти </Text>
                     </TouchableOpacity>
                 </View>
                 <OtrixDivider size={'md'} />
 
                 {/* Social Container Component */}
-                <OtrixSocialContainer />
+                {/* <OtrixSocialContainer /> */}
             </OtrixContent>
 
         </OtrixContainer >
@@ -121,11 +132,13 @@ function RegisterScreen(props) {
 
 }
 
-function mapStateToProps({ params }) {
-    return {}
+function mapStateToProps(state) {
+    return {
+        regSuccess: state.auth.regSuccess
+    }
 }
 
-export default connect(mapStateToProps, { requestInit })(RegisterScreen);
+export default connect(mapStateToProps, { requestInit, registerRequest })(RegisterScreen);
 
 const styles = StyleSheet.create({
     registerView: {

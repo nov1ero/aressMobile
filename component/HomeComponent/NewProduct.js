@@ -18,9 +18,10 @@ function NewProduct(props) {
     }
 
     const addToWishlist = async (id) => {
+        
+        
         props.addToWishlist(id);
-        // logfunction(" wishlist Data ", wishlistData)
-    }
+      }
 
     const { wishlistArr } = props;
 
@@ -51,7 +52,7 @@ function NewProduct(props) {
                     listKey = {(item, index) => index.toString()}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) =>
-                        <ProductView data={item} key={item.id} navToDetail={navigateToDetailPage} addToWishlist={addToWishlist} wishlistArray={wishlistArr} />
+                        <ProductView data={item} key={item.id} navToDetail={navigateToDetailPage} addToWishlist={() => addToWishlist(item.productid)} wishlistArray={wishlistArr} />
                     }>
                 </FlatList>
             </SafeAreaView>

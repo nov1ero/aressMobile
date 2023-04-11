@@ -52,27 +52,29 @@ export function successInt(navigateScreen) {
     };
 }
 
-export function addToCart(id, quantity, name, price, image) {
+export function addToCart(id) {
     return {
         type: types.ADD_TO_CART,
+        payload:id
+    };
+}
+
+export function addToWishList(id) {
+    return {
+        type: types.ADD_TO_WISHLIST,
         payload: {
-            id,
-            quantity,
-            name,
-            price,
-            image
+            id
         }
     };
 }
 
-export function addToWishList(data) {
+export function removeFromWishlist(id) {
     return {
-        type: types.ADD_TO_WISHLIST,
-        payload: {
-            data
-        }
+        type: types.REMOVE_FROM_WISHLIST,
+        payload: id
     };
 }
+
 export function getHomeRequest() {
     return {
         type: types.GET_HOME_REQUEST,
@@ -124,18 +126,14 @@ export function getProductDetailsFailure(error) {
 export function successCart(data) {
     return {
         type: types.SUCCESS_CART,
-        payload: {
-            cartData: data
-        }
+        payload: data
     };
 }
 
 export function successWishlist(data) {
     return {
         type: types.SUCCESS_WISHLIST,
-        payload: {
-            wishlistData: data
-        }
+        payload: data
     };
 }
 
@@ -152,7 +150,7 @@ export function removeFromCart(id) {
 
 export function decrementQuantity(id) {
     return {
-        type: types.DEREMENT_QUANTITY,
+        type: types.DECREMENT_QUANTITY,
         payload: {
             id
         }
@@ -195,14 +193,30 @@ export function authStatus(status) {
     }
 }
 
-export function doLogin(data) {
+export function loginRequest(data) {
     return {
-        type: types.DO_LOGIN,
-        payload: {
-            data
-        }
+        type: types.LOGIN_REQUEST,
+        payload: data
     }
 }
+  
+export function loginSuccess(api_data){
+    return {
+        type: types.LOGIN_SUCCESS,
+        api_data
+    }
+  };
+    
+  
+export function loginFailure(error){
+    return{
+        type: types.LOGIN_FAILURE,
+        payload:{
+            error 
+        }
+    }
+    
+  };
 
 export function doLogout() {
     return {
@@ -219,5 +233,55 @@ export function fetchProductCart(data){
         payload: {
             data
         }
+    }
+}
+
+export function registerRequest(data){
+    return {
+        type: types.REGISTER_REQUEST,
+        payload: data
+    }
+}
+export function registerSuccess(data){
+    return {
+        type: types.REGISTER_SUCCESS,
+        payload: data
+    }
+}
+
+export function profileRequest(data){
+    return {
+        type: types.PROFILE_REQUEST,
+        payload: data
+    }
+}
+export function profileSet(data){
+    return {
+        type: types.PROFILE_SET,
+        payload: data
+    }
+}
+export function editProfile(data){
+    return {
+        type: types.EDIT_PROFILE,
+        payload: data
+    }
+}
+export function changeAddress(data){
+    return {
+        type: types.CHANGE_ADDRESS,
+        payload: data
+    }
+}
+export function changePassword(data){
+    return {
+        type: types.CHANGE_PASSWORD,
+        payload: data
+    }
+}
+export function isAuth(data){
+    return {
+        type: types.IS_AUTH,
+        payload: data
     }
 }
