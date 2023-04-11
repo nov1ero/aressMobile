@@ -46,7 +46,6 @@ function LoginScreen(props) {
 
     useEffect(() => {
         if(isAuthenticated == true){
-            
             props.navigation.navigate('HomeScreen')
         }
     }, [isAuthenticated]);
