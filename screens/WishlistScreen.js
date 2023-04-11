@@ -68,7 +68,7 @@ function WishlistScreen(props) {
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}>  Wishlist</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Избранное</Text>
                 </View>
             </OtrixHeader>
 

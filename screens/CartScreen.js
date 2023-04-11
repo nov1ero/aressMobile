@@ -92,7 +92,7 @@ function CheckoutScreen(props) {
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}>  Shopping Cart</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Корзина</Text>
                 </View>
             </OtrixHeader>
 
@@ -118,7 +118,7 @@ function CheckoutScreen(props) {
                 }
             </OtrixContent>
             {!noRecord && !loading && <View style={styles.checkoutView}>
-                <View style={styles.couponInput}>
+                {/* <View style={styles.couponInput}>
                     <Input variant="outline" placeholder="Coupon Code (use Aress)" style={[GlobalStyles.textInputStyle, styles.inputStyle]}
                         onChangeText={(couponCode) => setState({ ...state, couponCode })}
                         InputRightElement={
@@ -135,25 +135,25 @@ function CheckoutScreen(props) {
                             </View>
                         }
                     />
-                </View>
+                </View> */}
                 <View style={GlobalStyles.horizontalLine}></View>
                 <OtrixDivider size={'sm'} />
-                <View style={styles.totalView}>
+                {/* <View style={styles.totalView}>
                     <Text style={styles.leftTxt}>Sub Total</Text>
                     <Text style={styles.rightTxt}>₸ {sumAmount}</Text>
-                </View>
-                <View style={styles.totalView}>
+                </View> */}
+                {/* <View style={styles.totalView}>
                     <Text style={styles.leftTxt}>Discount</Text>
                     <Text style={styles.rightTxt}>₸ 0</Text>
-                </View>
-                {
+                </View> */}
+                {/* {
                     validCode && <View style={styles.totalView}>
                         <Text style={styles.leftTxt}>Coupon ({couponCode})</Text>
                         <Text style={styles.rightTxt}>-₸ 50</Text>
                     </View>
-                }
+                } */}
                 <View style={styles.totalView}>
-                    <Text style={styles.leftTxt}>Total</Text>
+                    <Text style={styles.leftTxt}>Всего</Text>
                     <Text style={[styles.rightTxt, { color: Colors.link_color, fontSize: wp('5.5%') }]}>{validCode ? '₸ ' + parseFloat(sumAmount - 50) : '₸ ' + sumAmount}</Text>
                 </View>
                 <Button
@@ -163,7 +163,7 @@ function CheckoutScreen(props) {
                     style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('2.5%'), marginTop: hp('1%') }]}
                     onPress={() => props.navigation.navigate("CheckoutScreen", { totalAmt: validCode ? '₸ ' + parseFloat(sumAmount - 50) : '₸ ' + sumAmount })}
                 >
-                    <Text style={GlobalStyles.buttonText}>Checkout</Text>
+                    <Text style={GlobalStyles.buttonText}>Оформление</Text>
                 </Button>
             </View>
             }
