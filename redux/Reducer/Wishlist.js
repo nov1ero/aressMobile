@@ -1,18 +1,20 @@
 import { types } from "../Action/actionTypes";
-import { logfunction } from "../../helpers/FunctionHelper";
 
 const initialState = {
     wishlistCount: 0,
-    wishlistData: []
+    wishlistData: null,
+    wishlistArr:null
 }
 export default (state = initialState, action) => {
     switch (action.type) {
         case types.SUCCESS_WISHLIST:
-          // console.log('REDUCER', action.payload)
+          const wishlistArr = action.payload.items.map(item => item.productid);
+          console.log("wish_REDUCER", action.payload.items)
           return {
             ...state,
-            wishlistCount: action.payload.totalCount,
-            wishlistData: action.payload.wishlistData
+            wishlistCount: action.payload.totalitem,
+            wishlistData: action.payload.items,
+            wishlistArr: wishlistArr
           };
         default:
           return state;

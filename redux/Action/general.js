@@ -52,10 +52,14 @@ export function successInt(navigateScreen) {
     };
 }
 
-export function addToCart(id) {
+export function addToCart(id,  qty, max_qty) {
     return {
         type: types.ADD_TO_CART,
-        payload:id
+        payload:{
+            id,
+            qty,
+            max_qty
+        }
     };
 }
 
@@ -71,7 +75,7 @@ export function addToWishList(id) {
 export function removeFromWishlist(id) {
     return {
         type: types.REMOVE_FROM_WISHLIST,
-        payload: id
+        payload: {id}
     };
 }
 
@@ -108,9 +112,8 @@ export function getProductDetailsRequest(id) {
 export function getProductDetailsSuccess(data) {
     return {
         type: types.GET_PRODUCT_DETAILS_SUCCESS,
-        payload: {
+        payload:
             data
-        }
     };
 }
 
@@ -148,21 +151,23 @@ export function removeFromCart(id) {
 }
 
 
-export function decrementQuantity(id) {
+export function decrementQuantity(id, qty) {
     return {
         type: types.DECREMENT_QUANTITY,
         payload: {
-            id
+            id, qty
         }
     };
 }
 
 
-export function incrementQuantity(id) {
+export function incrementQuantity(id, qty, max_qty) {
     return {
         type: types.INCREMENT_QUANTITY,
         payload: {
-            id
+            id,
+            qty,
+            max_qty
         }
     };
 }

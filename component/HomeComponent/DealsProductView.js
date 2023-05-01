@@ -8,7 +8,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 function DealsProductView(props) {
     const data = props.data;
-    const wishlistArr = props.wishlistArray ? props.wishlistArray : null;
+    console.log("__DATA__", data)
+    const wishlistArr = props.wishlistData.productid ? props.wishlistData.productid : null;
+    console.log("__wishlistArr__", wishlistArr)
 
     return (
         <TouchableOpacity style={styles.productBox} onPress={() => props.navToDetail(data)}>
@@ -41,13 +43,13 @@ function DealsProductView(props) {
             </View>
             {
                 data.out_of_stock && <View style={GlobalStyles.outstockview} >
-                    <Text style={GlobalStyles.outofstockTxt}>Out of stock</Text>
+                    <Text style={GlobalStyles.outofstockTxt}>Нет в наличии</Text>
                 </View>
             }
             {
                 data.out_of_stock == false && data.new == true &&
                 <View style={GlobalStyles.newtextView} >
-                    <Text style={GlobalStyles.newTxt}>New</Text>
+                    <Text style={GlobalStyles.newTxt}>Новый</Text>
                 </View>
             }
             {

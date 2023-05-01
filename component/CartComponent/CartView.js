@@ -10,8 +10,8 @@ import MatIcon from 'react-native-vector-icons/FontAwesome5';
 
 function CartView(props) {
     let cartProduct = props.products;
-    console.log("cartProduct", cartProduct)
-    console.log("image ==>", cartProduct.image)
+    // console.log("cartProduct", cartProduct)
+    // console.log("image ==>", cartProduct.image)
     const PriceQuantity = (price, quantity) => {
         let amt = price;
         let qty = quantity;
@@ -34,11 +34,11 @@ function CartView(props) {
                                 </TouchableOpacity>
                                 <Text style={styles.price}>{PriceQuantity(item.price, item.quantity)}</Text>
                                 <View style={styles.plusminus}>
-                                    <TouchableOpacity style={{ marginRight: wp('2.5%'), padding: 4 }} onPress={() => item.quantity != 1 && props.decrementItem(item.id)}>
+                                    <TouchableOpacity style={{ marginRight: wp('2.5%'), padding: 4 }} onPress={() => item.quantity != 1 && props.decrementItem(item.cartid, item.quantity)}>
                                         <Icon name="minus" style={styles.plusminusTxt} />
                                     </TouchableOpacity>
                                     <Text style={styles.quantityTxt}>{item.quantity}</Text>
-                                    <TouchableOpacity style={{ marginLeft: wp('2.5%'), padding: 4 }} onPress={() => props.incrementItem(item.id)}>
+                                    <TouchableOpacity style={{ marginLeft: wp('2.5%'), padding: 4 }} onPress={() => props.incrementItem(item.cartid, item.quantity, item.max_order)}>
                                         <Icon name="plus" style={styles.plusminusTxt} />
                                     </TouchableOpacity>
                                 </View>

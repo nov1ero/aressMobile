@@ -22,7 +22,7 @@ import { marginLeft, marginRight } from "styled-system";
 
 function WishlistScreen(props) {
     const [state, setState] = React.useState({ loading: true, noRecord: false, wishlistArr: [], wishlistData: null });
-    const { wishlistData } = props;
+    const { wishlistData, wishlistCount } = props;
     
     
     const wishlistSetData = async () => {
@@ -79,8 +79,8 @@ function WishlistScreen(props) {
                     <WishlistComponent navigation={props.navigation} products={wishlistArr} deleteItem={onDeleteItem} />
                 }
                 {
-                    !loading && noRecord && <View style={styles.noRecord}>
-                        <Text style={styles.emptyTxt}>Wishlist is empty!</Text>
+                    !loading && wishlistCount == 0 && <View style={styles.noRecord}>
+                        <Text style={styles.emptyTxt}>Список пуст!</Text>
                         <Button
                             size="lg"
                             variant="solid"
@@ -88,7 +88,7 @@ function WishlistScreen(props) {
                             style={[GlobalStyles.button, { marginHorizontal: wp('2%'), marginBottom: hp('2.5%'), marginTop: hp('1%') }]}
                             onPress={() => props.navigation.navigate('HomeScreen')}
                         >
-                            <Text style={GlobalStyles.buttonText}><Icon name={"md-heart"} color={Colors.white} style={{ fontSize: wp('4.5%') }} />  Add Now</Text>
+                            <Text style={GlobalStyles.buttonText}><Icon name={"md-heart"} color={Colors.white} style={{ fontSize: wp('4.5%') }} />  Добавить</Text>
                         </Button>
                     </View>
                 }
@@ -103,6 +103,7 @@ function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
         wishlistData: state.wishlist.wishlistData,
+        wishlistCount: state.wishlist.wishlistCount,
         detailsData: state.product.detailsData,
     }
 }

@@ -14,7 +14,7 @@ import {
 } from '@component';
 //import { HomeSkeleton } from '@skeleton';
 
-import { addToWishList, getHomeRequest } from '@actions';
+import { addToWishList, getHomeRequest, removeFromWishlist } from '@actions';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Colors, GlobalStyles } from '@helpers';
 import { Avatar, Badge } from "native-base";
@@ -28,6 +28,10 @@ function HomeScreen(props) {
 
     const addToWish = async (id) => {
         props.addToWishList(id);
+    }
+
+    const removeFromWish = async (id) => {
+        props.removeFromWishlist(id);
     }
 
     useEffect(() => {
@@ -111,7 +115,7 @@ function HomeScreen(props) {
                         <OtrixDivider size={'md'} />
 
                         {/* NewProduct Component */}
-                        <NewProduct newProducts={homeData.newProducts} navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} />
+                        <NewProduct newProducts={homeData.newProducts} navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} removeFromWishlist={removeFromWish} />
 
                         {/* Banner Image */}
                         {/* <Image source={offerBanner} style={styles.bannerStyle} /> */}
@@ -146,7 +150,7 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps, { addToWishList, getHomeRequest })(HomeScreen);
+export default connect(mapStateToProps, { addToWishList, getHomeRequest, removeFromWishlist})(HomeScreen);
 
 const styles = StyleSheet.create({
     headerRight: {

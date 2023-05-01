@@ -17,36 +17,26 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
 import FilterTagsDummy from '@component/items/FilterTagsDummy';
-import { addToWishList } from '@actions';
+import { addToWishList, removeFromWishlist } from '@actions';
 import ProductListDummy from '@component/items/ProductListDummy';
 import { filter } from '@common';
 import { _addToWishlist, _getWishlist, logfunction } from "@helpers/FunctionHelper";
 //import { ProductListSkeleton } from '@skeleton';
 
 function ProductListScreen(props) {
-    const [state, setState] = useState({ selectedFilters: [], wishlistArr: [], filterModelVisible: false, loading: true });
+    const [state, setState] = useState({ selectedFilters: [], filterModelVisible: false, loading: true });
 
-    //! Хз правильно или нет?
     useEffect(() => {
-    
-    const fetchData = async () => {
-      try {
-        const data = await fetch(_getWishlist());
-        const wishlistData = await data.json();
-        setState({ ...state, loading: false, wishlistArr: wishlistData });
-      } catch (error) {
-        console.error('Error fetching wishlist data:', error);
-        setState({ ...state, loading: false, error: true });
-      }
-    };
-  
-    fetchData();
-    return () => clearTimeout(loadPage);
-  }, [wishlistData]);
+        let wishlistData =  props.wishlistArr;
+        let loadPage = setTimeout(() => setState({ ...state, loading: false}), 500);
+
+        return () => {
+            clearTimeout(loadPage);
+        };
+    }, [wishlistData]);
   
   
-  
-//! ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
     //when filter tag clicked
     const filterClick = (value) => {
         const { selectedFilters } = state;
@@ -77,13 +67,16 @@ function ProductListScreen(props) {
     }
 
     const addToWishlist = async (id) => {
-        let wishlistData = await _addToWishlist(id);
-        props.addToWishList(wishlistData);
+        // let wishlistData = await _addToWishlist(id);
+        props.addToWishList(id);
+    }
+    const removeFromWishlist = async (id) => {
+        props.removeFromWishlist(id);
     }
 
     const { title } = props.route.params;
     const { selectedFilters, loading, filterModelVisible, } = state;
-    const { wishlistData } = props;
+    const { wishlistArr } = props;
 
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>
@@ -133,7 +126,7 @@ function ProductListScreen(props) {
                         listKey = {(contact, index) => index.toString()}
                         keyExtractor={(contact, index) => index.toString()}
                         renderItem={({ item, index }) =>
-                            <ProductView data={item} key={item.id} imageViewBg={Colors.white} navToDetail={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })} addToWishlist={addToWishlist} wishlistArray={wishlistData} />
+                            <ProductView data={item} key={item.id} imageViewBg={Colors.white} navToDetail={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })} addToWishlist={addToWishlist} removeFromWishlist={removeFromWishlist} wishlistArray={wishlistArr} />
                         }>
                     </FlatList>
                 </OtrixContent>
@@ -149,11 +142,12 @@ function ProductListScreen(props) {
 
 function mapStateToProps(state) {
     return {
-        wishlistData: state.wishlist.wishlistData
+        wishlistData: state.wishlist.wishlistData,
+        wishlistArr: state.wishlist.wishlistArr
     }
 }
 
-export default connect(mapStateToProps, { addToWishList })(ProductListScreen);
+export default connect(mapStateToProps, { addToWishList, removeFromWishlist })(ProductListScreen);
 
 const styles = StyleSheet.create({
 

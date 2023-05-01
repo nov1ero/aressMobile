@@ -6,6 +6,7 @@ import {
     Text,
     StyleSheet,
     Modal,
+    // Badge, ScrollView, Button,
     Image
 } from "react-native";
 import { connect } from 'react-redux';
@@ -20,61 +21,50 @@ import { bottomCart, checkround2, close } from '@common';
 import { SliderBox } from 'react-native-image-slider-box';
 import { Badge, ScrollView, Button } from "native-base";
 import Fonts from "../helpers/Fonts";
-import { addToCart, addToWishList, getProductDetailsRequest } from '@actions';
+import { addToCart, addToWishList, removeFromWishlist, getProductDetailsRequest } from '@actions';
 import Icon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import MaterialIconsIcon from 'react-native-vector-icons/MaterialIcons';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Stars from 'react-native-stars';
-import axios from 'axios';
-
-// function fetchProductDetails(productId) {
-//   return axios.get(`/api/details/${productId}`)
-//     .then(response => response.data)
-//     .catch(error => {
-//       console.error(error);
-//       throw error;
-//     });
-// }
-
-// // in the parent component
-// async function handleProductClick(productId) {
-//   try {
-//     const detailsData = await fetchProductDetails(productId);
-//     setDetailsData(detailsData);
-//   } catch (error) {
-//     // handle error
-//   }
-// }
-
 
 const COLORS = ['#3ad35c', Colors.themeColor, '#efcd19', '#ff1e1a'];
 
 function ProductDetailScreen(props) {
-    const { detailsData, loading, wishlistData } = props;
-    const  productDetail = detailsData;
-    const combinationsProduct = detailsData.combinations;
-    const  productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
+    const { detailsData, loading, wishlistData, wishlistArr } = props;
+    const  productDetail = detailsData.product;
+    const combinationsProduct = detailsData.product.combinations
+    const  productImages = productDetail?(combinationsProduct[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
     const [state, setState] = React.useState({ loading: true, productCount: 1, fetchCart: false, selectedColor: 1,productImages:[], showZoom: false, msg: '' });
     const { selectedColor, productCount, showZoom, msg } = state;
-    // console.log("\n\n|-|-|-|-NANME-|-|-|-|", productDetail.product_name.ru)
+    console.log("\n\n|-|-|-|-NANME-|-|-|-|", productDetail)
     // console.log("\n\n|-|-|-|-PRICE-|-|-|-|", combinationsProduct[0].mainprice)
     // console.log("IMAGE ===>", combinationsProduct[0].images[0].image)
-    const image = "https://aress.kz/images/simple_products/gallery/"+combinationsProduct[0].images[0].image
+    // const image = "https://aress.kz/images/simple_products/gallery/"+combinationsProduct[0].images[0].image
     // console.log("|-|-|-|-IMAGE-|-|-|-|",image)
     //const { product } = props;
+    const max_qty = combinationsProduct[0].maxorderlimit
+    console.log("Max_Order", max_qty)
     
 
 
-    console.log("detailsData",detailsData)
+    console.log("wishlistData",wishlistArr)
     const _CartData = () => {
         setState({ ...state, fetchCart: false })
         //console.log("COUNT ====", props.count)
     }
 
     const addToWish = async (id) => {
-        let wishlistData = await _addToWishlist(id);
-        props.addToWishList(wishlistData);
+        props.addToWishList(id);
+    }
+
+    const removeFromWishlist = async (id) => {
+        const index = wishlistArr.indexOf(id);
+        console.log("REMOVE1", index)
+        const wishlist_id = wishlistData[index].wishlist_id;
+        console.log("REMOVE2", wishlist_id)
+        props.removeFromWishlist(wishlist_id);
+        
     }
 
     const showOutofStock = () => {
@@ -89,9 +79,7 @@ function ProductDetailScreen(props) {
         props.addToCart(
             productDetail.product_id, 
             productCount, 
-            productDetail.product_name.ru, 
-            combinationsProduct[0].mainprice, 
-            image
+            max_qty
             )
     }
     
@@ -215,9 +203,9 @@ function ProductDetailScreen(props) {
                                 {/* Heart Icon */}
                                 <View style={styles.heartIconView}>
                                     {
-                                        productDetail.isFav ? <TouchableOpacity style={[GlobalStyles.FavCircle, { left: wp('12%'), top: 0 }]} >
+                                        wishlistArr.includes(productDetail.product_id) ? <TouchableOpacity onPress={() => removeFromWishlist(productDetail.product_id)} style={[GlobalStyles.FavCircle, { left: wp('12%'), top: 0 }]} >
                                             <FontAwesomeIcon name="heart" style={GlobalStyles.FavIcon} color={Colors.white} />
-                                        </TouchableOpacity> : <TouchableOpacity onPress={() => addToWish()} style={[GlobalStyles.unFavCircle, { left: wp('12%'), top: 0 }]} >
+                                        </TouchableOpacity> : <TouchableOpacity onPress={() => addToWish(productDetail.product_id)} style={[GlobalStyles.unFavCircle, { left: wp('12%'), top: 0 }]} >
                                             <FontAwesomeIcon name="heart-o" style={[GlobalStyles.unFavIcon, { fontSize: wp('3.8%') }]} color={Colors.secondry_text_color} />
                                         </TouchableOpacity>
                                     }
@@ -230,16 +218,16 @@ function ProductDetailScreen(props) {
                             {/* Name Container*/}
                             <View style={styles.subContainer}>
                                 <Text style={styles.headingTxt}>{productDetail.product_name['ru'] ? productDetail.product_name['ru']:''}</Text>
-                                {/* <Text style={[styles.stock, {
+                                <Text style={[styles.stock, {
                                     color: !productDetail.out_of_stock ? '#5ddb79' : '#fe151b'
-                                }]}>{!productDetail.out_of_stock ? 'In Stock' : 'Out of stock'}</Text> */}
+                                }]}>{!productDetail.out_of_stock ? 'В наличии' : 'Не в наличии'}</Text>
                             </View>
                             <OtrixDivider size={'md'} />
 
                             {/* Price Container*/}
                             <View style={styles.subContainer}>
                                 <Text style={styles.productPrice}>{productDetail.combinations[0]?.mainprice}</Text>
-                                <View style={styles.starView}>
+                                {/* <View style={styles.starView}>
                                     <Stars
                                         default={productDetail.rating}
                                         count={5}
@@ -251,7 +239,7 @@ function ProductDetailScreen(props) {
                                         disabled={true}
                                     />
                                     <Text style={styles.reviewTxt}>({productDetail.reviews} Отзывов)</Text>
-                                </View>
+                                </View> */}
                             </View>
                             <OtrixDivider size={'lg'} />
                             <View style={GlobalStyles.horizontalLine}></View>
@@ -270,7 +258,7 @@ function ProductDetailScreen(props) {
                             <View style={GlobalStyles.horizontalLine}></View>
 
                             {/* Rating Container*/}
-                            <RatingComponent productData={productDetail} />
+                            {/* <RatingComponent productData={productDetail} /> */}
 
                             {/* Similar Product Component */}
                             <SimilarProduct navigation={props.navigation} />
@@ -308,7 +296,7 @@ function ProductDetailScreen(props) {
                             style={[GlobalStyles.button, { flex: 0.70, marginHorizontal: wp('2%') }]}
                             onPress={() => !productDetail.out_of_stock ? _addToCart() : showOutofStock()}
                         >
-                            <Text style={GlobalStyles.buttonText}>Add to cart</Text>
+                            <Text style={GlobalStyles.buttonText}>Добавить в корзину</Text>
                         </Button>
                         <View style={styles.countBox}>
                             <Text style={styles.countTxt}>{productCount}</Text>
@@ -334,10 +322,12 @@ function mapStateToProps(state) {
         detailsData: state.product.detailsData,
         loading: state.product.loading,
         cartCount: state.cart.cartCount,
+        wishlistArr: state.wishlist.wishlistArr,
+        wishlistData: state.wishlist.wishlistData
     }
 }
 
-export default connect(mapStateToProps, { addToCart, getProductDetailsRequest })(ProductDetailScreen);
+export default connect(mapStateToProps, { addToCart, addToWishList, removeFromWishlist, getProductDetailsRequest })(ProductDetailScreen);
 
 const styles = StyleSheet.create({
     productDetailView: {

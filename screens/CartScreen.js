@@ -42,12 +42,12 @@ function CheckoutScreen(props) {
         props.removeFromCart(id);
     }
 
-    const decrement = (id) => {
-        props.decrementQuantity(id);
+    const decrement = (id, qty) => {
+        props.decrementQuantity(id, qty);
     }
 
-    const increment = (id) => {
-        props.incrementQuantity(id);
+    const increment = (id, qty, max_qty) => {
+        props.incrementQuantity(id, qty);
     }
 
     const calculateCart = () => {
@@ -63,9 +63,10 @@ function CheckoutScreen(props) {
                 cartid: item.cartid,
                 quantity: item.qty,
                 name: item.productname.ru || " ",
-                price: item.offerprice? item.offerprice: item.mainprice,
+                price: item.offerprice > 0? item.offerprice: item.mainprice,
                 image: item.thumbnail_path+"/"+item.thumbnail? item.thumbnail_path+"/"+item.thumbnail: " ",
-                id: item.productid || " "
+                id: item.productid || " ",
+                max_order: item.maxorderqty
             });
             console.log("ITEMS", cartItems)
             
