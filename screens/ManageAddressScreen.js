@@ -82,14 +82,14 @@ function ManageAddressScreen(props) {
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}>  Manage Address</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Управление адресами</Text>
                 </View>
             </OtrixHeader>
 
             {/* Address Content start from here */}
             {step == 1 && <>
                 <OtrixDivider size={"md"} />
-                <Text style={styles.deliveryTitle}>Your Address</Text>
+                <Text style={styles.deliveryTitle}>Ваши адреса</Text>
                 <OtrixDivider size={"sm"} />
                 <View style={styles.addressContent}>
                     {/*horizontal address* */}
@@ -123,7 +123,7 @@ function ManageAddressScreen(props) {
                     style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('1%') }]}
                     onPress={() => setState({ ...state, showAdd: true })}
                 >
-                    <Text style={GlobalStyles.buttonText}>  <MatIcon name="plus" color={Colors.white} size={wp('4%')} /> Add</Text>
+                    <Text style={GlobalStyles.buttonText}>  <MatIcon name="plus" color={Colors.white} size={wp('4%')} /> Добавить</Text>
                 </Button>
 
             </>

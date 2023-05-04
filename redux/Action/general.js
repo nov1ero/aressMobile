@@ -329,3 +329,19 @@ export function searchSuccess(query){
         
     }
 }
+
+export function updateProfile(data){
+    return {
+        type: types.UPDATE_PROFILE,
+        payload: data
+        
+    }
+}
+
+export function clearCart(data){
+    return {
+        type: types.CLEAR_CART,
+        payload: data
+        
+    }
+}

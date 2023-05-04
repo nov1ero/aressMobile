@@ -21,10 +21,10 @@ function PaymentSuccessComponent(props) {
                 <View style={styles.contentView}>
                     <Image source={checked} style={styles.checkImg} />
                     <OtrixDivider size={'md'} />
-                    <Text style={styles.paymentSuccess}>Payment Confirmed</Text>
+                    <Text style={styles.paymentSuccess}>Платеж Подтвержден</Text>
                     <OtrixDivider size={'lg'} />
                     <OtrixDivider size={'lg'} />
-                    <Text style={styles.paymentDescTxt}>Your order is confirmed you will receive an order confirmation email/SMS shortly with the expected delivery date your items.</Text>
+                    <Text style={styles.paymentDescTxt}>Ваш заказ подтвержден, вскоре вы получите электронное письмо / SMS с подтверждением {'\n'} заказа и ожидаемой датой доставки ваших товаров.</Text>
                     <Button
                         size="md"
                         variant="solid"
@@ -32,7 +32,7 @@ function PaymentSuccessComponent(props) {
                         style={[GlobalStyles.button, { marginHorizontal: wp('4%'), top: hp('2%') }]}
                         onPress={() => props.navigation.navigate('HomeScreen')}
                     >
-                        <Text style={GlobalStyles.buttonText}><Icon name="shopping-bag" size={wp('5%')} />  Continue Shopping</Text>
+                        <Text style={GlobalStyles.buttonText}><Icon name="shopping-bag" size={wp('5%')} />  Продолжить Покупки</Text>
                     </Button>
                     <Button
                         size="md"
@@ -40,7 +40,7 @@ function PaymentSuccessComponent(props) {
                         bg={'#0ab97a'}
                         style={[GlobalStyles.button, { marginHorizontal: wp('4%'), marginTop: hp('4%') }]}
                         onPress={() => props.navigation.navigate('OrderScreen')}                    >
-                        <Text style={GlobalStyles.buttonText}><Icon name="smile" size={wp('5%')} />  View Orders</Text>
+                        <Text style={GlobalStyles.buttonText}><Icon name="smile" size={wp('5%')} />  Мои Заказы</Text>
                     </Button>
                 </View>
             </View>

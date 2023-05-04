@@ -15,7 +15,7 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
-import { proceedCheckout } from '@actions';
+import { proceedCheckout, clearCart } from '@actions';
 import ProductListDummy from '@component/items/ProductListDummy';
 import PaymentMethodsDummy from '@component/items/PaymentMethodsDummy';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -272,9 +272,9 @@ function CheckoutScreen(props) {
                                 variant="solid"
                                 bg={'#0ab97a'}
                                 style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('1%'), flex: 0.40, alignSelf: 'flex-end' }]}
-                                onPress={() => { setState({ ...state, paymentSuccessModal: true }), _proceedCheckout() }}
+                                onPress={() => { setState({ ...state, paymentSuccessModal: true }), _proceedCheckout(), props.clearCart() }}
                             >
-                                <Text style={[GlobalStyles.buttonText, { fontSize: wp('4.8%') }]}>Place Order</Text>
+                                <Text style={[GlobalStyles.buttonText, { fontSize: wp('4.8%') }]}>Заказать</Text>
                             </Button>
                     }
 
@@ -301,7 +301,7 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { proceedCheckout })(CheckoutScreen);
+export default connect(mapStateToProps, { proceedCheckout, clearCart })(CheckoutScreen);
 
 const styles = StyleSheet.create({
     checkoutView: {

@@ -44,7 +44,7 @@ function EditAddressComponent(props) {
                         </View>
                     </TouchableOpacity>
                     <View style={[GlobalStyles.headerCenter]}>
-                        <Text style={GlobalStyles.headingTxt}>{'Update Address'}</Text>
+                        <Text style={GlobalStyles.headingTxt}>{'Обновление Адреса'}</Text>
                     </View>
                     <TouchableOpacity style={styles.headerRight}  >
                         {/* <Text style={styles.clearTxt}> Clear All</Text> */}
@@ -59,13 +59,13 @@ function EditAddressComponent(props) {
                     <FormControl isRequired isInvalid={submited && city == '' ? true : false}>
                         <Input variant="outline"
                             value={name}
-                            placeholder="Name" style={GlobalStyles.textInputStyle}
+                            placeholder="Название" style={GlobalStyles.textInputStyle}
                             onChangeText={(value) => setState({ ...state, name: value })}
                         />
-                        <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Error Name</FormControl.ErrorMessage>
+                        <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Ошибка</FormControl.ErrorMessage>
                     </FormControl>
                     <OtrixDivider size={'sm'} />
-                    <FormControl isRequired isInvalid={submited && country == '' ? true : false}>
+                    {/* <FormControl isRequired isInvalid={submited && country == '' ? true : false}>
                         <Select
                             selectedValue={country}
                             minWidth="200"
@@ -84,18 +84,18 @@ function EditAddressComponent(props) {
                                 )
                             }
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
                     <OtrixDivider size={'sm'} />
                     <FormControl isRequired isInvalid={submited && city == '' ? true : false}>
                         <Input variant="outline"
                             value={city}
-                            placeholder="City" style={GlobalStyles.textInputStyle}
+                            placeholder="Город" style={GlobalStyles.textInputStyle}
                             onChangeText={(value) => setState({ ...state, city: value })}
                         />
                         <FormControl.ErrorMessage
                             leftIcon={<InfoOutlineIcon size="xs" />}
                         >
-                            City is required
+                            Необходимо указать город
                         </FormControl.ErrorMessage>
                     </FormControl>
 
@@ -103,13 +103,13 @@ function EditAddressComponent(props) {
                     <FormControl isRequired isInvalid={submited && postcode == '' ? true : false}>
                         <Input variant="outline"
                             value={postcode}
-                            placeholder="Postcode" style={GlobalStyles.textInputStyle}
+                            placeholder="Почтовый индекс" style={GlobalStyles.textInputStyle}
                             onChangeText={(value) => setState({ ...state, postcode: value })}
                         />
                         <FormControl.ErrorMessage
                             leftIcon={<InfoOutlineIcon size="xs" />}
                         >
-                            Postcode is required
+                            Необходим указать почтовый индекс
                         </FormControl.ErrorMessage>
                     </FormControl>
                     <OtrixDivider size={'sm'} />
@@ -117,20 +117,20 @@ function EditAddressComponent(props) {
                     <FormControl isRequired isInvalid={submited && address1 == '' ? true : false}>
                         <TextArea
                             value={address1}
-                            variant="outline" placeholder="Address 1" style={GlobalStyles.textAreaInputStyle}
+                            variant="outline" placeholder="Адрес 1" style={GlobalStyles.textAreaInputStyle}
                             onChangeText={(value) => setState({ ...state, address1: value, submited: false })}
                         />
                         <FormControl.ErrorMessage
                             leftIcon={<InfoOutlineIcon size="xs" />}
                         >
-                            Address is required
+                            Необходимо указать адрес
                         </FormControl.ErrorMessage>
                     </FormControl>
 
                     <OtrixDivider size={'sm'} />
                     <FormControl isRequired >
                         <Input variant="outline" value={address2}
-                            placeholder="Address 2" style={GlobalStyles.textAreaInputStyle}
+                            placeholder="Адрес 2" style={GlobalStyles.textAreaInputStyle}
                             onChangeText={(value) => setState({ ...state, address2: value })}
                         />
 
@@ -144,7 +144,7 @@ function EditAddressComponent(props) {
                     style={[GlobalStyles.button, { marginHorizontal: wp('4%'), top: hp('4.5%') }]}
                     onPress={() => submit()}
                 >
-                    <Text style={GlobalStyles.buttonText}>Update Address</Text>
+                    <Text style={GlobalStyles.buttonText}>Обновить</Text>
                 </Button>
             </View>
 

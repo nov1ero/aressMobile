@@ -4,7 +4,7 @@ import {
     StyleSheet,
     TouchableOpacity
 } from "react-native";
-import { requestInit } from '@actions';
+import { requestInit, updateProfile } from '@actions';
 import {
     OtrixContainer, OtrixHeader, OtrixContent, OtirxBackButton, OtrixDivider
 } from '@component';
@@ -16,8 +16,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "../helpers/Fonts";
 
 function EditProfileScreen(props) {
-    const [state, setState] = React.useState({ first_name: 'Aress', last_name: "User", email: "Aress@mail.com", phone: "9898989898", submited: false });
-    const { first_name, last_name, email, phone, submited } = state;
+    const [state, setState] = React.useState({ first_name: '', last_name: "", email: "", phone: ""});
+    const { first_name, last_name, email, phone } = state;
+    const{ data } = props;
+    console.log("UPDATEPROF", data)
     return (
         <OtrixContainer>
 
@@ -27,7 +29,7 @@ function EditProfileScreen(props) {
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}>  Edit Profile</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Изменение профиля</Text>
                 </View>
             </OtrixHeader>
             <OtrixDivider size={'md'} />
@@ -35,20 +37,15 @@ function EditProfileScreen(props) {
             <OtrixContent>
 
                 {/* Profile  Start from here */}
-                <FormControl isRequired isInvalid={submited && first_name == '' ? true : false}>
+                <FormControl>
                     <Input variant="outline"
                         type="text"
                         value={first_name}
-                        placeholder="First Name" style={GlobalStyles.textInputStyle}
+                        placeholder="Имя" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setState({ ...state, first_name: value })}
                              
                         
                     />
-                    <FormControl.ErrorMessage
-                        leftIcon={<InfoOutlineIcon size="xs" />}
-                    >
-                        First Name is required
-                    </FormControl.ErrorMessage>
                 </FormControl>
 
                 <OtrixDivider size={'md'} />
@@ -56,41 +53,31 @@ function EditProfileScreen(props) {
                     <Input variant="outline"
                         type="text"
                         value={last_name}
-                        placeholder="Last Name" style={GlobalStyles.textInputStyle}
+                        placeholder="Фамилия" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setState({ ...state, last_name: value })}
                     />
                 </FormControl>
                 <OtrixDivider size={'md'} />
 
-                <FormControl isRequired isInvalid={submited && email == '' ? true : false}>
+                <FormControl>
                     <Input variant="outline"
                         type="text"
                         value={email}
                         keyboardType="email-address"
-                        placeholder="Email Address" style={GlobalStyles.textInputStyle}
+                        placeholder="Эл. почта" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setState({ ...state, email: value })}
                     />
-                    <FormControl.ErrorMessage
-                        leftIcon={<InfoOutlineIcon size="xs" />}
-                    >
-                        Email is required
-                    </FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'md'} />
 
-                <FormControl isRequired isInvalid={submited && phone == '' ? true : false}>
+                <FormControl>
                     <Input variant="outline"
                         type="text"
                         value={phone}
                         keyboardType="number-pad"
-                        placeholder="Mobile Number" style={GlobalStyles.textInputStyle}
+                        placeholder="Номер телефона" style={GlobalStyles.textInputStyle}
                         onChangeText={(value) => setState({ ...state, phone: value })}
                     />
-                    <FormControl.ErrorMessage
-                        leftIcon={<InfoOutlineIcon size="xs" />}
-                    >
-                        Mobile Number is required
-                    </FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'md'} />
                 <Button
@@ -98,9 +85,16 @@ function EditProfileScreen(props) {
                     variant="solid"
                     bg={Colors.themeColor}
                     style={GlobalStyles.button}
-                    onPress={() => props.navigation.navigate('HomeScreen')}
+                    onPress={() => {
+                        props.navigation.navigate('ProfileScreen')
+                        props.updateProfile({
+                            "name": first_name == ''? data.name: first_name+" "+ last_name,
+                            "email": email == ''? data.email: email,
+                            "mobile": phone == ''? data.mobile: phone
+                        })
+                    }}
                 >
-                    <Text style={GlobalStyles.buttonText}>Update</Text>
+                    <Text style={GlobalStyles.buttonText}>Изменить</Text>
                 </Button>
                 <OtrixDivider size={'md'} />
 
@@ -113,11 +107,13 @@ function EditProfileScreen(props) {
 
 }
 
-function mapStateToProps({ params }) {
-    return {}
+function mapStateToProps(state) {
+    return {
+        data: state.profile
+    }
 }
 
-export default connect(mapStateToProps, { requestInit })(EditProfileScreen);
+export default connect(mapStateToProps, { requestInit, updateProfile })(EditProfileScreen);
 
 const styles = StyleSheet.create({
 

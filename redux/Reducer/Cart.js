@@ -30,6 +30,12 @@ export default (state = initialState, action) => {
                 cartCount: 0,
                 cartData: []
             }
+        case types.CLEAR_CART:
+            return{
+                ...state,
+                cartCount: 0,
+                cartData: []
+            }
         default:
             return state;
     }

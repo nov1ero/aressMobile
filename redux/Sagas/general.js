@@ -10,7 +10,6 @@ import {
     successInt, 
     successCart, 
     successCheckout, 
-    authStatus, 
     successWishlist, 
     getCategoriesFailure, 
     getCategoriesSuccess, 
@@ -45,6 +44,9 @@ export function* watchGeneralRequest() {
     yield takeEvery(types.PROFILE_REQUEST, profile_Request);
     yield takeEvery(types.CAT_PRODUCT_LIST_REQUEST, getCategoryProductList);
     yield takeEvery(types.GET_SEARCH, getSearch);
+    yield takeEvery(types.UPDATE_PROFILE, updateProfile);
+    yield takeEvery(types.CLEAR_CART, clearCart);
+
 }
 
 const delay = (ms) => new Promise(res=> setTimeout(res, ms))
@@ -739,6 +741,86 @@ export function* fetchCategoriesSaga() {
           };
           
           const response = yield fetch("https://aress.kz/api/search/?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99&currency=KZT&query="+query, requestOptions)
+          const data = yield response.json();
+          console.log("SEARCHDATA", data)
+          yield put(searchSuccess(data))
+          //console.log("PROF_DATA", data)
+        } catch (e) {
+            //console.log('ERROR =', e)
+            yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+        }
+  }
+
+  function* updateProfile(action) {
+    try {
+
+      const updatedData = action.payload
+      console.log("DataToUpdate", updatedData)
+
+      const access_token = yield call(AsyncStorage.getItem, 'access_token')
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+      var raw = JSON.stringify({
+        "name": action.payload.name,
+        "email": action.payload.email,
+        "mobile": action.payload.mobile
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+      
+      const response = yield fetch("https://aress.kz/api/updateProfile", requestOptions)
+      const data = response.json()
+      console.log("StatusOfUpdate",response.json)
+      // if(data.status == "success"){
+        var profHeaders = new Headers();
+        profHeaders.append("Authorization", "Bearer" + " "+ access_token)
+       
+
+        var profRequestOptions = {
+            method: 'GET',
+            headers: profHeaders,
+            redirect: 'follow'
+          };
+          
+          const profResponse = yield fetch("https://aress.kz/api/myprofile?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", profRequestOptions)
+          const profData = yield profResponse.json(); 
+          yield put(profileSet(profData))
+      // }else{
+      //   yield call(Toast.show, "Не удалось обновить", data.msg, {
+      //     duration: 2000,
+      //     position: Toast.positions.CENTER,
+      //     shadow: true,
+      //     animation: true,
+      //     hideOnPress: true,
+      //     delay: 0,
+      //   });
+      // }
+        } catch (e) {
+            //console.log('ERROR =', e)
+            yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+        }
+  }
+
+  function* clearCart(action) {
+    try {
+          const access_token = yield call(AsyncStorage.getItem, 'access_token')
+          var myHeaders = new Headers();
+          myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+          };
+      
+          const response = yield fetch("https://aress.kz/api/clear-cart", requestOptions)
           const data = yield response.json();
           console.log("SEARCHDATA", data)
           yield put(searchSuccess(data))

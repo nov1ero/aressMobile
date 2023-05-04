@@ -21,14 +21,10 @@ export default (state = initialState, action) => {
             address: action.payload.address,
             role_id: action.payload.role_id
           };
-        case types.EDIT_PROFILE:
+        case types.UPDATE_PROFILE:
           return {
             ...state,
             
-          };
-        case types.EDIT_PROFILE:
-          return {
-            ...state,
           };
         case types.CHANGE_ADDRESS:
           return {

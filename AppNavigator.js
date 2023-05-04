@@ -47,7 +47,7 @@ function MyTabs(props) {
     //console.log("IS_AUTH_IS", isAuthenticated)
     return (
         <BottomTab.Navigator
-            initialRouteName="HomeScreen"
+            initialRouteName="Home"
             backBehavior={'order'}
             screenOptions={{
                 tabBarStyle: { position: 'absolute' },

@@ -21,7 +21,7 @@ import axios from 'axios';
 
 function CheckoutScreen(props) {
     const [state, setState] = React.useState({ loading: true, cartArr: [], cartProducts: [], sumAmount: 0, isApplied: false, validCode: false, couponCode: null, noRecord: false });
-    const { cartData } = props;
+    const { cartData, cartCount } = props;
 
     const applyCouponCode = () => {
         const { couponCode } = state;
@@ -104,8 +104,8 @@ function CheckoutScreen(props) {
                     !noRecord && !loading && <CartView navigation={props.navigation} products={cartProducts} deleteItem={onDeleteItem} decrementItem={decrement} incrementItem={increment} />
                 }
                 {
-                    !loading && noRecord && <View style={styles.noRecord}>
-                        <Text style={styles.emptyTxt}>Cart is empty!</Text>
+                    !loading && cartCount == 0 && <View style={styles.noRecord}>
+                        <Text style={styles.emptyTxt}>Корзина Пуста!</Text>
                         <Button
                             size="lg"
                             variant="solid"
@@ -113,7 +113,7 @@ function CheckoutScreen(props) {
                             style={[GlobalStyles.button, { marginHorizontal: wp('2%'), marginBottom: hp('2.5%'), marginTop: hp('1%') }]}
                             onPress={() => props.navigation.navigate('HomeScreen')}
                         >
-                            <Text style={GlobalStyles.buttonText}><Icon name={"md-cart-sharp"} color={Colors.white} style={{ fontSize: wp('4.5%') }} />  Shop Now</Text>
+                            <Text style={GlobalStyles.buttonText}><Icon name={"md-cart-sharp"} color={Colors.white} style={{ fontSize: wp('4.5%') }} />  Выбрать Покупку</Text>
                         </Button>
                     </View>
                 }
@@ -176,6 +176,7 @@ function CheckoutScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
+        cartCount: state.cart.cartCount
 
     }
 }

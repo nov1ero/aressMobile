@@ -45,7 +45,7 @@ function AddAdressComponent(props) {
                         </View>
                     </TouchableOpacity>
                     <View style={[GlobalStyles.headerCenter]}>
-                        <Text style={GlobalStyles.headingTxt}>{'Добавь адрес'}</Text>
+                        <Text style={GlobalStyles.headingTxt}>{'Добавление Адреса'}</Text>
                     </View>
                     <TouchableOpacity style={styles.headerRight}  >
                         {/* <Text style={styles.clearTxt}> Clear All</Text> */}
@@ -63,7 +63,7 @@ function AddAdressComponent(props) {
                         />
                         <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Ошибка</FormControl.ErrorMessage>
                     </FormControl>
-                    <OtrixDivider size={'sm'} />
+                    {/* <OtrixDivider size={'sm'} />
                     <FormControl isRequired isInvalid={submited && country == '' ? true : false}>
                         <Select
                             selectedValue={country}
@@ -83,7 +83,7 @@ function AddAdressComponent(props) {
                                 )
                             }
                         </Select>
-                    </FormControl>
+                    </FormControl> */}
                     <OtrixDivider size={'sm'} />
                     <FormControl isRequired isInvalid={submited && city == '' ? true : false}>
                         <Input variant="outline"
@@ -94,7 +94,7 @@ function AddAdressComponent(props) {
                         <FormControl.ErrorMessage
                             leftIcon={<InfoOutlineIcon size="xs" />}
                         >
-                            City is required
+                            Необходимо указать город
                         </FormControl.ErrorMessage>
                     </FormControl>
 
@@ -108,7 +108,7 @@ function AddAdressComponent(props) {
                         <FormControl.ErrorMessage
                             leftIcon={<InfoOutlineIcon size="xs" />}
                         >
-                            Postcode is required
+                            Необходим указать почтовый индекс
                         </FormControl.ErrorMessage>
                     </FormControl>
                     <OtrixDivider size={'sm'} />
@@ -122,7 +122,7 @@ function AddAdressComponent(props) {
                         <FormControl.ErrorMessage
                             leftIcon={<InfoOutlineIcon size="xs" />}
                         >
-                            Address is required
+                            Необходимо указать адрес
                         </FormControl.ErrorMessage>
                     </FormControl>
 
@@ -143,7 +143,7 @@ function AddAdressComponent(props) {
                     style={[GlobalStyles.button, { marginHorizontal: wp('4%'), top: hp('4.5%') }]}
                     onPress={() => submit()}
                 >
-                    <Text style={GlobalStyles.buttonText}>Добавить адрес</Text>
+                    <Text style={GlobalStyles.buttonText}>Добавить</Text>
                 </Button>
             </View>
 
