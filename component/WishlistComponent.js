@@ -10,7 +10,7 @@ import MatIcon from 'react-native-vector-icons/FontAwesome5';
 
 function WishlistComponent(props) {
     let cartProduct = props.products;
-    console.log("cartProduct",cartProduct)
+    //console.log("cartProduct",cartProduct)
     const Price = (price) => {
         let amt = price;
         return '₸ ' + amt;

@@ -9,26 +9,27 @@ import MatIcon from 'react-native-vector-icons/FontAwesome5';
 
 function SearchProductsViewComponent(props) {
     let cartProduct = props.products;
-    const PriceQuantity = (price, quantity) => {
-        let amt = parseFloat(price.replace('$', ''));
-        let qty = parseInt(quantity);
-        return '$' + amt;
+    console.log("SearchProductsViewComponent", cartProduct)
+    const Price = (offerprice, mainprice) => {
+        let amt = offerprice>0? offerprice: mainprice;
+        
+        return '₸' + amt;
     }
     return (
         <>
             {
                 cartProduct.length > 0 && cartProduct.map((item) =>
-                    <TouchableOpacity style={styles.cartContent} key={item.id} onPress={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })}>
+                    <TouchableOpacity style={styles.cartContent} key={item.productid} onPress={() => props.navigation.navigate('ProductDetailScreen', { id: item.productid })}>
                         <View style={styles.cartBox} >
                             <View style={styles.imageView}>
-                                <Image source={item.image} style={styles.image}
+                                <Image source={{ uri: item.thumbpath + "/" + item.images}} style={styles.image}
                                 ></Image>
                             </View>
                             <View style={styles.infromationView}>
                                 <TouchableOpacity>
-                                    <Text style={styles.name}>{item.name}</Text>
+                                    <Text style={styles.name}>{item.productname.ru}</Text>
                                 </TouchableOpacity>
-                                <Text style={styles.price}>{PriceQuantity(item.price, item.quantity)}</Text>
+                                <Text style={styles.price}>{Price(item.offerprice, item.mainprice)}</Text>
                             </View>
                         </View>
                     </TouchableOpacity>

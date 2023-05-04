@@ -46,7 +46,10 @@ function NewProduct(props) {
                         <>
                             <View style={styles.catHeading}>
                                 <Text style={GlobalStyles.boxHeading}>Новые товары</Text>
-                                <TouchableOpacity style={{ flex: 0.50 }} onPress={() => props.navigation.navigate('ProductListScreen', { title: 'Новые товары' })}>
+                                <TouchableOpacity style={{ flex: 0.50 }} onPress={() => props.navigation.navigate('ProductListScreen', 
+                                { title: 'Новые товары',
+                                  data: newProductsList
+                                })}>
                                     <Text style={GlobalStyles.viewAll}>Посмотреть все</Text>
                                 </TouchableOpacity>
                             </View>
@@ -56,7 +59,16 @@ function NewProduct(props) {
                     listKey = {(item, index) => index.toString()}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) =>
-                        <ProductView data={item} key={item.id} navToDetail={navigateToDetailPage} addToWishlist={() => addToWishlist(item.productid)} removeFromWishlist={removeFromWishlist} wishlistArray={wishlistArr} />
+                        <ProductView 
+                            data={item} 
+                            key={item.id} 
+                            navToDetail={navigateToDetailPage} 
+                            addToWishlist={() => addToWishlist(item.productid)} 
+                            thumbnail_path = {item.thumbnail_path}
+                            thumbnail= {item.thumbnail}
+                            removeFromWishlist={removeFromWishlist} 
+                            wishlistArray={wishlistArr} />
+
                     }>
                 </FlatList>
             </SafeAreaView>

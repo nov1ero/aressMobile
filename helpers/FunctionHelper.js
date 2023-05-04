@@ -27,7 +27,7 @@ const logprint = false
 
 export function  logfunction(tag, message) {
     if (logprint) {
-        // console.log(tag, message)
+        //console.log(tag, message)
     }
 }
 

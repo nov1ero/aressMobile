@@ -290,3 +290,42 @@ export function isAuth(data){
         payload: data
     }
 }
+
+export function catProductListRequest(id){
+    return {
+        type: types.CAT_PRODUCT_LIST_REQUEST,
+        payload: id
+    }
+}
+export function catProductListSuccess(data){
+    return {
+        type: types.CAT_PRODUCT_LIST_SUCCESS,
+        payload: data
+    }
+}
+export function cartLogout(){
+    return {
+        type: types.CART_LOGOUT,
+
+    }
+}export function wishLogout(){
+    return {
+        type: types.WISH_LOGOUT,
+        
+    }
+}
+
+export function getSearch(query){
+    return {
+        type: types.GET_SEARCH,
+        payload: query
+        
+    }
+}
+export function searchSuccess(query){
+    return {
+        type: types.SEARCH_SUCCESS,
+        payload: query
+        
+    }
+}

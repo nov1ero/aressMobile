@@ -10,8 +10,8 @@ import MatIcon from 'react-native-vector-icons/FontAwesome5';
 
 function CartView(props) {
     let cartProduct = props.products;
-    // console.log("cartProduct", cartProduct)
-    // console.log("image ==>", cartProduct.image)
+    //console.log("cartProduct", cartProduct)
+    //console.log("image ==>", cartProduct.image)
     const PriceQuantity = (price, quantity) => {
         let amt = price;
         let qty = quantity;

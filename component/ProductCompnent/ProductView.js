@@ -9,10 +9,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 function ProductView(props) {
     const data = props.data;
-    // console.log("CHTO_ETO", data)
+    const thumbnail = props.thumbnail
+    const thumbnail_path = props.thumbnail_path
+    const image =   thumbnail_path + "/" + thumbnail
     const addToWishlist = async (id) => {
         props.addToWishlist(id);
-
+        console.log('добавлен', id)
     }
 
     const removeFromWishlist = async (id) => {
@@ -22,14 +24,14 @@ function ProductView(props) {
         
     }
 
-    // console.log('immm', data.thumbnail_path + "/" + data.thumbnail)
+    //console.log('immm', data.thumbnail_path + "/" + data.thumbnail)
     const wishlistArr = props.wishlistArray ? props.wishlistArray.map(item => item.productid) : null;
     const wishlistID = props.wishlistArray ? props.wishlistArray.map(item => item.wishlist_id) : null;
     return (
         <TouchableOpacity style={styles.productBox} onPress={() => props.navToDetail(data)}>
 
             <View style={[styles.imageView, { backgroundColor: props.imageViewBg ? props.imageViewBg : Colors.light_white }]}>
-                <Image source={{ uri: data.thumbnail_path + "/" + data.thumbnail}} style={styles.image}
+                <Image source={{ uri: image}} style={styles.image}
                 ></Image>
             </View>
             <View style={styles.infromationView}>
@@ -72,7 +74,7 @@ function ProductView(props) {
             {
                 wishlistArr && wishlistArr.length > 0 && wishlistArr.includes(data.productid) ? <TouchableOpacity style={GlobalStyles.FavCircle} onPress={() => removeFromWishlist(data.productid)} >
                     <Icon name="heart" style={GlobalStyles.unFavIcon} color={Colors.white} />
-                </TouchableOpacity> : <TouchableOpacity style={GlobalStyles.unFavCircle} onPress={() => addToWishlist({ id: data.productid})}>
+                </TouchableOpacity> : <TouchableOpacity style={GlobalStyles.unFavCircle} onPress={() => addToWishlist(data.productid)}>
                     <Icon name="heart-o" style={GlobalStyles.unFavIcon} color={Colors.secondry_text_color} />
                 </TouchableOpacity>
             }

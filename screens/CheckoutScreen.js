@@ -29,7 +29,7 @@ function CheckoutScreen(props) {
     const calculateCart = () => {
         const { cartData } = props;
         let cartProducts = cartData;
-        console.log("CART__DATA", cartProducts)
+        //console.log("CART__DATA", cartProducts)
         let cartItems = [];
         let sumAmount = 0;
 
@@ -43,7 +43,7 @@ function CheckoutScreen(props) {
                 image: item.image || " ",
                 id: item.product_id || " "
             });
-            console.log("ITEMS", cartItems)
+            //console.log("ITEMS", cartItems)
             //! поменять 30 на 'amt'
             let amt = item.price?item.price:0;
             //productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];

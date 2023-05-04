@@ -15,17 +15,13 @@ function SearchBar(props) {
         homeSlider4,
     ];
     return (
-        <TouchableOpacity style={styles.searchView} onPress={() => props.navigation.navigate('SearchScreen')}>
+        <TouchableOpacity style={styles.searchView} onPress={() => {
+            props.navigation.navigate('SearchScreen')}}>
             <View style={styles.searchContainer}>
-                {/* <Icon name="search" style={styles.searchIcon} />
-                <View style={styles.verticalLine}></View>
-                <Input InputLeftElement={<Icon name="search" style={styles.searchIcon} />} style={{display:'flex',width:"100%"}} variant="outline" placeholder="Search Products" style={[styles.textInputSearchStyle,]} isDisabled="true" >
-                </Input> */}
-
                 <Input w={{
                     base: "100%",
                     md: "25%"
-                }} InputLeftElement={<Icon name="search" style={styles.searchIcon} />} style={{ display: 'flex', width: "100%" } [styles.textInputSearchStyle]} placeholder="Search Products" isDisabled="true" />
+                }} InputLeftElement={<Icon name="search" style={styles.searchIcon} />} style={{ display: 'flex', width: "100%" } [styles.textInputSearchStyle]} placeholder="Поиск" isDisabled="true" />
                 
             </View>
 
@@ -40,11 +36,15 @@ const styles = StyleSheet.create({
     searchView: {
         height: hp('9%'),
         backgroundColor: Colors.white,
+        borderRadius: 8
     },
     searchContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         // alignItems: 'center',
+        marginTop: 10,
+        marginLeft: 3,
+        marginRight: 3,
         borderRadius: 8,
         backgroundColor: Colors.light_white,
         height: hp('6%'),

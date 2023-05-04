@@ -11,16 +11,15 @@ import {
 import { ScrollView } from "react-native-virtualized-view";
 import { connect } from 'react-redux';
 import {
-    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, ProductView, OtirxBackButton, OtrixLoader, FilterTags, FilterComponent
+    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, SearchBar, ProductView, OtirxBackButton, OtrixLoader, FilterTags, FilterComponent
 } from '@component';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
 import FilterTagsDummy from '@component/items/FilterTagsDummy';
 import { addToWishList, removeFromWishlist } from '@actions';
-import ProductListDummy from '@component/items/ProductListDummy';
 import { filter } from '@common';
-import { _addToWishlist, _getWishlist, logfunction } from "@helpers/FunctionHelper";
+import { marginLeft, marginRight } from "styled-system";
 //import { ProductListSkeleton } from '@skeleton';
 
 function ProductListScreen(props) {
@@ -33,7 +32,10 @@ function ProductListScreen(props) {
         return () => {
             clearTimeout(loadPage);
         };
-    }, [wishlistData]);
+    }, []);
+    const navigateToDetailPage = (data) => {
+        props.navigation.navigate('ProductDetailScreen', { id: data.productid })
+    }
   
   
 
@@ -66,17 +68,22 @@ function ProductListScreen(props) {
         });
     }
 
-    const addToWishlist = async (id) => {
-        // let wishlistData = await _addToWishlist(id);
+    const addToWish = async (id) => {
+        
+        
         props.addToWishList(id);
-    }
+      }
+
     const removeFromWishlist = async (id) => {
         props.removeFromWishlist(id);
     }
-
-    const { title } = props.route.params;
+    const { title, data } = props.route.params;
     const { selectedFilters, loading, filterModelVisible, } = state;
-    const { wishlistArr } = props;
+    const { wishlistData, product, productSearch} = props;
+
+    const productFinish = title == 'Поиск'? productSearch : product
+
+    console.log("CATDATA", data)
 
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>
@@ -96,8 +103,12 @@ function ProductListScreen(props) {
 
             <OtrixDivider size={'sm'} />
 
+            <View style={{marginLeft:10, marginRight:10}}>
+                <SearchBar navigation={props.navigation}  />
+            </View>
+
             {/* Horizontal Tag List */}
-            <View style={{ height: hp('6%') }}>
+            {/* <View style={{ height: hp('6%') }}>
                 <ScrollView style={{ flexDirection: 'row', marginHorizontal: wp('1%') }} horizontal={true} showsHorizontalScrollIndicator={false} >
                     {
                         FilterTagsDummy.map((item, index) =>
@@ -105,7 +116,7 @@ function ProductListScreen(props) {
                         )
                     }
                 </ScrollView>
-            </View>
+            </View> */}
 
             {/* Content Start from here */}
             {
@@ -114,7 +125,7 @@ function ProductListScreen(props) {
                     {/* Product View */}
                     <FlatList
                         style={{ padding: wp('1%') }}
-                        data={ProductListDummy}
+                        data={data =="category" ? productFinish : data}
                         scrollEnabled={false}
                         contentContainerStyle={{
                             flex: 1,
@@ -126,7 +137,16 @@ function ProductListScreen(props) {
                         listKey = {(contact, index) => index.toString()}
                         keyExtractor={(contact, index) => index.toString()}
                         renderItem={({ item, index }) =>
-                            <ProductView data={item} key={item.id} imageViewBg={Colors.white} navToDetail={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })} addToWishlist={addToWishlist} removeFromWishlist={removeFromWishlist} wishlistArray={wishlistArr} />
+                            <ProductView 
+                            data={item} 
+                            key={item.id} 
+                            navToDetail={navigateToDetailPage} 
+                            addToWishlist={addToWish} 
+                            removeFromWishlist={removeFromWishlist} 
+                            thumbnail_path = {item.thumbnail_path? item.thumbnail_path: item.thumbpath}
+                            thumbnail= {item.thumbnail?item.thumbnail:item.images}
+                            wishlistArray={wishlistData}
+                                />
                         }>
                     </FlatList>
                 </OtrixContent>
@@ -143,7 +163,10 @@ function ProductListScreen(props) {
 function mapStateToProps(state) {
     return {
         wishlistData: state.wishlist.wishlistData,
-        wishlistArr: state.wishlist.wishlistArr
+        wishlistArr: state.wishlist.wishlistArr,
+        product: state.cat_product.product,
+        productSearch: state.search.product
+        
     }
 }
 

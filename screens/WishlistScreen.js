@@ -26,7 +26,7 @@ function WishlistScreen(props) {
     
     
     const wishlistSetData = async () => {
-        console.log("WISH_DATA", wishlistData)
+        //console.log("WISH_DATA", wishlistData)
     
         let noRecord = true;
         let wishlistItems = [];
@@ -40,7 +40,7 @@ function WishlistScreen(props) {
             });
     })
             noRecord = false;
-            console.log("WISH_LIST", wishlistItems)
+            //console.log("WISH_LIST", wishlistItems)
 
     
         setState({ ...state, loading: false, noRecord: noRecord, wishlistArr: wishlistItems })

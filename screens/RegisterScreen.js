@@ -28,7 +28,7 @@ function RegisterScreen(props) {
 
 
     useEffect(() => {
-        console.log("Reg",regSuccess)
+        //console.log("Reg",regSuccess)
         if(regSuccess == true){
             props.navigation.navigate('LoginScreen')
         }

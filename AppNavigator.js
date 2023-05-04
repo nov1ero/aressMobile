@@ -44,7 +44,7 @@ const BottomTab = createBottomTabNavigator();
 function MyTabs(props) {
     let cartCount = props.cartCounts;
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-    console.log("IS_AUTH_IS", isAuthenticated)
+    //console.log("IS_AUTH_IS", isAuthenticated)
     return (
         <BottomTab.Navigator
             initialRouteName="HomeScreen"

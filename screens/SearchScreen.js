@@ -15,7 +15,7 @@ import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Fonts from "@helpers/Fonts";
-import { addToWishList } from '@actions';
+import { addToWishList, getSearch } from '@actions';
 import { _getWishlist, _addToWishlist } from "@helpers/FunctionHelper";
 import MostSearchArr from '@component/items/MostSearchArr';
 import SearchProductsArr from '@component/items/SearchProductsArr';
@@ -24,13 +24,16 @@ import { Input } from "native-base"
 function SearchScreen(props) {
     const [state, setState] = React.useState({ searchKeyword: '', showMost: true, showSuggestions: false });
 
-    const getData = (text) => {
+    const {products} = props
+
+    const getData = async (text) => {
         if (text.length > 2) {
             setState({
                 showSuggestions: true,
                 showMost: false,
                 searchKeyword: text
             });
+            await props.getSearch(text)
         }
         else {
             setState({
@@ -43,7 +46,10 @@ function SearchScreen(props) {
 
 
     const search = () => {
-
+        props.navigation.navigate('ProductListScreen',{
+            title: 'Поиск',
+            data: 'category'
+        })
     }
 
     useEffect(() => {
@@ -61,7 +67,7 @@ function SearchScreen(props) {
                     <View style={styles.verticalLine}></View>
                     <Input
                         autoFocus={true}
-                        variant="outline" placeholder="Search Products"
+                        variant="outline" placeholder="Поиск"
                         style={[styles.textInputSearchStyle]}
                         returnKeyType="search"
                         value={searchKeyword}
@@ -73,24 +79,24 @@ function SearchScreen(props) {
             </View>
 
             {
-                showMost && <View style={styles.mostSearchView}>
-                    <Text style={styles.title}>Most Searches</Text>
-                    <View style={styles.tagRow}>
-                        {
-                            MostSearchArr.map((item) =>
-                                <TouchableOpacity style={styles.tagStyle} key={item} onPress={() => { getData(item) }
-                                }>
-                                    <Text style={styles.tagText}>{item}</Text>
-                                </TouchableOpacity>
-                            )
-                        }
-                    </View>
-                </View>
+                // showMost && <View style={styles.mostSearchView}>
+                //     <Text style={styles.title}>Most Searches</Text>
+                //     <View style={styles.tagRow}>
+                //         {
+                //             MostSearchArr.map((item) =>
+                //                 <TouchableOpacity style={styles.tagStyle} key={item} onPress={() => { getData(item) }
+                //                 }>
+                //                     <Text style={styles.tagText}>{item}</Text>
+                //                 </TouchableOpacity>
+                //             )
+                //         }
+                //     </View>
+                // </View>
             }
 
             {
                 showSuggestions && <OtrixContent>
-                    <SearchProductsViewComponent navigation={props.navigation} products={SearchProductsArr} />
+                    <SearchProductsViewComponent navigation={props.navigation} products={products} />
                 </OtrixContent>
             }
 
@@ -101,12 +107,13 @@ function SearchScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
+        products: state.search.product
 
     }
 }
 
 
-export default connect(mapStateToProps, { addToWishList })(SearchScreen);
+export default connect(mapStateToProps, { addToWishList, getSearch })(SearchScreen);
 
 const styles = StyleSheet.create({
     headerView: {

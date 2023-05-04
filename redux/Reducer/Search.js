@@ -1,7 +1,7 @@
 import { types } from "../Action/actionTypes";
 
 const initialState = {
-    categories: [],
+    product: [],
     error: null,
     loading: false
 }
@@ -9,20 +9,15 @@ const initialState = {
 export default (state = initialState, action) => {
     // logfunction("STATE LOG ====", action)
     switch (action.type) {
-        case types.FETCH_CATEGORIES_REQUEST:
+        case types.GET_SEARCH:
                 return { ...state, loading: true };
-        case types.GET_CATEGORIES_SUCCESS:
-            //console.log('Categories', action.payload.categories.categories)
+        case types.SEARCH_SUCCESS:
+            console.log('search', action.payload.products)
              return {
                  ...state,
-                 categories: action.payload.categories.categories,
+                 product: action.payload.products,
                  loading: false
              };
-        case types.GET_CATEGORIES_FAILURE:
-            return{
-                ...state, error: action.payload,
-                loading: false
-            }
         default:
              return state;
      }

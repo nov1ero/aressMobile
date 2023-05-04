@@ -6,12 +6,18 @@ import CategoryDummy from './items/CategoryDummy';
 import OtrixDivider from './OtrixComponent/OtrixDivider';
 import Fonts from '@helpers/Fonts';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { fetchCategories, fetchCategoriesRequest } from '@actions';
+import { fetchCategories, catProductListRequest } from '@actions';
 import { connect, useDispatch } from 'react-redux';
 
 function CategoryView(props) {
-    const { categories} = props;
+    const { categories } = props;
     const category = categories
+    
+
+    const catProductList = async (id) => {
+        props.catProductListRequest(id);
+
+    }
     
     const dispatch = useDispatch();
 
@@ -35,7 +41,12 @@ function CategoryView(props) {
                 listKey = {(index) => index.toString()}
                 keyExtractor={(item, index) => item.id ? String(item.id) : String(index)}
                 renderItem={({ item }) =>
-                    <TouchableOpacity key={item.id} style={styles.categoryBox} onPress={() => props.navigation.navigate('ProductListScreen', { title: item.title })}>
+                    <TouchableOpacity key={item.id} style={styles.categoryBox} onPress={() => {
+                        catProductList(item.id)
+                        props.navigation.navigate('ProductListScreen', { 
+                            title: item.title.ru,
+                            data: "category"
+                             })}}>
                         <View style={styles.imageView}>
                             <Image source={{uri: "https://aress.kz/images/category/"+item.image} } style={styles.image}></Image>
                         </View>
@@ -51,14 +62,12 @@ function CategoryView(props) {
 
 
 const mapStateToProps = (state) => ({
-    categories: state.categories.categories,
+    categories: state.categories.categories
   });
   
-const mapDispatchToProps = (dispatch) => ({
-    fetchCategories: () => dispatch(fetchCategories()),
-});
+
   
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryView);
+export default connect(mapStateToProps, { fetchCategories, catProductListRequest })(CategoryView);
 
 const styles = StyleSheet.create({
     categoryBox: {

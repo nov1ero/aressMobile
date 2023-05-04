@@ -8,7 +8,7 @@ import Fonts from '@helpers/Fonts';
 
 function HomeCategoryView(props) {
     const categories = props?.categories?.items;
-    console.log("homeCAT", categories)
+    //console.log("homeCAT", categories)
     const path = props?.categories?.path;
 
     return (

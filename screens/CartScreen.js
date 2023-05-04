@@ -52,7 +52,7 @@ function CheckoutScreen(props) {
 
     const calculateCart = () => {
         let cartProducts = cartData;
-        console.log("CART__DATA", cartProducts)
+        //console.log("CART__DATA", cartProducts)
         let cartItems = [];
         let sumAmount = 0;
 
@@ -68,7 +68,7 @@ function CheckoutScreen(props) {
                 id: item.productid || " ",
                 max_order: item.maxorderqty
             });
-            console.log("ITEMS", cartItems)
+            //console.log("ITEMS", cartItems)
             
             let amt = item.offerprice? item.offerprice: item.mainprice;
             //productImages = productDetail?(productDetail.combinations[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];

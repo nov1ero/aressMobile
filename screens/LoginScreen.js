@@ -16,7 +16,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { GlobalStyles, Colors } from '@helpers'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "../helpers/Fonts";
-import { loginRequest } from '@actions';
+import { loginRequest, requestInit } from '@actions';
 import { debounce } from 'lodash';
 // import { Input } from '@chakra-ui/input';
 
@@ -131,7 +131,7 @@ function mapStateToProps(state) {
     }
 }
 
-export default memo(connect(mapStateToProps, { loginRequest })(LoginScreen));
+export default memo(connect(mapStateToProps, { loginRequest, requestInit })(LoginScreen));
 
 const styles = StyleSheet.create({
     forgotPassword: {

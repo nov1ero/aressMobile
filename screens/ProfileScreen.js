@@ -34,7 +34,7 @@ function ProfileScreen(props) {
     }
 
     const { profileImage } = state;
-    console.log("RES ", profileImage)
+    //console.log("RES ", profileImage)
 
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>

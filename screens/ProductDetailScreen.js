@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { connect } from 'react-redux';
 import {
-    OtrixContainer, OtrixContent, OtrixDivider, OtirxBackButton, OtrixLoader, SimilarProduct, SizeContainerComponent, RatingComponent
+    OtrixContainer, OtrixContent, OtrixDivider, OtirxBackButton, OtrixLoader, FeaturedProduct, SizeContainerComponent, RatingComponent
 } from '@component';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
@@ -31,28 +31,19 @@ import Stars from 'react-native-stars';
 const COLORS = ['#3ad35c', Colors.themeColor, '#efcd19', '#ff1e1a'];
 
 function ProductDetailScreen(props) {
-    const { detailsData, loading, wishlistData, wishlistArr } = props;
+    const { detailsData, loading, wishlistData, wishlistArr, homeData } = props;
     const  productDetail = detailsData.product;
-    const combinationsProduct = detailsData.product.combinations
+    console.log("DETData", productDetail)
+    const combinationsProduct = productDetail.combinations
+    // console.log("COMBPRO", productDetail.product_name)
     const  productImages = productDetail?(combinationsProduct[0].images.map(i => (productDetail.images_path + '/' + i.image))):[];
     const [state, setState] = React.useState({ loading: true, productCount: 1, fetchCart: false, selectedColor: 1,productImages:[], showZoom: false, msg: '' });
     const { selectedColor, productCount, showZoom, msg } = state;
-    console.log("\n\n|-|-|-|-NANME-|-|-|-|", productDetail)
-    // console.log("\n\n|-|-|-|-PRICE-|-|-|-|", combinationsProduct[0].mainprice)
-    // console.log("IMAGE ===>", combinationsProduct[0].images[0].image)
-    // const image = "https://aress.kz/images/simple_products/gallery/"+combinationsProduct[0].images[0].image
-    // console.log("|-|-|-|-IMAGE-|-|-|-|",image)
-    //const { product } = props;
     const max_qty = combinationsProduct[0].maxorderlimit
-    console.log("Max_Order", max_qty)
+
+
+
     
-
-
-    console.log("wishlistData",wishlistArr)
-    const _CartData = () => {
-        setState({ ...state, fetchCart: false })
-        //console.log("COUNT ====", props.count)
-    }
 
     const addToWish = async (id) => {
         props.addToWishList(id);
@@ -60,9 +51,7 @@ function ProductDetailScreen(props) {
 
     const removeFromWishlist = async (id) => {
         const index = wishlistArr.indexOf(id);
-        console.log("REMOVE1", index)
         const wishlist_id = wishlistData[index].wishlist_id;
-        console.log("REMOVE2", wishlist_id)
         props.removeFromWishlist(wishlist_id);
         
     }
@@ -95,29 +84,29 @@ function ProductDetailScreen(props) {
 
     //console.log('KARTINKI', productImages)
     
+    let zoomImages = [];
     
-    // useEffect(() => {
-    //     const { id } = props.route.params;
+    useEffect(() => {
+        const { id } = props.route.params;
 
-    //     // let findProduct = ProductListDummy.filter(p => p.id == id);
+        // let findProduct = ProductListDummy.filter(p => p.id == id);
 
-    //     //zoom images
-    //     let zoomImages = [];
-    //     findProduct[0].images.length > 0 && findProduct[0].images.forEach(function (item) {
-    //         zoomImages.push({
-    //             url: '',
-    //             props: {
-    //                 source: item
-    //             }
-    //         })
-    //     });
+        //zoom images
+        productDetail.combinations[0].images.length > 0 && productDetail.combinations[0].images.forEach(function (item) {
+            zoomImages.push({
+                url: '',
+                props: {
+                    source: item
+                }
+            })
+        });
 
-    //     // let loadPage = setTimeout(() => setState({ ...state, loading: false, productDetail: findProduct[0], zoomImages }), 500);
+        let loadPage = setTimeout(() => setState({ ...state, loading: false, combinationsProduct: productDetail.combinations[0], zoomImages }), 500);
 
-    //     // return () => {
-    //     //     clearTimeout(loadPage);
-    //     // };
-    // }, [_CartData()]);
+        return () => {
+            clearTimeout(loadPage);
+        };
+    }, []);
     const { cartCount } = props;
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>
@@ -217,7 +206,7 @@ function ProductDetailScreen(props) {
 
                             {/* Name Container*/}
                             <View style={styles.subContainer}>
-                                <Text style={styles.headingTxt}>{productDetail.product_name['ru'] ? productDetail.product_name['ru']:''}</Text>
+                                <Text style={styles.headingTxt}>{productDetail.product_name.ru ? productDetail.product_name.ru:''}</Text>
                                 <Text style={[styles.stock, {
                                     color: !productDetail.out_of_stock ? '#5ddb79' : '#fe151b'
                                 }]}>{!productDetail.out_of_stock ? 'В наличии' : 'Не в наличии'}</Text>
@@ -261,13 +250,13 @@ function ProductDetailScreen(props) {
                             {/* <RatingComponent productData={productDetail} /> */}
 
                             {/* Similar Product Component */}
-                            <SimilarProduct navigation={props.navigation} />
+                            <FeaturedProduct featuredProducts={homeData.featuredProducts} navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} removeFromWishlist={removeFromWishlist}/>
 
                         </ScrollView>
                     </OtrixContent>
 
-                    {/* Zoom image
-                    <Modal visible={showZoom}
+                    {/* Zoom image */}
+                    {/* <Modal visible={showZoom}
                         transparent={true}>
                         <ImageViewer imageUrls={zoomImages}
                             saveToLocalByLongPress={false}
@@ -323,7 +312,8 @@ function mapStateToProps(state) {
         loading: state.product.loading,
         cartCount: state.cart.cartCount,
         wishlistArr: state.wishlist.wishlistArr,
-        wishlistData: state.wishlist.wishlistData
+        wishlistData: state.wishlist.wishlistData,
+        homeData: state.home.homeData
     }
 }
 

@@ -25,7 +25,7 @@ function CategoryScreen(props) {
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 0.90 }]}>
-                    <Text style={GlobalStyles.headingTxt}>Categories</Text>
+                    <Text style={GlobalStyles.headingTxt}>Категории</Text>
                 </View>
             </OtrixHeader>
 

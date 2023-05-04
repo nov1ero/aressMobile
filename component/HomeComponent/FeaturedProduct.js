@@ -16,9 +16,15 @@ function FreaturedProduct(props) {
     }
 
     const addToWishlist = async (id) => {
+        
+        
         props.addToWishlist(id);
-        // logfunction(" wishlist Data ", wishlistData)
+      }
+
+    const removeFromWishlist = async (id) => {
+        props.removeFromWishlist(id);
     }
+
 
     const { wishlistArr } = props;
     return (
@@ -35,8 +41,8 @@ function FreaturedProduct(props) {
                 ListHeaderComponent={() =>
                     <>
                         <View style={styles.catHeading}>
-                            <Text style={GlobalStyles.boxHeading}>Рекомендованные</Text>
-                            <TouchableOpacity style={{ flex: 0.50 }} onPress={() => props.navigation.navigate('ProductListScreen', { title: 'Trending Products' })}>
+                            <Text style={GlobalStyles.boxHeading}>Рекомендации</Text>
+                            <TouchableOpacity style={{ flex: 0.50 }} onPress={() => props.navigation.navigate('ProductListScreen', { title: 'Рекомендации', data: featuredProducts })}>
                                 <Text style={GlobalStyles.viewAll}>Посмотреть все</Text>
                             </TouchableOpacity>
                         </View>
@@ -48,7 +54,15 @@ function FreaturedProduct(props) {
                 listKey = {(contact, index) => index.toString()}
                 keyExtractor={(contact, index) => index.toString()}
                 renderItem={({ item, index }) =>
-                    <ProductView data={item} key={item.id} navToDetail={navigateToDetailPage} addToWishlist={addToWishlist} wishlistArray={wishlistArr} />
+                    <ProductView 
+                    data={item} 
+                    key={item.id} 
+                    navToDetail={navigateToDetailPage} 
+                    addToWishlist={() => addToWishlist(item.productid)} 
+                    removeFromWishlist={removeFromWishlist} 
+                    thumbnail_path = {item.thumbnail_path}
+                    thumbnail= {item.thumbnail}
+                    wishlistArray={wishlistArr}/>
                 }>
             </FlatList>
 

@@ -8,9 +8,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 function DealsProductView(props) {
     const data = props.data;
-    console.log("__DATA__", data)
+    //console.log("__DATA__", data)
     const wishlistArr = props.wishlistData.productid ? props.wishlistData.productid : null;
-    console.log("__wishlistArr__", wishlistArr)
+    //console.log("__wishlistArr__", wishlistArr)
 
     return (
         <TouchableOpacity style={styles.productBox} onPress={() => props.navToDetail(data)}>

@@ -106,7 +106,7 @@ function HomeScreen(props) {
                     <OtrixContent >
 
                         {/* SearchBar Component */}
-                        <SearchBar navigation={props.navigation} />
+                        <SearchBar navigation={props.navigation}  />
 
                         {/* HomeCategoryView Component */}
                         {/* <HomeCategoryView categories={homeData.categories} navigation={props.navigation} /> */}
@@ -114,6 +114,8 @@ function HomeScreen(props) {
                         <HomeSlider sliders={homeData.sliders} />
                         <OtrixDivider size={'md'} />
 
+                        {/* TrendingProduct Component */}
+                        <FeaturedProduct featuredProducts={homeData.featuredProducts} navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} removeFromWishlist={removeFromWish}/>
                         {/* NewProduct Component */}
                         <NewProduct newProducts={homeData.newProducts} navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} removeFromWishlist={removeFromWish} />
 
@@ -121,12 +123,9 @@ function HomeScreen(props) {
                         {/* <Image source={offerBanner} style={styles.bannerStyle} /> */}
                         <OtrixDivider size={'sm'} />
 
-                        {/* BestDeal Component */}
-                        {/* <BestDeal navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} /> */}
+                        
                         <OtrixDivider size={'sm'} />
 
-                        {/* TrendingProduct Component */}
-                        <FeaturedProduct featuredProducts={homeData.featuredProducts} navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} />
                         <OtrixDivider size={'sm'} />
                         {/* BestDeal Component */}
                         {/* <BestDeal navigation={props.navigation} wishlistArr={wishlistData} addToWishlist={addToWish} /> */}
