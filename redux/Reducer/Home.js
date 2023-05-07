@@ -220,19 +220,19 @@ const initialState = {
                         "variantid": 0,
                         "type": "s",
                         "productname": {
-                            "ru": "Посуда"
+                            "ru": ""
                         },
                         "description": {
                             "ru": "Тарелки, керамика"
                         },
-                        "mainprice": 568,
+                        "mainprice": 0,
                         "offerprice": 0,
                         "pricein": "KZT",
                         "symbol": "₸",
                         "rating": 0,
                         "review": 0,
-                        "thumbnail": "pngtree-hd-handmade-white-ceramic-plate-product-drawing-picture-image_1705891.jpg",
-                        "thumbnail_path": "https://aress.kz/images/simple_products",
+                        "thumbnail": "",
+                        "thumbnail_path": "",
                         "off_in_percent": 0,
                         "tax_info": "Inclusive of all taxes",
                         "tag_text": "",
@@ -245,19 +245,19 @@ const initialState = {
                         "variantid": 0,
                         "type": "s",
                         "productname": {
-                            "ru": "Кастрюли"
+                            "ru": ""
                         },
                         "description": {
-                            "ru": "Железные кастрюли"
+                            "ru": ""
                         },
-                        "mainprice": 1299,
-                        "offerprice": 1099,
+                        "mainprice": 0,
+                        "offerprice": 0,
                         "pricein": "KZT",
                         "symbol": "₸",
                         "rating": 0,
                         "review": 0,
-                        "thumbnail": "nabor-posudy-berlinger-haus-bh-6022-moonlight-edition.jpg",
-                        "thumbnail_path": "https://aress.kz/images/simple_products",
+                        "thumbnail": "",
+                        "thumbnail_path": "",
                         "off_in_percent": 15,
                         "tax_info": "Inclusive of all taxes",
                         "tag_text": "",
@@ -270,19 +270,19 @@ const initialState = {
                         "variantid": 0,
                         "type": "s",
                         "productname": {
-                            "ru": "Приборы"
+                            "ru": ""
                         },
                         "description": {
-                            "ru": "Деревяные приборы"
+                            "ru": ""
                         },
-                        "mainprice": 299,
-                        "offerprice": 259,
+                        "mainprice": 0,
+                        "offerprice": 0,
                         "pricein": "KZT",
                         "symbol": "₸",
                         "rating": 0,
                         "review": 0,
-                        "thumbnail": "plastic-free-disposable-eating-utensils_651171-852.jpg",
-                        "thumbnail_path": "https://aress.kz/images/simple_products",
+                        "thumbnail": "",
+                        "thumbnail_path": "",
                         "off_in_percent": 13,
                         "tax_info": "Inclusive of all taxes",
                         "tag_text": "",
@@ -295,19 +295,19 @@ const initialState = {
                         "variantid": 0,
                         "type": "s",
                         "productname": {
-                            "ru": "Керамическая посуда"
+                            "ru": ""
                         },
                         "description": {
-                            "ru": "Керамические тарелки"
+                            "ru": ""
                         },
-                        "mainprice": 3299,
+                        "mainprice": 0,
                         "offerprice": 0,
                         "pricein": "KZT",
                         "symbol": "₸",
                         "rating": 0,
                         "review": 0,
-                        "thumbnail": "0db489be0879d8a0b856df8cb3f2fca1.jpg",
-                        "thumbnail_path": "https://aress.kz/images/simple_products",
+                        "thumbnail": "",
+                        "thumbnail_path": "",
                         "off_in_percent": 0,
                         "tax_info": "Inclusive of all taxes",
                         "tag_text": "",

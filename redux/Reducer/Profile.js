@@ -5,7 +5,6 @@ const initialState = {
     email: null, 
     mobile: null,
     email_verified_at: null,
-    address: null,
     role_id: null
 
 }
@@ -18,18 +17,12 @@ export default (state = initialState, action) => {
             email: action.payload.email, 
             mobile: action.payload.mobile,
             email_verified_at: action.payload.email_verified_at,
-            address: action.payload.address,
             role_id: action.payload.role_id
           };
         case types.UPDATE_PROFILE:
           return {
             ...state,
             
-          };
-        case types.CHANGE_ADDRESS:
-          return {
-            ...state,
-            isAuthenticated: false
           };
           case types.CHANGE_PASSWORD:
           return {

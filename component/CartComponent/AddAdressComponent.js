@@ -7,25 +7,30 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Fonts from '@helpers/Fonts';
 import { close, checkaround, checkround2 } from '@common';
 import { _roundDimensions } from '@helpers/util';
-import { Input, FormControl, Button, TextArea, Select, CheckIcon, InfoOutlineIcon } from "native-base"
+import { Input, FormControl, Button, TextArea, Select, CheckIcon, InfoOutlineIcon, CheckBox } from "native-base"
 import CountryArr from '../items/CountryArr';
+// import CheckBox from '@react-native-community/checkbox'
 
 
 function AddAdressComponent(props) {
 
-    const [state, setState] = React.useState({ name: "", country: "", city: "", address1: "", address2: "", postcode: "", submited: false });
+    const [state, setState] = React.useState({ name: "", region: "", city: "", address1: "", email: "", phone: "",defaddress:'', submited: false });
+    const [checked, setChecked] = React.useState(false);
 
-    const { name, country, city, address1, address2, postcode, submited } = state;
-
+    const { name, region, city, address1, email, phone, defaddress, submited } = state;
+    
+    const toggleCheckBox = () => {
+      setChecked(!checked);
+    };
     const submit = () => {
         setState({ ...state, submited: true });
 
         let error = false;
-        if (name == '' || city == '' || address1 == '' || address2 == '') {
+        if (name == '' || city == '' || address1 == '' || email == '') {
             error = true;
         }
         if (error == false) {
-            props.addAdress({ name, country, city, address1, address2, postcode })
+            props.addAddress({ name, region, city, address1, email, phone, defaddress })
         }
 
     }
@@ -63,19 +68,46 @@ function AddAdressComponent(props) {
                         />
                         <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Ошибка</FormControl.ErrorMessage>
                     </FormControl>
-                    {/* <OtrixDivider size={'sm'} />
-                    <FormControl isRequired isInvalid={submited && country == '' ? true : false}>
+                    <OtrixDivider size={'sm'} />
+                    <FormControl isRequired isInvalid={submited && email == '' ? true : false}>
+                        <Input
+                            value={email}
+                            variant="outline" placeholder="Электронный адрес" style={GlobalStyles.textInputStyle}
+                            onChangeText={(value) => setState({ ...state, email: value, submited: false })}
+                        />
+                        <FormControl.ErrorMessage
+                            leftIcon={<InfoOutlineIcon size="xs" />}
+                        >
+                            Необходимо указать электронный адрес
+                        </FormControl.ErrorMessage>
+                    </FormControl>
+                    <OtrixDivider size={'sm'} />
+
+                    <FormControl isRequired isInvalid={submited && phone == '' ? true : false}>
+                        <Input variant="outline"
+                            value={phone}
+                            placeholder="Тел. номер" style={GlobalStyles.textInputStyle}
+                            onChangeText={(value) => setState({ ...state, phone: value })}
+                        />
+                        <FormControl.ErrorMessage
+                            leftIcon={<InfoOutlineIcon size="xs" />}
+                        >
+                            Необходим указать номер телефона
+                        </FormControl.ErrorMessage>
+                    </FormControl>
+                    <OtrixDivider size={'sm'} />
+                    <FormControl isRequired isInvalid={submited && region == '' ? true : false}>
                         <Select
-                            selectedValue={country}
+                            selectedValue={region}
                             minWidth="200"
-                            accessibilityLabel="Select Country"
-                            placeholder="выбрать страну"
+                            accessibilityLabel="Select region"
+                            placeholder="Выбрать область"
                             _selectedItem={{
                                 bg: "teal.600",
                                 endIcon: <CheckIcon size="5" />,
                             }}
                             mt={1}
-                            onValueChange={(itemValue) => setState({ ...state, country: itemValue })}
+                            onValueChange={(itemValue) => setState({ ...state, region: itemValue })}
                         >
                             {
                                 CountryArr.map((item, index) =>
@@ -83,7 +115,7 @@ function AddAdressComponent(props) {
                                 )
                             }
                         </Select>
-                    </FormControl> */}
+                    </FormControl>
                     <OtrixDivider size={'sm'} />
                     <FormControl isRequired isInvalid={submited && city == '' ? true : false}>
                         <Input variant="outline"
@@ -99,24 +131,12 @@ function AddAdressComponent(props) {
                     </FormControl>
 
                     <OtrixDivider size={'sm'} />
-                    <FormControl isRequired isInvalid={submited && postcode == '' ? true : false}>
-                        <Input variant="outline"
-                            value={postcode}
-                            placeholder="Почтой индекс" style={GlobalStyles.textInputStyle}
-                            onChangeText={(value) => setState({ ...state, postcode: value })}
-                        />
-                        <FormControl.ErrorMessage
-                            leftIcon={<InfoOutlineIcon size="xs" />}
-                        >
-                            Необходим указать почтовый индекс
-                        </FormControl.ErrorMessage>
-                    </FormControl>
-                    <OtrixDivider size={'sm'} />
+                    
 
                     <FormControl isRequired isInvalid={submited && address1 == '' ? true : false}>
                         <TextArea
                             value={address1}
-                            variant="outline" placeholder="Адрес 1" style={GlobalStyles.textAreaInputStyle}
+                            variant="outline" placeholder="Адрес" style={GlobalStyles.textAreaInputStyle}
                             onChangeText={(value) => setState({ ...state, address1: value, submited: false })}
                         />
                         <FormControl.ErrorMessage
@@ -127,13 +147,24 @@ function AddAdressComponent(props) {
                     </FormControl>
 
                     <OtrixDivider size={'sm'} />
-                    <FormControl isRequired >
-                        <Input variant="outline" value={address2}
-                            placeholder="Адрес 2" style={GlobalStyles.textAreaInputStyle}
-                            onChangeText={(value) => setState({ ...state, address2: value })}
-                        />
-
+                    <FormControl isRequired isInvalid={submited && region == '' ? true : false}>
+                        <Select
+                            selectedValue={defaddress}
+                            minWidth="200"
+                            accessibilityLabel="defaddress"
+                            placeholder="Сделать основным?"
+                            _selectedItem={{
+                                bg: "teal.600",
+                                endIcon: <CheckIcon size="5" />,
+                            }}
+                            mt={1}
+                            onValueChange={(itemValue) => setState({ ...state, defaddress: itemValue })}
+                        >
+                            <Select.Item label="Да" value="1" />
+                            <Select.Item label="Нет" value="0" /> 
+                        </Select>
                     </FormControl>
+                    
                 </View>
 
                 <Button

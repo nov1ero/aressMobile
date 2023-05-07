@@ -37,7 +37,7 @@ function SettingScreen(props) {
                 //console.log(res);
             })
             .catch((err) => {
-                err && //console.log(err);
+                err && console.log(err);
             });
     }
 

@@ -47,7 +47,7 @@ function MyTabs(props) {
     //console.log("IS_AUTH_IS", isAuthenticated)
     return (
         <BottomTab.Navigator
-            initialRouteName="Home"
+            initialRouteName="HomeScreen"
             backBehavior={'order'}
             screenOptions={{
                 tabBarStyle: { position: 'absolute' },
@@ -170,7 +170,7 @@ function AppNavigator(props) {
                     }}
                 />
                 <Stack.Screen
-  name="HomeScreen"
+  name="MainScreen"
   options={{
     headerShown: false,
     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,

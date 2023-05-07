@@ -48,7 +48,7 @@ function SplashScreen(props) {
 
     return (
         <OtrixContainer>
-            <View style={{ backgroundColor: Colors.white, flex: 1 }}>
+            <View style={{ backgroundColor: "#5D3B80", flex: 1 }}>
                 <Animated.Image source={splashlogo} resizeMode='contain' style={{
                     position: 'absolute',
                     left: wp('35%'),

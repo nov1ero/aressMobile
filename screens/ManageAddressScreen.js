@@ -14,7 +14,7 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
-import { proceedCheckout } from '@actions';
+import { proceedCheckout, getAddressRequest, addAddress, updateAddress, removeAddress } from '@actions';
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fonts from "@helpers/Fonts";
 import DummyAddress from '@component/items/DummyAddress';
@@ -23,34 +23,27 @@ import { Button } from 'native-base';
 function ManageAddressScreen(props) {
     const [state, setState] = React.useState({ cartArr: [], showAdd: false, sumAmount: 0, addresses: DummyAddress, selctedAddress: DummyAddress[0].id, showEdit: false, editAddressData: [], step: 1, selectedPaymentMethod: 4, paymentSuccessModal: false });
 
-    const storeAddress = (addressData) => {
-        let newID = "" + Math.floor(Math.random() * 10000) + 1;
-        let newObj = { id: "" + newID, name: addressData.name, country: addressData.country, city: addressData.city, postcode: addressData.postcode, address1: addressData.address1, address2: addressData.address2 };
-        setState({
-            ...state, addresses: [newObj, ...addresses], showAdd: false
-        });
+    const { address } = props
+    const _addAddress = async (addressData) => {
+        await props.addAddress(addressData);
     }
 
-    const updateAddress = (addressData) => {
-        let newID = "" + Math.floor(Math.random() * 10000) + 1;
-        if (selctedAddress == addressData.id) {
-            setState({ ...state, selctedAddress: newID });
-        }
-        let findIndex = addresses.findIndex((item) => item.id === editAddressData.id);
-        let newObj = { id: newID, name: addressData.name, country: addressData.country, city: addressData.city, postcode: addressData.postcode, address1: addressData.address1, address2: addressData.address2 };
-        addresses.splice(findIndex, 1);
+    const _removeAddress = async (addressData) => {
+        await props.removeAddress(addressData)
+    }
 
-        setState({
-            ...state, addresses: [newObj, ...addresses], showEdit: false
-        });
-        if (selctedAddress == addressData.id) {
-            setState({ ...state, selctedAddress: newID });
-        }
+    const _updateAddress = async (addressData) => {
+        await props.updateAddress(addressData)
     }
 
     const editAddress = (id) => {
-        let findAddress = addresses.filter(item => item.id.indexOf(id) > -1);
-        setState({ ...state, editAddressData: findAddress[0], showEdit: true });
+        const index = address.findIndex((item) => item.id === id);
+        if (index !== -1) {
+            const selectedAddress = address[index];
+            setState({ ...state, editAddressData: selectedAddress, showEdit: true });
+            console.log("Selected Address", editAddressData)
+
+        }
     }
 
     const closeAddressModel = () => {
@@ -95,17 +88,17 @@ function ManageAddressScreen(props) {
                     {/*horizontal address* */}
                     <ScrollView style={styles.addressBox} showsHorizontalScrollIndicator={false} vertical={true}>
                         {
-                            addresses.length > 0 && addresses.map((item, index) =>
-                                <TouchableOpacity key={index} style={[styles.deliveryBox, {
+                            address.length > 0 && address.map((item, index) =>
+                                <TouchableOpacity key={item.id} style={[styles.deliveryBox, {
                                     borderWidth: 1,
                                     borderColor: Colors.light_gray
                                 }]}
                                     onPress={() => setState({ ...state, selctedAddress: item.id })}
                                 >
-                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.name}     </Text>
-                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.address1}    </Text>
-                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.address2}, {item.city}</Text>
-                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.postcode}, {item.country}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.name}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.email}, {item.phone}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.region}, {item.city}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.address}</Text>
                                     <TouchableOpacity style={[styles.editView, { bottom: selctedAddress == item.id ? hp('10%') : hp('10%') }]} onPress={() => editAddress(item.id)}>
                                         <Text style={styles.edit}> <MatIcon name="pencil" color={Colors.text_color} size={wp('5%')} /></Text>
                                     </TouchableOpacity>
@@ -132,13 +125,13 @@ function ManageAddressScreen(props) {
             {/* Add Address Screen */}
             <Modal visible={showAdd}
                 transparent={true}>
-                <AddAdressComponent closeAdd={closeAddressModel} addAdress={storeAddress} />
+                <AddAdressComponent closeAdd={closeAddressModel} addAddress={_addAddress} />
             </Modal>
 
             {/* Edit Address Screen */}
             <Modal visible={showEdit}
                 transparent={true}>
-                <EditAddressComponent closeEdit={closeAddressEditModel} editAddress={updateAddress} editData={editAddressData} />
+                <EditAddressComponent closeEdit={closeAddressEditModel} editAddress={_updateAddress} editData={editAddressData} removeAddress={_removeAddress} />
             </Modal>
 
         </OtrixContainer >
@@ -149,12 +142,12 @@ function ManageAddressScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
-
+        address: state.address.address
     }
 }
 
 
-export default connect(mapStateToProps, { proceedCheckout })(ManageAddressScreen);
+export default connect(mapStateToProps, { proceedCheckout, getAddressRequest, addAddress, updateAddress, removeAddress })(ManageAddressScreen);
 
 const styles = StyleSheet.create({
 

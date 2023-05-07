@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import {
     View,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from "react-native";
-import { requestInit } from '@actions';
+import { requestInit, updatePassword } from '@actions';
 import {
     OtrixContainer, OtrixHeader, OtrixContent, OtirxBackButton, OtrixDivider
 } from '@component';
@@ -14,13 +15,35 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { GlobalStyles, Colors } from '@helpers'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "../helpers/Fonts";
+import { call } from "redux-saga/effects";
 
 function ChangePasswordScreen(props) {
     const [formData, setData] = React.useState({ old_password: '', new_password: '', confirm_password: '', submited: false });
     const [state, setDatapassword] = React.useState({ secureEntry: true, secureEntry2: true, secureEntry3: true });
-
+    const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
     const { secureEntry, secureEntry2, secureEntry3 } = state;
     const { old_password, new_password, confirm_password, submited } = formData;
+
+    const handleButtonPress = async () => {
+
+        setData({ ...state, submited: true });
+
+        let error = false;
+        if (old_password == '' || new_password == '' || confirm_password == '') {
+            error = true;
+        }
+        if (error === false) {
+            if (new_password === confirm_password) {
+                props.updatePassword(old_password, new_password)
+                setIsButtonDisabled(true);
+                // props.navigation.navigate('HomeScreen')
+            }else{
+                error = true
+                Alert.alert("Ошибка", "Пароли не совпадают")
+            }
+
+        }
+      };
 
     return (
         <OtrixContainer>
@@ -31,7 +54,7 @@ function ChangePasswordScreen(props) {
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}>  Update Password</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Сменить Пароль</Text>
                 </View>
             </OtrixHeader>
             <OtrixDivider size={'md'} />
@@ -40,8 +63,10 @@ function ChangePasswordScreen(props) {
 
                 {/* Password  Start from here */}
                 <FormControl isRequired isInvalid={submited && old_password == '' ? true : false} style={{ backgroundColor: Colors.white }}>
-                    <Input variant="outline" placeholder="Old Password" style={[GlobalStyles.textInputStyle,]}
-                        onChangeText={(value) => setData({ ...formData, old_password: value })}
+                    <Input variant="outline" placeholder="Ваш пароль" style={[GlobalStyles.textInputStyle,]}
+                        onChangeText={(value) => {setData({ ...formData, old_password: value })
+                        setIsButtonDisabled(false)                    
+                    }}
                         secureTextEntry={secureEntry}
                         value={old_password}
                         InputRightElement={
@@ -53,14 +78,16 @@ function ChangePasswordScreen(props) {
                     <FormControl.ErrorMessage
                         leftIcon={<InfoOutlineIcon size="xs" />}
                     >
-                        Old Password is required
+                        Введите пароль
                     </FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'md'} />
 
                 <FormControl isRequired isInvalid={submited && new_password == '' ? true : false} style={{ backgroundColor: Colors.white }}>
-                    <Input variant="outline" placeholder="New Password" style={[GlobalStyles.textInputStyle,]}
-                        onChangeText={(value) => setData({ ...formData, new_password: value })}
+                    <Input variant="outline" placeholder="Новый пароль" style={[GlobalStyles.textInputStyle,]}
+                        onChangeText={(value) => {setData({ ...formData, new_password: value })
+                        setIsButtonDisabled(false)
+                    }}
                         secureTextEntry={secureEntry2}
                         value={new_password}
                         InputRightElement={
@@ -69,17 +96,26 @@ function ChangePasswordScreen(props) {
                             </TouchableOpacity>
                         }
                     />
+                    {/* {submited && new_password !== confirm_password && (
+                        <FormControl.ErrorMessage
+                        leftIcon={<InfoOutlineIcon size="xs" />}
+                        >
+                        Пароли не совпадают
+                        </FormControl.ErrorMessage>
+                    )} */}
                     <FormControl.ErrorMessage
                         leftIcon={<InfoOutlineIcon size="xs" />}
                     >
-                        New Password is required
+                        Введите новый пароль
                     </FormControl.ErrorMessage>
                 </FormControl>
                 <OtrixDivider size={'md'} />
 
                 <FormControl isRequired isInvalid={submited && confirm_password == '' ? true : false} style={{ backgroundColor: Colors.white }}>
-                    <Input variant="outline" placeholder="Confirm Password" style={[GlobalStyles.textInputStyle,]}
-                        onChangeText={(value) => setData({ ...formData, confirm_password: value })}
+                    <Input variant="outline" placeholder="Подвердите пароль" style={[GlobalStyles.textInputStyle,]}
+                        onChangeText={(value) => {setData({ ...formData, confirm_password: value })
+                        setIsButtonDisabled(false)
+                    }}
                         secureTextEntry={secureEntry3}
                         value={confirm_password}
                         InputRightElement={
@@ -91,7 +127,7 @@ function ChangePasswordScreen(props) {
                     <FormControl.ErrorMessage
                         leftIcon={<InfoOutlineIcon size="xs" />}
                     >
-                        Confirm Password is required
+                        Подтвердите пароль
                     </FormControl.ErrorMessage>
                 </FormControl>
 
@@ -101,9 +137,10 @@ function ChangePasswordScreen(props) {
                     variant="solid"
                     bg={Colors.themeColor}
                     style={GlobalStyles.button}
-                    onPress={() => props.navigation.navigate('HomeScreen')}
+                    onPress={() => handleButtonPress()}
+                    disabled={isButtonDisabled}
                 >
-                    <Text style={GlobalStyles.buttonText}>Update</Text>
+                    <Text style={GlobalStyles.buttonText}>Обновить</Text>
                 </Button>
                 <OtrixDivider size={'md'} />
 
@@ -118,7 +155,7 @@ function mapStateToProps({ params }) {
     return {}
 }
 
-export default connect(mapStateToProps, { requestInit })(ChangePasswordScreen);
+export default connect(mapStateToProps, { requestInit, updatePassword })(ChangePasswordScreen);
 
 const styles = StyleSheet.create({
 

@@ -19,7 +19,8 @@ import {
     profileSet,
     isAuth,
     cartLogout,
-    wishLogout
+    wishLogout,
+    getAddressSuccess
 } from "@actions";
 // import { AsyncStorage } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -46,6 +47,11 @@ export function* watchGeneralRequest() {
     yield takeEvery(types.GET_SEARCH, getSearch);
     yield takeEvery(types.UPDATE_PROFILE, updateProfile);
     yield takeEvery(types.CLEAR_CART, clearCart);
+    yield takeEvery(types.GET_ADDRESS_REQUEST, getAddress);
+    yield takeEvery(types.ADD_ADDRESS, addAddress);
+    yield takeEvery(types.UPDATE_ADDRESS, updateAddress);
+    yield takeEvery(types.DELETE_ADDRESS, removeAddress);
+    yield takeEvery(types.UPDATE_PASSWORD, updatePassword);
 
 }
 
@@ -78,7 +84,7 @@ function* requestInit(action) {
         //     yield put(authStatus(false));
         // }
 
-        yield put(successInt('HomeScreen'));
+        yield put(successInt('MainScreen'));
 
         
         const access_token = yield call(AsyncStorage.getItem, 'access_token')
@@ -642,191 +648,413 @@ export function* fetchCategoriesSaga() {
         yield put(getCategoriesFailure(error.message));
     }
   }
-  function* register_Request(action) {
-    try {
-        reg_data = action.payload
+function* register_Request(action) {
+  try {
+      reg_data = action.payload
+      
+      //console.log("REG_DATA", reg_data)
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      var raw = JSON.stringify(
+        {
+            "name": reg_data.firstName+" "+reg_data.lastName,
+            "email": reg_data.email,
+            "mobile": reg_data.mobileNumber,
+            "password": reg_data.password
+        }
+      );
+      //console.log("RAW", raw)
+
+      var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+      };
+
+      const response = yield fetch("https://aress.kz/api/register", requestOptions);
+      const data = yield response.json();
+      //console.log("data", data)
+      //console.log("REGISTR_DATA", data)
+      if(data.status == 'fail'){
+        yield call(Alert.alert, 'Ошибка', data.msg);
+      }else{
+        yield put(registerSuccess())
+        yield call(Alert.alert, 'Успех', 'Регистрация прошла успешно');
+      }
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', e);
+          //console.log("ERROR ==> ", e)
+      }
+}
+
+function* profile_Request() {
+  try {
+
+      const access_token = yield call(AsyncStorage.getItem, 'access_token')
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+      
+
+      var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
         
-        //console.log("REG_DATA", reg_data)
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-        var raw = JSON.stringify(
-          {
-              "name": reg_data.firstName+" "+reg_data.lastName,
-              "email": reg_data.email,
-              "mobile": reg_data.mobileNumber,
-              "password": reg_data.password
-          }
-        );
-        //console.log("RAW", raw)
+        const response = yield fetch("https://aress.kz/api/myprofile?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", requestOptions)
+        const data = yield response.json(); 
+        yield put(profileSet(data))
+        //console.log("PROF_DATA", data)
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что-то пошло не так!');
+      }
+}
+
+
+
+function* getCategoryProductList(action) {
+  try {
+        const id = action.payload
+        console.log("CATEGORYID",id)
 
         var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
+          method: 'GET',
+          redirect: 'follow'
         };
-
-        const response = yield fetch("https://aress.kz/api/register", requestOptions);
+        
+        const response = yield fetch("https://aress.kz/api/category/"+id+"?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99&currency=KZT", requestOptions)
         const data = yield response.json();
-        //console.log("data", data)
-        //console.log("REGISTR_DATA", data)
-        if(data.status == 'fail'){
-          yield call(Alert.alert, 'Ошибка', data.msg);
-        }else{
-          yield put(registerSuccess())
-          yield call(Alert.alert, 'Успех', 'Регистрация прошла успешно');
-        }
-        } catch (e) {
-            //console.log('ERROR =', e)
-            yield call(Alert.alert, 'Ошибка', e);
-            //console.log("ERROR ==> ", e)
-        }
-  }
+        // console.log("Product_Ctgr", data)
+        yield put(catProductListSuccess(data))
+        //console.log("PROF_DATA", data)
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
 
-  function* profile_Request() {
-    try {
+function* getSearch(action) {
+  try {
+        const query = action.payload
+        console.log("SearchB",query)
+
+        var requestOptions = {
+          method: 'GET',
+          redirect: 'follow'
+        };
+        
+        const response = yield fetch("https://aress.kz/api/search/?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99&currency=KZT&query="+query, requestOptions)
+        const data = yield response.json();
+        console.log("SEARCHDATA", data)
+        yield put(searchSuccess(data))
+        //console.log("PROF_DATA", data)
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* updateProfile(action) {
+  try {
+
+    const updatedData = action.payload
+    console.log("DataToUpdate", updatedData)
+
+    const access_token = yield call(AsyncStorage.getItem, 'access_token')
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+    var raw = JSON.stringify({
+      "name": action.payload.name,
+      "email": action.payload.email,
+      "mobile": action.payload.mobile
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    
+    const response = yield fetch("https://aress.kz/api/updateProfile", requestOptions)
+    const data = response.json()
+    console.log("StatusOfUpdate",response.json)
+    // if(data.status == "success"){
+      var profHeaders = new Headers();
+      profHeaders.append("Authorization", "Bearer" + " "+ access_token)
+      
+
+      var profRequestOptions = {
+          method: 'GET',
+          headers: profHeaders,
+          redirect: 'follow'
+        };
+        
+        const profResponse = yield fetch("https://aress.kz/api/myprofile?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", profRequestOptions)
+        const profData = yield profResponse.json(); 
+        yield put(profileSet(profData))
+    // }else{
+    //   yield call(Toast.show, "Не удалось обновить", data.msg, {
+    //     duration: 2000,
+    //     position: Toast.positions.CENTER,
+    //     shadow: true,
+    //     animation: true,
+    //     hideOnPress: true,
+    //     delay: 0,
+    //   });
+    // }
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* clearCart(action) {
+  try {
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/clear-cart", requestOptions)
+        const data = yield response.json();
+        yield put(searchSuccess(data))
+        //console.log("PROF_DATA", data)
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* updatePassword(action) {
+  try {
+
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+        const password = action.payload
+        console.log("PASSWORDS", password)
+
+        var raw = JSON.stringify({
+          "old_password": password.old_password,
+          "new_password": password.new_password
+        });
+
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/updatePassword", requestOptions)
+        const data = yield response.json();
+        console.log("PASS_UPDATE", data)
+        if (data.status == 'fail') {
+          if (data.msg == "Your old password is incorrect") {
+            yield call(Alert.alert, 'Ошибка', 'Неверный пароль');
+          } else if(data.msg == "The new password field is required.") {
+            yield call(Alert.alert, 'Ошибка', 'Введите новый пароль');
+          }else if(data.msg == "The old password field is required.") {
+            yield call(Alert.alert, 'Ошибка', 'Введите пароль');
+          }
+        } else {
+          yield put(successInt('HomeScreen'));
+          yield call(Toast.show, "Пароль обновлен", {
+                duration: 2000,
+                position: Toast.positions.CENTER,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
+        }
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* getAddress(action) {
+  try {
 
         const access_token = yield call(AsyncStorage.getItem, 'access_token')
         var myHeaders = new Headers();
         myHeaders.append("Authorization", "Bearer" + " "+ access_token)
-       
+
+
 
         var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/manageaddress", requestOptions)
+        const data = yield response.json();
+        // console.log("ADRESDATA", data)
+        if (data.status == 'success') {
+          yield put(getAddressSuccess(data.address))
+        }
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* addAddress(action) {
+  try {
+        const addressData = action.payload
+        console.log("ADDRESS_DATA", addressData)
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+
+        var raw = JSON.stringify({
+          "name": addressData.name,
+          "email": addressData.email,
+          "phone": addressData.phone,
+          "city": addressData.city,
+          "region": addressData.region,
+          "address": addressData.address1,
+          "defaddress":addressData.defaddress
+        });
+        
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/create-address", requestOptions)
+        const data = yield response.json();
+        console.log("ADRESDATA", data)
+        if (data.status == 'success') {
+          var addRequestOptions = {
             method: 'GET',
             headers: myHeaders,
             redirect: 'follow'
           };
-          
-          const response = yield fetch("https://aress.kz/api/myprofile?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", requestOptions)
-          const data = yield response.json(); 
-          yield put(profileSet(data))
-          //console.log("PROF_DATA", data)
-        } catch (e) {
-            //console.log('ERROR =', e)
-            yield call(Alert.alert, 'Ошибка', 'Что-то пошло не так!');
-        }
-  }
-
-
-
-  function* getCategoryProductList(action) {
-    try {
-          const id = action.payload
-          console.log("CATEGORYID",id)
-
-          var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-          };
-          
-          const response = yield fetch("https://aress.kz/api/category/"+id+"?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99&currency=KZT", requestOptions)
-          const data = yield response.json();
-          // console.log("Product_Ctgr", data)
-          yield put(catProductListSuccess(data))
-          //console.log("PROF_DATA", data)
-        } catch (e) {
-            //console.log('ERROR =', e)
-            yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
-        }
-  }
-
-  function* getSearch(action) {
-    try {
-          const query = action.payload
-          console.log("SearchB",query)
-
-          var requestOptions = {
-            method: 'GET',
-            redirect: 'follow'
-          };
-          
-          const response = yield fetch("https://aress.kz/api/search/?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99&currency=KZT&query="+query, requestOptions)
-          const data = yield response.json();
-          console.log("SEARCHDATA", data)
-          yield put(searchSuccess(data))
-          //console.log("PROF_DATA", data)
-        } catch (e) {
-            //console.log('ERROR =', e)
-            yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
-        }
-  }
-
-  function* updateProfile(action) {
-    try {
-
-      const updatedData = action.payload
-      console.log("DataToUpdate", updatedData)
-
-      const access_token = yield call(AsyncStorage.getItem, 'access_token')
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", "Bearer" + " "+ access_token)
-
-      var raw = JSON.stringify({
-        "name": action.payload.name,
-        "email": action.payload.email,
-        "mobile": action.payload.mobile
-      });
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow'
-      };
       
-      const response = yield fetch("https://aress.kz/api/updateProfile", requestOptions)
-      const data = response.json()
-      console.log("StatusOfUpdate",response.json)
-      // if(data.status == "success"){
-        var profHeaders = new Headers();
-        profHeaders.append("Authorization", "Bearer" + " "+ access_token)
-       
-
-        var profRequestOptions = {
-            method: 'GET',
-            headers: profHeaders,
-            redirect: 'follow'
-          };
-          
-          const profResponse = yield fetch("https://aress.kz/api/myprofile?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", profRequestOptions)
-          const profData = yield profResponse.json(); 
-          yield put(profileSet(profData))
-      // }else{
-      //   yield call(Toast.show, "Не удалось обновить", data.msg, {
-      //     duration: 2000,
-      //     position: Toast.positions.CENTER,
-      //     shadow: true,
-      //     animation: true,
-      //     hideOnPress: true,
-      //     delay: 0,
-      //   });
-      // }
-        } catch (e) {
-            //console.log('ERROR =', e)
-            yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+          const addResponse = yield fetch("https://aress.kz/api/manageaddress", addRequestOptions)
+          const AddData = yield addResponse.json();
+          yield put(getAddressSuccess(AddData.address))
         }
-  }
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
 
-  function* clearCart(action) {
-    try {
-          const access_token = yield call(AsyncStorage.getItem, 'access_token')
-          var myHeaders = new Headers();
-          myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+function* updateAddress(action) {
+  try {
+        const addressData = action.payload
+        console.log("ADDRESS_DATA", addressData)
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
 
-          var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
+
+        var raw = JSON.stringify({
+          "id": addressData.id,
+          "name": addressData.name,
+          "email": addressData.email,
+          "phone": addressData.phone.toString(),
+          "city": addressData.city,
+          "region": addressData.region,
+          "address": addressData.address1,
+          "defaddress":addressData.defaddress.toString()
+        });
+        
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/update-address", requestOptions)
+        const data = yield response.json();
+        console.log("ADRESDATA", data)
+        if (data.status == 'fail') {
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',data.msg);
+        }else{
+          var upHeaders = new Headers();
+          upHeaders.append("Authorization", "Bearer" + " "+ access_token)
+          var addRequestOptions = {
+            method: 'GET',
+            headers: upHeaders,
             redirect: 'follow'
           };
       
-          const response = yield fetch("https://aress.kz/api/clear-cart", requestOptions)
-          const data = yield response.json();
-          console.log("SEARCHDATA", data)
-          yield put(searchSuccess(data))
-          //console.log("PROF_DATA", data)
-        } catch (e) {
-            //console.log('ERROR =', e)
-            yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+          const addResponse = yield fetch("https://aress.kz/api/manageaddress", addRequestOptions)
+          const AddData = yield addResponse.json();
+          yield put(getAddressSuccess(AddData.address))
+          yield call(Alert.alert, 'Обновлено', 'Адрес обновлен');
         }
-  }
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* removeAddress(action) {
+  try {
+        const addressData = action.payload
+        console.log("ADDRESS_DATA", addressData)
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+
+        var raw = JSON.stringify({
+          "id": addressData.toString(),
+        });
+        
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/delete-address", requestOptions)
+        const data = yield response.json();
+        console.log("ADRESDATA", data)
+        
+          var upHeaders = new Headers();
+          upHeaders.append("Authorization", "Bearer" + " "+ access_token)
+          var addRequestOptions = {
+            method: 'GET',
+            headers: upHeaders,
+            redirect: 'follow'
+          };
+      
+          const addResponse = yield fetch("https://aress.kz/api/manageaddress", addRequestOptions)
+          const AddData = yield addResponse.json();
+          
+          yield put(getAddressSuccess(AddData.address))
+          yield call(Alert.alert, 'Обновлено', 'Адрес удален');
+        
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}

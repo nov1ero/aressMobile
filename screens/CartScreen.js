@@ -20,7 +20,7 @@ import Fonts from "@helpers/Fonts";
 import axios from 'axios';
 
 function CheckoutScreen(props) {
-    const [state, setState] = React.useState({ loading: true, cartArr: [], cartProducts: [], sumAmount: 0, isApplied: false, validCode: false, couponCode: null, noRecord: false });
+    const [state, setState] = React.useState({ loading: true, cartArr: [], cartProducts: [], sumAmount: 0, isApplied: false, validCode: false, couponCode: null, noRecord: false, disable: true });
     const { cartData, cartCount } = props;
 
     const applyCouponCode = () => {
@@ -35,6 +35,13 @@ function CheckoutScreen(props) {
         }
         else {
             setState({ ...state, isApplied: true, validCode: false })
+        }
+    }
+    const disabledButton =()=>{
+        if (cartCount > 0) {
+            setState({ ...state, disable: false})
+        }else{
+            setState({ ...state, disable: false})
         }
     }
 
@@ -79,8 +86,9 @@ function CheckoutScreen(props) {
     }
 
     useEffect(() => {
+        disabledButton();
         calculateCart();
-    }, [cartData]);
+    }, [cartData, disable]);
     
 
     const { cartProducts, sumAmount, couponCode, loading, isApplied, validCode, noRecord } = state;
@@ -160,6 +168,7 @@ function CheckoutScreen(props) {
                 <Button
                     size="md"
                     variant="solid"
+                    disabled={disable}
                     bg={Colors.themeColor}
                     style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('2.5%'), marginTop: hp('1%') }]}
                     onPress={() => props.navigation.navigate("CheckoutScreen", { totalAmt: validCode ? '₸ ' + parseFloat(sumAmount - 50) : '₸ ' + sumAmount })}

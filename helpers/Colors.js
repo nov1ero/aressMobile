@@ -7,6 +7,7 @@ export const Colors = {
   link_color: '#626ABB',
   themeColor: "#626ABB",
   red: '#ff4848',
+  darkRed:'#BB626D',
   arrow_color: 'rgb(200,204,216)',
   custom_pink: 'rgb(247,74,105)',
   loader_bg: 'rgba(128,128,128,0.5)',

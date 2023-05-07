@@ -272,12 +272,6 @@ export function editProfile(data){
         payload: data
     }
 }
-export function changeAddress(data){
-    return {
-        type: types.CHANGE_ADDRESS,
-        payload: data
-    }
-}
 export function changePassword(data){
     return {
         type: types.CHANGE_PASSWORD,
@@ -342,6 +336,48 @@ export function clearCart(data){
     return {
         type: types.CLEAR_CART,
         payload: data
+        
+    }
+}
+export function getAddressRequest(){
+    return {
+        type: types.GET_ADDRESS_REQUEST,
+        
+    }
+}
+export function getAddressSuccess(data){
+    return {
+        type: types.GET_ADDRESS_SUCCESS,
+        payload: data
+        
+    }
+}
+export function updateAddress(data){
+    return {
+        type: types.UPDATE_ADDRESS,
+        payload: data
+        
+    }
+}
+export function addAddress(data){
+    return {
+        type: types.ADD_ADDRESS,
+        payload: data
+        
+    }
+}
+export function removeAddress(id){
+    return {
+        type: types.DELETE_ADDRESS,
+        payload: id
+        
+    }
+}
+
+export function updatePassword(old_password, new_password){
+    return {
+        type: types.UPDATE_PASSWORD,
+        payload: {old_password, new_password}
         
     }
 }

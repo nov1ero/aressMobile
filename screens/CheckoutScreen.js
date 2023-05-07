@@ -10,7 +10,7 @@ import {
 import { connect } from 'react-redux';
 import { Button } from 'native-base';
 import {
-    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, CheckoutView, OtirxBackButton, AddAdressComponent, EditAddressComponent, PaymentSuccessComponent
+    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, CheckoutView, OtirxBackButton, AddAddressComponent, EditAddressComponent, PaymentSuccessComponent
 } from '@component';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
@@ -213,7 +213,7 @@ function CheckoutScreen(props) {
             {/* Add Address Screen */}
             <Modal visible={showAdd}
                 transparent={true}>
-                <AddAdressComponent closeAdd={closeAddressModel} addAdress={storeAddress} />
+                <AddAddressComponent closeAdd={closeAddressModel} addAdress={storeAddress} />
             </Modal>
 
             {/* Edit Address Screen */}
