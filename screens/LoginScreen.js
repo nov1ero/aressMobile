@@ -91,9 +91,9 @@ function LoginScreen(props) {
                     />
                     <FormControl.ErrorMessage _text={{ fontSize: 'xs' }}>Неправильный пароль</FormControl.ErrorMessage>
                 </FormControl>
-                <TouchableOpacity onPress={() => props.navigation.navigate('ForgotPasswordScreen')}>
+                {/* <TouchableOpacity onPress={() => props.navigation.navigate('ForgotPasswordScreen')}>
                     <Text style={styles.forgotPassword}>Забыли пароль?</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <OtrixDivider size={'md'} />
                 <Button
                     size="md"

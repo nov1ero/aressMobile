@@ -30,7 +30,7 @@ function AddAdressComponent(props) {
             error = true;
         }
         if (error == false) {
-            props.addAddress({ name, region, city, address1, email, phone, defaddress })
+            props.addAdress({ name, region, city, address1, email, phone, defaddress })
         }
 
     }

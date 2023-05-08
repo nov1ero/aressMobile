@@ -9,138 +9,161 @@ import {
 import { ScrollView } from "react-native-virtualized-view";
 import { connect } from 'react-redux';
 import {
-    OtrixContainer, OtrixHeader, OtrixDivider, OtirxBackButton,
+    OtrixContainer, OtrixHeader, OtrixDivider, OtirxBackButton, OtrixLoader
 } from '@component';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
-import { proceedCheckout } from '@actions';
+import { proceedCheckout, getOneOrderSuccess } from '@actions';
 import Fonts from "@helpers/Fonts";
 
 function OrderDetailScreen(props) {
-    const { orderData } = props.route.params;
+    const order = props.order
+    const { orderID } = props.route.params
+    const product = order.orderitems
+    console.log("ONE_ORDER", orderID, " == ", order.id)
 
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>
-
+        {
+            orderID != order.id ? <OtrixLoader /> : <>
             {/* Header */}
             <OtrixHeader customStyles={{ backgroundColor: Colors.light_white }}>
-                <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => props.navigation.goBack()}>
+                <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => {
+                    props.navigation.goBack()
+                
+                }}>
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}> Orders Details </Text>
+                    <Text style={GlobalStyles.headingTxt}> Детали Заказа </Text>
                 </View>
             </OtrixHeader>
 
             {/* Orders Content start from here */}
-
+            <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.addressContent}>
                 <ScrollView style={styles.addressBox} showsHorizontalScrollIndicator={false} vertical={true}>
 
                     <OtrixDivider size={"md"} />
-                    <Text style={styles.deliveryTitle}>View Orders Details</Text>
+                    <Text style={styles.deliveryTitle}>Просмотр сведений о заказах</Text>
                     <OtrixDivider size={"sm"} />
                     <View style={styles.cartContent} >
                         <View style={styles.detailBox} >
                             <View style={styles.detailRow}>
                                 <View style={styles.leftView}>
-                                    <Text style={styles.leftTxt}>Order Date</Text>
+                                    <Text style={styles.leftTxt}>Дата Заказа</Text>
                                 </View>
                                 <View style={styles.rightView}>
-                                    <Text style={styles.rightTxt}>{orderData.orderDate}</Text>
+                                    <Text style={styles.rightTxt}>{order.orderDate}</Text>
                                 </View>
                             </View>
                             <View style={styles.detailRow}>
                                 <View style={styles.leftView}>
-                                    <Text style={styles.leftTxt}>Order</Text>
+                                    <Text style={styles.leftTxt}>Заказ</Text>
                                 </View>
                                 <View style={styles.rightView}>
-                                    <Text style={styles.rightTxt}>#{orderData.orderid}</Text>
+                                    <Text style={styles.rightTxt}>#{order.order_id}</Text>
                                 </View>
                             </View>
-                            <View style={styles.detailRow}>
+                            {/* <View style={styles.detailRow}>
                                 <View style={styles.leftView}>
-                                    <Text style={[styles.leftTxt]}>Order Total</Text>
+                                    <Text style={[styles.leftTxt]}>Общая стоимость заказа</Text>
                                 </View>
                                 <View style={styles.rightView}>
-                                    <Text style={styles.rightTxt}>{orderData.price}</Text>
+                                    <Text style={styles.rightTxt}>{order.grand_total}</Text>
                                 </View>
-                            </View>
+                            </View> */}
                         </View>
                     </View>
 
                     <OtrixDivider size={"md"} />
-                    <Text style={styles.deliveryTitle}>Product Details</Text>
+                    <Text style={styles.deliveryTitle}>Детали Продукта</Text>
                     <OtrixDivider size={"sm"} />
-
-                    <View style={styles.cartContent} >
+                    {
+                product.length > 0 && product.map((item, index) =>
+                    <>
+                    <View style={styles.cartContent} key={index}>
                         <View style={styles.cartBox} >
                             <View style={styles.imageView}>
-                                <Image source={orderData.image} style={styles.image}
+                                <Image source={{uri : item.thumb_path+"/"+item.product_thumb}} style={styles.image}
                                 ></Image>
                             </View>
                             <View style={styles.infromationView}>
                                 <View >
-                                    <Text style={styles.name}>{orderData.name}</Text>
+                                    <Text style={styles.name}>{item.product_name.en}</Text>
                                 </View>
-                                <Text style={styles.orderDate}>Quantity: {orderData.orderQty}</Text>
-                                <Text style={styles.orderDate}>Order Status: <Text style={styles.orderStatuss}>{orderData.orderStatus}</Text></Text>
+                                <View >
+                                    <Text style={styles.name}>Накладная: {item.invoice_no}</Text>
+                                </View>
+                                <Text style={styles.orderDate}>Количество: {item.qty}</Text>
+                                <Text style={styles.orderDate}>Статус заказа: <Text style={styles.orderSstatustatuss}>{item.status}</Text></Text>
                             </View>
                         </View>
                         <View style={styles.priceView}>
-                            <Text style={styles.price}>{orderData.price}</Text>
+                            <Text style={styles.price}>₸  {item.price}</Text>
                         </View>
                     </View>
+                    </>
+                )
+            }
 
                     <OtrixDivider size={"md"} />
-                    <Text style={styles.deliveryTitle}>Shipping Address</Text>
+                    <Text style={styles.deliveryTitle}>Адрес доставки</Text>
                     <OtrixDivider size={"sm"} />
                     <View style={styles.cartContent} >
                         <TouchableOpacity style={[styles.deliveryBox]}    >
-                            <Text style={styles.addressTxt} numberOfLines={1}>{orderData.deliveryAddress.name}     </Text>
-                            <Text style={styles.addressTxt} numberOfLines={2}>{orderData.deliveryAddress.address1}    </Text>
-                            <Text style={styles.addressTxt} numberOfLines={2}>{orderData.deliveryAddress.address2}, {orderData.deliveryAddress.city}</Text>
-                            <Text style={styles.addressTxt} numberOfLines={1}>{orderData.deliveryAddress.postcode}, {orderData.deliveryAddress.country}</Text>
+                            <Text style={styles.addressTxt} numberOfLines={1}>{order.shipping_address.name}     </Text>
+                            <Text style={styles.addressTxt} numberOfLines={2}>{order.shipping_address.email} , {order.shipping_address.phone}  </Text>
+                            <Text style={styles.addressTxt} numberOfLines={2}>{order.shipping_address.region}, {order.shipping_address.city}</Text>
+                            <Text style={styles.addressTxt} numberOfLines={1}>{order.shipping_address.address}</Text>
                         </TouchableOpacity>
                     </View>
 
 
                     <OtrixDivider size={"md"} />
-                    <Text style={styles.deliveryTitle}>Orders Summary</Text>
+                    <Text style={styles.deliveryTitle}>Краткое описание заказа</Text>
                     <OtrixDivider size={"sm"} />
                     <View style={styles.cartContent} >
-                        <View style={[styles.detailBox, { height: hp('16%') }]} >
+                        <View style={[styles.detailBox, { height: hp('26%') }]} >
                             <View style={styles.detailRow}>
                                 <View style={styles.leftView}>
-                                    <Text style={styles.leftTxt}>Items</Text>
+                                    <Text style={styles.leftTxt}>Общее количество</Text>
                                 </View>
                                 <View style={styles.rightView}>
-                                    <Text style={styles.rightTxt}>{orderData.price}</Text>
+                                    <Text style={styles.rightTxt}>{order.total_qty}</Text>
+                                </View>
+                            </View>
+                            {/* <View style={styles.detailRow}>
+                                <View style={styles.leftView}>
+                                    <Text style={styles.leftTxt}>Общая стоимтость</Text>
+                                </View>
+                                <View style={styles.rightView}>
+                                    <Text style={styles.rightTxt}>₸  {order.grand_total}</Text>
+                                </View>
+                            </View> */}
+                            <View style={styles.detailRow}>
+                                <View style={styles.leftView}>
+                                    <Text style={styles.leftTxt}>Идентификатор заказа</Text>
+                                </View>
+                                <View style={styles.rightView}>
+                                    <Text style={styles.rightTxt}>{order.order_id}</Text>
                                 </View>
                             </View>
                             <View style={styles.detailRow}>
                                 <View style={styles.leftView}>
-                                    <Text style={styles.leftTxt}>Tax</Text>
+                                    <Text style={styles.leftTxt}>Метод оплаты</Text>
                                 </View>
                                 <View style={styles.rightView}>
-                                    <Text style={styles.rightTxt}>{orderData.tax}</Text>
+                                    <Text style={styles.rightTxt}>{order.payment_method}</Text>
                                 </View>
                             </View>
                             <View style={styles.detailRow}>
                                 <View style={styles.leftView}>
-                                    <Text style={styles.leftTxt}>Discount</Text>
+                                    <Text style={[styles.leftTxt, { color: Colors.link_color, fontSize: wp('4.5%') }]}>Общая стоимость заказа</Text>
                                 </View>
                                 <View style={styles.rightView}>
-                                    <Text style={styles.rightTxt}>{orderData.discount}</Text>
-                                </View>
-                            </View>
-                            <View style={styles.detailRow}>
-                                <View style={styles.leftView}>
-                                    <Text style={[styles.leftTxt, { color: Colors.link_color, fontSize: wp('4.5%') }]}>Order Total</Text>
-                                </View>
-                                <View style={styles.rightView}>
-                                    <Text style={[styles.rightTxt, , { color: Colors.link_color, fontSize: wp('4.5%') }]}>{orderData.grand_total}</Text>
+                                    <Text style={[styles.rightTxt, , { color: Colors.link_color, fontSize: wp('4.5%') }]}>₸  {order.grand_total}</Text>
                                 </View>
                             </View>
                         </View>
@@ -148,9 +171,11 @@ function OrderDetailScreen(props) {
 
                 </ScrollView>
             </View>
+            </ScrollView>
 
 
-
+            </>
+        }
         </OtrixContainer >
 
     )
@@ -159,12 +184,13 @@ function OrderDetailScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
+        order : state.orders.one_order
 
     }
 }
 
 
-export default connect(mapStateToProps, { proceedCheckout })(OrderDetailScreen);
+export default connect(mapStateToProps, { proceedCheckout, getOneOrderSuccess })(OrderDetailScreen);
 
 const styles = StyleSheet.create({
 
@@ -304,6 +330,8 @@ const styles = StyleSheet.create({
     rightTxt: {
         fontFamily: Fonts.Font_Semibold,
         fontSize: wp('4%'),
+        justifyContent: 'center',
+        alignItems: 'center',
         color: Colors.text_color
     },
     detailRow: {

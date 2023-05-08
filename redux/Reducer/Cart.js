@@ -3,7 +3,8 @@ import { logfunction } from "../../helpers/FunctionHelper";
 
 const initialState = {
     cartCount: 0,
-    cartData: []
+    cartData: [],
+    confirmed: null
 }
 export default (state = initialState, action) => {
     const { payload } = action;
@@ -35,6 +36,11 @@ export default (state = initialState, action) => {
                 ...state,
                 cartCount: 0,
                 cartData: []
+            }
+        case types.CONFIRMATION_SUCCESS:
+            return{
+                ...state,
+                confirmed: payload
             }
         default:
             return state;

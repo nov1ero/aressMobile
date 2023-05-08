@@ -13,7 +13,7 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
-import { removeFromCart, decrementQuantity, incrementQuantity, doLogout, getAddressRequest } from '@actions';
+import { removeFromCart, decrementQuantity, incrementQuantity, doLogout, getAddressRequest, getOrderRequest } from '@actions';
 import { avatarImg } from '@common';
 import Fonts from "@helpers/Fonts";
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -112,7 +112,10 @@ function ProfileScreen(props) {
                         <MatIcon name="arrow-forward-ios" style={styles.rightIcon} />
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.listView} onPress={() => props.navigation.navigate('OrderScreen')}>
+                <TouchableOpacity style={styles.listView} onPress={() => {
+                    props.navigation.navigate('OrderScreen'),
+                    props.getOrderRequest()
+            }}>
                     <View style={styles.leftSide}>
                         <Fontisto name="shopping-bag-1" style={[styles.icon, { fontSize: wp('5.4%') }]} />
                     </View>
@@ -177,7 +180,7 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { removeFromCart, decrementQuantity, incrementQuantity, doLogout, getAddressRequest })(ProfileScreen);
+export default connect(mapStateToProps, { removeFromCart, decrementQuantity, incrementQuantity, doLogout, getAddressRequest, getOrderRequest })(ProfileScreen);
 
 const styles = StyleSheet.create({
     container: {

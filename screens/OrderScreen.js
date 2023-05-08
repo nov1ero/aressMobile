@@ -9,17 +9,28 @@ import {
 import { ScrollView } from "react-native-virtualized-view";
 import { connect } from 'react-redux';
 import {
-    OtrixContainer, OtrixHeader, OtrixDivider, OtirxBackButton, OrdersComponent
+    OtrixContainer, OtrixHeader, OtrixDivider, OtirxBackButton, OrdersComponent, OtrixLoader
 } from '@component';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
-import { proceedCheckout } from '@actions';
+import { proceedCheckout, getOneOrderRequest, getOneOrderSuccess } from '@actions';
 import Fonts from "@helpers/Fonts";
 import DummyAddress from '@component/items/DummyAddress';
 import OrdersDummy from '@component/items/OrdersDummy';
 
 function OrderScreen(props) {
+
+    const { orders } = props
+
+    console.log("ORDER_SCREEN", orders)
+    const clear = ()=>{
+        props.getOneOrderSuccess([])
+    }
+    const getOneOrderRequest = async (id) =>{
+        await props.getOneOrderRequest(id)
+    }
+
     useEffect(() => {
 
     }, []);
@@ -28,28 +39,31 @@ function OrderScreen(props) {
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>
 
+        {
+            orders == [] ? <OtrixLoader /> : <>
             {/* Header */}
             <OtrixHeader customStyles={{ backgroundColor: Colors.light_white }}>
                 <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => props.navigation.goBack()}>
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
-                    <Text style={GlobalStyles.headingTxt}>  Orders</Text>
+                    <Text style={GlobalStyles.headingTxt}>  Покупки</Text>
                 </View>
             </OtrixHeader>
 
             {/* Orders Content start from here */}
             <OtrixDivider size={"md"} />
-            <Text style={styles.deliveryTitle}>Your Orders</Text>
+            <Text style={styles.deliveryTitle}>Ваши покупки</Text>
             <OtrixDivider size={"sm"} />
             <View style={styles.addressContent}>
                 <ScrollView style={styles.addressBox} showsHorizontalScrollIndicator={false} vertical={true}>
                     {
-                        <OrdersComponent navigation={props.navigation} products={OrdersDummy} />
+                        <OrdersComponent navigation={props.navigation} products={orders} getOneOrder={getOneOrderRequest} clear={clear}/>
                     }
                 </ScrollView>
             </View>
-
+            </>
+        }
 
 
         </OtrixContainer >
@@ -60,12 +74,12 @@ function OrderScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
-
+        orders: state.orders.orders
     }
 }
 
 
-export default connect(mapStateToProps, { proceedCheckout })(OrderScreen);
+export default connect(mapStateToProps, { proceedCheckout, getOneOrderRequest, getOneOrderSuccess })(OrderScreen);
 
 const styles = StyleSheet.create({
 

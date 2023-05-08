@@ -13,37 +13,33 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
-import { removeFromCart, decrementQuantity, incrementQuantity } from '@actions';
+import { removeFromCart, decrementQuantity, incrementQuantity, getAddressRequest } from '@actions';
 import ProductListDummy from '@component/items/ProductListDummy';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Fonts from "@helpers/Fonts";
 import axios from 'axios';
 
 function CheckoutScreen(props) {
-    const [state, setState] = React.useState({ loading: true, cartArr: [], cartProducts: [], sumAmount: 0, isApplied: false, validCode: false, couponCode: null, noRecord: false, disable: true });
+    const [state, setState] = React.useState({ loading: true, cartArr: [],cartProducts:[], sumAmount: 0, isApplied: false, validCode: false, couponCode: null, noRecord: false, disable: true });
     const { cartData, cartCount } = props;
+    
+    
+    
 
-    const applyCouponCode = () => {
-        const { couponCode } = state;
-        if (couponCode != null) {
-            if (couponCode == 'Aress') {
-                setState({ ...state, isApplied: true, validCode: true })
-            }
-            else {
-                setState({ ...state, isApplied: true, validCode: false })
-            }
-        }
-        else {
-            setState({ ...state, isApplied: true, validCode: false })
-        }
-    }
-    const disabledButton =()=>{
-        if (cartCount > 0) {
-            setState({ ...state, disable: false})
-        }else{
-            setState({ ...state, disable: false})
-        }
-    }
+    // const applyCouponCode = () => {
+    //     const { couponCode } = state;
+    //     if (couponCode != null) {
+    //         if (couponCode == 'Aress') {
+    //             setState({ ...state, isApplied: true, validCode: true })
+    //         }
+    //         else {
+    //             setState({ ...state, isApplied: true, validCode: false })
+    //         }
+    //     }
+    //     else {
+    //         setState({ ...state, isApplied: true, validCode: false })
+    //     }
+    // }
 
     const onDeleteItem = (id) => {
         props.removeFromCart(id);
@@ -82,16 +78,15 @@ function CheckoutScreen(props) {
             sumAmount += amt * item.qty;
         });
 
-        setState({ ...state, noRecord: cartData != [] ? false : true, loading: false, cartProducts: cartItems, sumAmount: sumAmount, });
+        setState({ ...state, noRecord: cartData != [] ? false : true, disable: false, cartProducts: cartItems, sumAmount: sumAmount, });
     }
 
     useEffect(() => {
-        disabledButton();
         calculateCart();
     }, [cartData, disable]);
     
 
-    const { cartProducts, sumAmount, couponCode, loading, isApplied, validCode, noRecord } = state;
+    const { sumAmount, cartProducts, loading, isApplied, disable, validCode, noRecord } = state;
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>
 
@@ -109,10 +104,10 @@ function CheckoutScreen(props) {
             <OtrixContent >
                 {/* Cart Component Start from here */}
                 {
-                    !noRecord && !loading && <CartView navigation={props.navigation} products={cartProducts} deleteItem={onDeleteItem} decrementItem={decrement} incrementItem={increment} />
+                    cartCount>0 && <CartView navigation={props.navigation} products={cartProducts} deleteItem={onDeleteItem} decrementItem={decrement} incrementItem={increment} />
                 }
                 {
-                    !loading && cartCount == 0 && <View style={styles.noRecord}>
+                    cartCount == 0 && <View style={styles.noRecord}>
                         <Text style={styles.emptyTxt}>Корзина Пуста!</Text>
                         <Button
                             size="lg"
@@ -126,7 +121,7 @@ function CheckoutScreen(props) {
                     </View>
                 }
             </OtrixContent>
-            {!noRecord && !loading && <View style={styles.checkoutView}>
+            {cartCount>0 && <View style={styles.checkoutView}>
                 {/* <View style={styles.couponInput}>
                     <Input variant="outline" placeholder="Coupon Code (use Aress)" style={[GlobalStyles.textInputStyle, styles.inputStyle]}
                         onChangeText={(couponCode) => setState({ ...state, couponCode })}
@@ -171,7 +166,9 @@ function CheckoutScreen(props) {
                     disabled={disable}
                     bg={Colors.themeColor}
                     style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('2.5%'), marginTop: hp('1%') }]}
-                    onPress={() => props.navigation.navigate("CheckoutScreen", { totalAmt: validCode ? '₸ ' + parseFloat(sumAmount - 50) : '₸ ' + sumAmount })}
+                    onPress={() => {props.navigation.navigate("CheckoutScreen", { totalAmt: validCode ? '₸ ' + parseFloat(sumAmount - 50) : '₸ ' + sumAmount })
+                                props.getAddressRequest()
+                }}
                 >
                     <Text style={GlobalStyles.buttonText}>Оформление</Text>
                 </Button>
@@ -191,7 +188,7 @@ function mapStateToProps(state) {
 }
 
 
-export default connect(mapStateToProps, { removeFromCart, decrementQuantity, incrementQuantity })(CheckoutScreen);
+export default connect(mapStateToProps, { removeFromCart, decrementQuantity, getAddressRequest, incrementQuantity })(CheckoutScreen);
 
 const styles = StyleSheet.create({
 

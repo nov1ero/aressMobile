@@ -16,8 +16,9 @@ const animatedValue = new Animated.Value(0);
 
 function SplashScreen(props) {
 
+    const loadApp = props.loadApplication
     const navigateToMain = () => {
-        props.loadApplication &&
+        loadApp &&
             props.navigation.reset({
                 index: 0,
                 routes: [{ name: props.navScreen }]
@@ -29,7 +30,7 @@ function SplashScreen(props) {
 
         Animated.timing(animatedValue, {
             toValue: 1,
-            duration: 1500,
+            duration: 100,
             easing: Easing.ease,
             useNativeDriver: true, // Add this line
 
@@ -39,11 +40,9 @@ function SplashScreen(props) {
 
         return () => {
             clearTimeout(loadApp);
+            navigateToMain()
         };
-    }, [
-        navigateToMain()
-
-    ]);
+    }, [loadApp]);
 
 
     return (

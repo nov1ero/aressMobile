@@ -7,15 +7,16 @@ import Fonts from '@helpers/Fonts';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MatIcon from 'react-native-vector-icons/FontAwesome5';
+import { alignContent, alignItems, flexDirection } from 'styled-system';
 
 function CartView(props) {
     let cartProduct = props.products;
-    //console.log("cartProduct", cartProduct)
+    console.log("cartProduct", cartProduct)
     //console.log("image ==>", cartProduct.image)
     const PriceQuantity = (price, quantity) => {
         let amt = price;
         let qty = quantity;
-        return '₸ ' + amt;
+        return '₸ ' + amt* qty;
     }
     return (
         <>
@@ -33,6 +34,7 @@ function CartView(props) {
                                     <Text style={styles.name}>{item.name}</Text>
                                 </TouchableOpacity>
                                 <Text style={styles.price}>{PriceQuantity(item.price, item.quantity)}</Text>
+                                <View style={{alignItems:'center', flexDirection:'row'}}>
                                 <View style={styles.plusminus}>
                                     <TouchableOpacity style={{ marginRight: wp('2.5%'), padding: 4 }} onPress={() => item.quantity != 1 && props.decrementItem(item.cartid, item.quantity)}>
                                         <Icon name="minus" style={styles.plusminusTxt} />
@@ -41,6 +43,8 @@ function CartView(props) {
                                     <TouchableOpacity style={{ marginLeft: wp('2.5%'), padding: 4 }} onPress={() => props.incrementItem(item.cartid, item.quantity, item.max_order)}>
                                         <Icon name="plus" style={styles.plusminusTxt} />
                                     </TouchableOpacity>
+                                </View>
+                                <Text style={{fontSize:16, fontWeight:'bold'}}>      /   {item.max_order}</Text>
                                 </View>
                             </View>
                         </View>

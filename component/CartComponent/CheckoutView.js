@@ -8,6 +8,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function CheckoutView(props) {
     let cartProduct = props.products;
+    console.log("Check Products", cartProduct)
     const PriceQuantity = (price, quantity) => {
         let amt = price;
         let qty = quantity;
@@ -21,7 +22,7 @@ function CheckoutView(props) {
                     <View style={styles.cartContent} key={item.id}>
                         <View style={styles.cartBox} >
                             <View style={styles.imageView}>
-                                <Image source={{uri: item.image}} style={styles.image}
+                            <Image source={{uri: item.image}} style={styles.image}
                                 ></Image>
                             </View>
                             <View style={styles.infromationView}>
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         height: undefined,
         aspectRatio: 1,
-        width: wp('15.5%')
+        width: wp('21.5%')
     },
     infromationView: {
         flex: 0.80,

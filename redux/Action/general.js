@@ -381,3 +381,44 @@ export function updatePassword(old_password, new_password){
         
     }
 }
+export function orderConfirmation(data){
+    return {
+        type: types.ORDER_CONFIRMATION,
+        payload: data
+        
+    }
+}
+export function confirmationSuccess(data){
+    return {
+        type: types.CONFIRMATION_SUCCESS,
+        payload: data
+    }
+}
+
+export function getOrderRequest(){
+    return {
+        type: types.GET_ORDERS_REQUEST
+        
+    }
+}
+export function getOrderSuccess(data){
+    return {
+        type: types.GET_ORDERS_SUCCESS,
+        payload: data
+        
+    }
+}
+export function getOneOrderRequest(id){
+    return {
+        type: types.GET_ONE_ORDER_REQUEST,
+        payload: id
+        
+    }
+}
+export function getOneOrderSuccess(data){
+    return {
+        type: types.GET_ONE_ORDER_SUCCESS,
+        payload: data
+        
+    }
+}

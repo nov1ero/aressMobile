@@ -15,20 +15,21 @@ function OrdersComponent(props) {
         <>
             {/* <OtrixDivider size={'md'} /> */}
             {
-                products.length > 0 && products.map((item) =>
+                products.length > 0 && products.map((item, index) =>
                     <>
-                        <View style={styles.cartContent} key={item.id}>
+                        <View style={styles.cartContent} key={index}>
                             <View style={styles.cartBox} >
                                 <View style={styles.imageView}>
-                                    <Image source={item.image} style={styles.image}
+                                    <Image source={{uri: "https://cdn-icons-png.flaticon.com/512/5220/5220625.png"}} style={styles.image}
                                     ></Image>
                                 </View>
                                 <View style={styles.infromationView}>
                                     <View >
-                                        <Text style={styles.name}>{item.name}</Text>
+                                        <Text style={styles.name}>Идентификатор заказа:{"\n"}{item.order_id}</Text>
                                     </View>
-                                    <Text style={styles.orderDate}>Ordered On {item.orderDate}</Text>
-                                    <Text style={styles.orderDate}>Order Status <Text style={styles.orderStatuss}>{item.orderStatus}</Text></Text>
+                                    <Text style={styles.orderDate}>Дата заказа: {item.orderDate}</Text>
+                                    <Text style={styles.orderDate}>Общее количество: <Text style={styles.orderStatuss}>{item.total_qty}</Text></Text>
+                                    <Text style={styles.orderDate}>Общая стоимость: <Text style={styles.orderStatuss}>₸  {item.order_total}</Text></Text>
                                 </View>
 
                             </View>
@@ -36,15 +37,18 @@ function OrdersComponent(props) {
 
                         </View>
                         <View style={GlobalStyles.horizontalLine}></View>
-                        <TouchableOpacity onPress={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })} style={styles.bottomButton}>
+                        {/* <TouchableOpacity onPress={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })} style={styles.bottomButton}>
                             <Text style={styles.bottomLeftTxt}>Buy it Again</Text>
                             <TouchableOpacity onPress={() => props.navigation.navigate('ProductDetailScreen', { id: item.id })} style={{ padding: 4 }}>
                                 <Icon name="arrow-forward-ios" ></Icon>
                             </TouchableOpacity>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <View style={GlobalStyles.horizontalLine}></View>
-                        <TouchableOpacity onPress={() => props.navigation.navigate('OrderDetailScreen', { orderData: item })} style={[styles.bottomButton, { marginBottom: hp('2%') }]}>
-                            <Text style={styles.bottomLeftTxt}>Order Details</Text>
+                        <TouchableOpacity onPress={() => {
+                            props.getOneOrder(item.id),
+                            props.navigation.navigate('OrderDetailScreen', { orderID: item.id })
+                    }} style={[styles.bottomButton, { marginBottom: hp('2%') }]}>
+                            <Text style={styles.bottomLeftTxt}>Детали заказа</Text>
                             <TouchableOpacity style={{ padding: 4 }}>
                                 <Icon name="arrow-forward-ios" ></Icon>
                             </TouchableOpacity>
@@ -66,6 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: wp('2%'),
         marginLeft: wp('1%'),
+        height: hp('17%'),
     },
     cartBox: {
         flexDirection: 'row',
@@ -79,7 +84,8 @@ const styles = StyleSheet.create({
         flex: 0.30,
         backgroundColor: Colors.light_white,
         margin: wp('1%'),
-        height: hp('8%'),
+        marginTop: 40,
+        height: hp('10%'),
         borderRadius: wp('1.5%')
     },
     image: {
@@ -87,13 +93,16 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         height: undefined,
         aspectRatio: 1,
+        marginTop: 10,
+        marginLeft: 10,
         width: wp('15.5%')
     },
     infromationView: {
         flex: 0.70,
+        height: hp('20%'),
         marginBottom: hp('1.4%'),
         marginLeft: wp('1%'),
-        marginTop: hp('1%'),
+        marginTop: hp('8%'),
         justifyContent: 'center',
         alignItems: 'flex-start'
     },

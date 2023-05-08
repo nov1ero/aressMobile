@@ -1,8 +1,8 @@
 const PaymentMethodsDummy = [
-    // { id: "1", name: 'Wallet/UPI' },
+    // { id: "1", name: 'Оналайн Кашелек' },
     // { id: "2", name: 'Net Banking' },
-    // { id: "3", name: 'Credit / Debit / ATM Card' },
-    { id: "4", name: "Cash On Delivery" }
+    // { id: "3", name: 'Кредитная карта' },
+    { id: "4", name: "Наличными при доставке" }
 ];
 
 export default PaymentMethodsDummy;

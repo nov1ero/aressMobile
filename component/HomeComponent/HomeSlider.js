@@ -8,8 +8,6 @@ const { width: screenWidth } = Dimensions.get('window')
 function HomeSlider(props) {
     const images = props?.sliders?.items;
     const path = props?.sliders?.path;
-    const text = props?.sliders?.items[0].topheading;
-    
     const _renderItem = ({ item, index }, parallaxProps) => {
         return (
             <View style={styles.item}>
@@ -21,7 +19,6 @@ function HomeSlider(props) {
                     {...parallaxProps}
                 />
                 <Text numberOfLines={1}>
-                    {/* {text.ru} */}
                 </Text>
 
             </View>

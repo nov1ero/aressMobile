@@ -20,7 +20,10 @@ import {
     isAuth,
     cartLogout,
     wishLogout,
-    getAddressSuccess
+    getAddressSuccess,
+    confirmationSuccess,
+    getOrderSuccess,
+    getOneOrderSuccess
 } from "@actions";
 // import { AsyncStorage } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -52,6 +55,9 @@ export function* watchGeneralRequest() {
     yield takeEvery(types.UPDATE_ADDRESS, updateAddress);
     yield takeEvery(types.DELETE_ADDRESS, removeAddress);
     yield takeEvery(types.UPDATE_PASSWORD, updatePassword);
+    yield takeEvery(types.ORDER_CONFIRMATION, orderConfirmation);
+    yield takeEvery(types.GET_ORDERS_REQUEST, getOrderRequest);
+    yield takeEvery(types.GET_ONE_ORDER_REQUEST, getOneOrderRequest);
 
 }
 
@@ -118,7 +124,7 @@ function* requestInit(action) {
           //cart count set
           const cart_response =  yield fetch('https://aress.kz/api/cart?currency=KZT', requestOptions);
           const carData = yield cart_response.json();
-          //console.log("CART_DATA", carData)
+          console.log("CART_DATA", carData)
           if (carData.status == "fail") {
             yield call(Alert.alert, 'Ошибка', "Корзина не прогрузилась");
           }else if(carData.status == "success" && carData.msg=="Your cart is empty !"){
@@ -185,6 +191,7 @@ function* addToCart(action) {
           const data = yield response.json(); 
           //console.log("CART_ADD", data)
           yield call(Alert.alert, 'Успех', 'Предмет добавлен в Корзину');
+          yield put(confirmationSuccess('fail'))
 
         
         var getHeaders = new Headers();
@@ -198,7 +205,7 @@ function* addToCart(action) {
 
           const cart_response =  yield fetch('https://aress.kz/api/cart?currency=KZT', getRequestOptions);
         const carData = yield cart_response.json();
-        //console.log("CART_DATA", carData)
+        console.log("CART_DATA", carData)
         if (carData) {
             let data = { cartCount: carData.products.length, cartData: carData.products }
 
@@ -552,6 +559,9 @@ function* login_Request(action) {
           const data = yield response.json(); 
           //console.log("logDATA", data)
           if(data.status == 'fail'){
+            if (data.msg == "Email or password is invalid !") {
+              yield call(Alert.alert, 'Вы неправильно ввели пароль или почту');
+            }
             yield call(Alert.alert, 'Ошибка', data.msg);
 
           }
@@ -954,6 +964,7 @@ function* addAddress(action) {
           const addResponse = yield fetch("https://aress.kz/api/manageaddress", addRequestOptions)
           const AddData = yield addResponse.json();
           yield put(getAddressSuccess(AddData.address))
+          yield call(Alert.alert, 'Добавлено', 'Адрес добавлен');
         }
       } catch (e) {
           //console.log('ERROR =', e)
@@ -1058,3 +1069,101 @@ function* removeAddress(action) {
           yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
       }
 }
+
+function* orderConfirmation(action) {
+  try {
+        const confirmationData = action.payload
+        console.log("CONFIRMATION_DATA", confirmationData)
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+
+
+        var raw = JSON.stringify({
+          "amount": confirmationData.amount,
+          "payment_method": confirmationData.payment_method,
+          "currency": confirmationData.currency,
+          "address_id": confirmationData.address_id
+        });
+        
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/confirm/order?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", requestOptions)
+        const data = yield response.json();
+        console.log("CONFIRMATION DATA", data)
+        if(data.status == 'success'){
+          yield put(successCart({
+            cartCount: 0, 
+            cartData: []
+          }))
+          yield put(confirmationSuccess(data.status))
+        }else{
+          yield put(confirmationSuccess(data.status))
+          if (data.msg == "The payment method field is required.") {
+            yield call(Alert.alert, 'Ошибка', 'Вы не выбрали метод оплаты',data.msg)
+          }else if (data.message == "Address not found !") {
+            yield call(Alert.alert, 'Ошибка', 'Вы не выбрали адрес доставки')
+          }else{
+            yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',data.msg)
+          }
+          console.log("CONFIRMATION_FAIL", data)
+        }
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* getOrderRequest(action) {
+  try {
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+        
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/orders?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", requestOptions)
+        const data = yield response.json();
+        console.log("ADRESDATA", data.orders)
+        yield put(getOrderSuccess(data.orders))
+        
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+
+function* getOneOrderRequest(action) {
+  try {
+        const id = action.payload
+        const access_token = yield call(AsyncStorage.getItem, 'access_token')
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", "Bearer" + " "+ access_token)
+        
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+    
+        const response = yield fetch("https://aress.kz/api/orders/"+id+"?secret=a7727fec-2b3e-4745-97cd-bb212bed0d99", requestOptions)
+        const data = yield response.json();
+        // console.log("ONDEORDERDATA", data.order)
+        yield put(getOneOrderSuccess(data.order))
+        
+      } catch (e) {
+          //console.log('ERROR =', e)
+          yield call(Alert.alert, 'Ошибка', 'Что то пошло не так!',e);
+      }
+}
+

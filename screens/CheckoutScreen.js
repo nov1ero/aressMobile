@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     View,
     TouchableOpacity,
@@ -10,38 +10,41 @@ import {
 import { connect } from 'react-redux';
 import { Button } from 'native-base';
 import {
-    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, CheckoutView, OtirxBackButton, AddAddressComponent, EditAddressComponent, PaymentSuccessComponent
+    OtrixContainer, OtrixHeader, OtrixContent, OtrixDivider, CheckoutView, OtirxBackButton, AddAdressComponent, EditAddressComponent, PaymentSuccessComponent
 } from '@component';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { GlobalStyles, Colors } from '@helpers';
 import { _roundDimensions } from '@helpers/util';
-import { proceedCheckout, clearCart } from '@actions';
-import ProductListDummy from '@component/items/ProductListDummy';
+import { orderConfirmation, addAddress, updateAddress, removeAddress } from '@actions';
 import PaymentMethodsDummy from '@component/items/PaymentMethodsDummy';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Fonts from "@helpers/Fonts";
-import DummyAddress from '@component/items/DummyAddress';
 
 function CheckoutScreen(props) {
-    const [state, setState] = React.useState({ loading: true, cartArr: [], showAdd: false, cartProducts: [], sumAmount: 0, noRecord: false, addresses: DummyAddress, selctedAddress: DummyAddress[0].id, showEdit: false, editAddressData: [], step: 1, selectedPaymentMethod: 4, paymentSuccessModal: false });
-
+    
+    const [state, setState] = useState({ loading: true,pressed: true, cartArr: [], showAdd: false, cartProducts: [], sumAmount: 0, noRecord: false, selctedAddress: 0, showEdit: false, editAddressData: {}, step: 1, selectedPaymentMethod: {}});
+    const [paymentModal, setPaymentModal]= useState({paymentSuccessModal: false })
+    
+    const {address, confirmed} = props
+    console.log("CONFIRMED", confirmed)
+    
     const calculateCart = () => {
         const { cartData } = props;
         let cartProducts = cartData;
-        //console.log("CART__DATA", cartProducts)
         let cartItems = [];
         let sumAmount = 0;
 
         //find and create array
-        cartProducts && cartProducts.length > 0 && cartProducts.forEach(function (item, index) {
-            let foundProduct = cartProducts.filter(product => product.id == item.product_id);
+        cartProducts && cartData.length > 0 && cartProducts.forEach(function (item, index) {
             cartItems.push({
-                quantity: item.quantity,
-                name: item.name || " ",
-                price: item.price || " ",
-                image: item.image || " ",
-                id: item.product_id || " "
+                cartid: item.cartid,
+                quantity: item.qty,
+                name: item.productname.ru || " ",
+                price: item.offerprice > 0? item.offerprice: item.mainprice,
+                image: item.thumbnail_path+"/"+item.thumbnail? item.thumbnail_path+"/"+item.thumbnail: " ",
+                id: item.productid || " ",
+                max_order: item.maxorderqty
             });
             //console.log("ITEMS", cartItems)
             //! поменять 30 на 'amt'
@@ -53,35 +56,26 @@ function CheckoutScreen(props) {
         setState({ ...state, noRecord: cartProducts.length > 0 ? false : true, loading: false, cartProducts: cartItems, sumAmount: sumAmount, });
     }
 
-    const storeAddress = (addressData) => {
-        let newID = "" + Math.floor(Math.random() * 10000) + 1;
-        let newObj = { id: "" + newID, name: addressData.name, country: addressData.country, city: addressData.city, postcode: addressData.postcode, address1: addressData.address1, address2: addressData.address2 };
-        setState({
-            ...state, addresses: [newObj, ...addresses], showAdd: false
-        });
+    const _addAddress = async (addressData) => {
+        await props.addAddress(addressData);
     }
 
-    const updateAddress = (addressData) => {
-        let newID = "" + Math.floor(Math.random() * 10000) + 1;
-        if (selctedAddress == addressData.id) {
-            setState({ ...state, selctedAddress: newID });
-        }
-        let findIndex = addresses.findIndex((item) => item.id === editAddressData.id);
-        let newObj = { id: newID, name: addressData.name, country: addressData.country, city: addressData.city, postcode: addressData.postcode, address1: addressData.address1, address2: addressData.address2 };
-        addresses.splice(findIndex, 1);
+    const _removeAddress = async (addressData) => {
+        await props.removeAddress(addressData)
+    }
 
-        setState({
-            ...state, addresses: [newObj, ...addresses], showEdit: false
-        });
-        if (selctedAddress == addressData.id) {
-            setState({ ...state, selctedAddress: newID });
-        }
+    const _updateAddress = async (addressData) => {
+        await props.updateAddress(addressData)
     }
 
     const editAddress = (id) => {
+        const index = address.findIndex((item) => item.id === id);
+        if (index !== -1) {
+            const selectedAddressToEdit = address[index];
+            setState({ ...state, editAddressData: selectedAddressToEdit, showEdit: true });
+            console.log("Selected Address", editAddressData)
 
-        let findAddress = addresses.filter(item => item.id.indexOf(id) > -1);
-        setState({ ...state, editAddressData: findAddress[0], showEdit: true });
+        }
     }
 
     const closeAddressModel = () => {
@@ -98,23 +92,39 @@ function CheckoutScreen(props) {
         });
     }
 
-    const _proceedCheckout = () => {
-        props.proceedCheckout();
+    const _proceedCheckout = async(amount, payment_method, addressid) => {
+        await props.orderConfirmation({
+            amount: amount,
+            payment_method : payment_method,
+            currency : "KZT",
+            address_id : addressid
+        });
     }
 
     useEffect(() => {
+        if (confirmed == 'success') {
+            setPaymentModal({ ...paymentModal, paymentSuccessModal: true})
+        }
         calculateCart();
-    }, []);
+    }, [confirmed]);
 
-    const { cartProducts, loading, noRecord, showAdd, addresses, selctedAddress, showEdit, editAddressData, step, selectedPaymentMethod, paymentSuccessModal } = state;
+    const { cartProducts, loading, noRecord, showAdd, addresses, selctedAddress, showEdit, editAddressData, step, selectedPaymentMethod, pressed } = state;
+    const { paymentSuccessModal } = paymentModal;
     const { totalAmt } = props.route.params;
-
+    const amount = (price) => {
+        let amt = price.replace('₸ ', '');
+        return amt;
+    }
+    
     return (
         <OtrixContainer customStyles={{ backgroundColor: Colors.light_white }}>
 
             {/* Header */}
             <OtrixHeader customStyles={{ backgroundColor: Colors.light_white }}>
-                <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => props.navigation.goBack()}>
+                <TouchableOpacity style={GlobalStyles.headerLeft} onPress={() => {
+                    props.navigation.goBack(),
+                    setState({ ...state, pressed: false })
+                }}>
                     <OtirxBackButton />
                 </TouchableOpacity>
                 <View style={[GlobalStyles.headerCenter, { flex: 1 }]}>
@@ -158,25 +168,29 @@ function CheckoutScreen(props) {
             {/* Address Content start from here */}
             {step == 1 && <>
                 <OtrixDivider size={"md"} />
+                <TouchableOpacity 
+                onPress={() => setState({ ...state, step: 1 })}
+                >
                 <Text style={styles.deliveryTitle}>Адрес доставки</Text>
+                </TouchableOpacity>
                 <OtrixDivider size={"sm"} />
                 <View style={styles.addressContent}>
                     {/*horizontal address* */}
                     <ScrollView style={styles.addressBox} showsHorizontalScrollIndicator={false} horizontal={true}>
                         {
-                            addresses.length > 0 && addresses.map((item, index) =>
-                                <TouchableOpacity key={index} style={[styles.deliveryBox, {
+                            address.length > 0 && address.map((item, index) =>
+                                <TouchableOpacity key={item.id} style={[styles.deliveryBox, {
                                     borderWidth: selctedAddress == item.id ? 1 : 0.1,
                                     borderColor: selctedAddress == item.id ? Colors.themeColor : Colors.white
                                 }]}
-                                    onPress={() => setState({ ...state, selctedAddress: item.id })}
+                                    onPress={() => setState({ ...state, selctedAddress: item.id , pressed: false})}
                                 >
-                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.name}     </Text>
-                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.address1}    </Text>
-                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.address2}, {item.city}</Text>
-                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.postcode}, {item.country}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.name}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.email}, {item.phone}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={2}>{item.region}, {item.city}</Text>
+                                    <Text style={styles.addressTxt} numberOfLines={1}>{item.address}</Text>
                                     {selctedAddress == item.id &&
-                                        <Text style={styles.deliveryAddressTxt}>Delivery Address <Icon name="md-checkmark-circle-sharp" color={Colors.themeColor} size={wp('4%')} style={{ textAlignVertical: 'center' }} /></Text>
+                                        <Text style={styles.deliveryAddressTxt}>Адрес доставки<Icon name="md-checkmark-circle-sharp" color={Colors.themeColor} size={wp('4%')} style={{ textAlignVertical: 'center' }} /></Text>
                                     }
                                     <TouchableOpacity style={[styles.editView, { bottom: selctedAddress == item.id ? hp('12%') : hp('10%') }]} onPress={() => editAddress(item.id)}>
                                         <Text style={styles.edit}> <MatIcon name="pencil" color={Colors.text_color} size={wp('5%')} /></Text>
@@ -213,13 +227,13 @@ function CheckoutScreen(props) {
             {/* Add Address Screen */}
             <Modal visible={showAdd}
                 transparent={true}>
-                <AddAddressComponent closeAdd={closeAddressModel} addAdress={storeAddress} />
+                <AddAdressComponent closeAdd={closeAddressModel} addAdress={_addAddress} />
             </Modal>
 
             {/* Edit Address Screen */}
             <Modal visible={showEdit}
                 transparent={true}>
-                <EditAddressComponent closeEdit={closeAddressEditModel} editAddress={updateAddress} editData={editAddressData} />
+                <EditAddressComponent closeEdit={closeAddressEditModel} editAddress={_updateAddress} editData={editAddressData} removeAddress={_removeAddress}/>
             </Modal>
 
 
@@ -227,20 +241,25 @@ function CheckoutScreen(props) {
             {
                 step == 2 && <OtrixContent>
                     <OtrixDivider size={"md"} />
-                    <View style={styles.offerView}>
-                        <Text style={styles.offerTxt}>Get 10% Off With Credit Card</Text>
-                    </View>
+                    {/* <View style={styles.offerView}>
+                        <Text style={styles.offerTxt}>Получите 10% скидки с *********</Text>
+                    </View> */}
                     <OtrixDivider size={"md"} />
+                    <TouchableOpacity
+                        onPress={() => setState({ ...state, step: 2 })}
+                    >
                     <Text style={styles.paymentMethodTitle}>Методы оплаты</Text>
+                    </TouchableOpacity>
                     <OtrixDivider size={"sm"} />
                     {
                         PaymentMethodsDummy.map((item, index) =>
-                            <TouchableOpacity key={index}
-                                onPress={() => setState({ ...state, selectedPaymentMethod: item.id })}
-                                style={[styles.paymentView, { backgroundColor: selectedPaymentMethod == item.id ? Colors.themeColor : Colors.white }]}>
-                                <Text style={[styles.paymentMethodTxt, { color: selectedPaymentMethod == item.id ? Colors.white : Colors.text_color }]}>{item.name}</Text>
+                            <TouchableOpacity key={item.id}
+                                onPress={() => setState({ ...state, selectedPaymentMethod: item, pressed: false })}
+                                style={[styles.paymentView, { backgroundColor: selectedPaymentMethod == item ? Colors.themeColor : Colors.white }]}>
+                                <Text style={[styles.paymentMethodTxt, { color: selectedPaymentMethod == item ? Colors.white : Colors.text_color }]}>{item.name}</Text>
                                 {
-                                    selectedPaymentMethod == item.id ?
+                                    
+                                    selectedPaymentMethod.id == item.id ?
                                         <Icon name="md-shield-checkmark" color={Colors.white} size={wp('6%')} style={{ textAlign: 'right', flex: 0.10 }} />
                                         :
                                         <Icon name="radio-button-off" color={Colors.secondry_text_color} size={wp('5%')} style={{ textAlign: 'right', flex: 0.10 }} />
@@ -271,8 +290,13 @@ function CheckoutScreen(props) {
                                 size="md"
                                 variant="solid"
                                 bg={'#0ab97a'}
+                                isDisabled={pressed}
                                 style={[GlobalStyles.button, { marginHorizontal: wp('5%'), marginBottom: hp('1%'), flex: 0.40, alignSelf: 'flex-end' }]}
-                                onPress={() => { setState({ ...state, paymentSuccessModal: true }), _proceedCheckout(), props.clearCart() }}
+                                onPress={() => { 
+                                    // confirmed == "success"? setState({ ...state, paymentSuccessModal: true, pressed: true }): setState({ ...state, paymentSuccessModal: false, pressed: true }),
+                                    _proceedCheckout(amount(totalAmt), selectedPaymentMethod.name, selctedAddress),
+                                    setState({ ...state, pressed: true })
+                                }}
                             >
                                 <Text style={[GlobalStyles.buttonText, { fontSize: wp('4.8%') }]}>Заказать</Text>
                             </Button>
@@ -296,12 +320,13 @@ function CheckoutScreen(props) {
 function mapStateToProps(state) {
     return {
         cartData: state.cart.cartData,
-
+        address: state.address.address,
+        confirmed: state.cart.confirmed
     }
 }
 
 
-export default connect(mapStateToProps, { proceedCheckout, clearCart })(CheckoutScreen);
+export default connect(mapStateToProps, { orderConfirmation, addAddress, updateAddress, removeAddress })(CheckoutScreen);
 
 const styles = StyleSheet.create({
     checkoutView: {

@@ -62,8 +62,10 @@ function FreaturedProduct(props) {
                     removeFromWishlist={removeFromWishlist} 
                     thumbnail_path = {item.thumbnail_path}
                     thumbnail= {item.thumbnail}
-                    wishlistArray={wishlistArr}/>
-                }>
+                    wishlistArray={wishlistArr}
+                    />
+                }
+                >
             </FlatList>
 
         </>

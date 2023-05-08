@@ -11,6 +11,7 @@ import CategoryProduct from "./CategoryProduct"
 import Profile from "./Profile";
 import Search from "./Search";
 import Address from "./Address";
+import Orders from "./Orders";
 
 const reducers = combineReducers({
     mainScreenInit: MainScreenReducer,
@@ -23,7 +24,8 @@ const reducers = combineReducers({
     profile: Profile,
     cat_product: CategoryProduct,
     search: Search,
-    address: Address
+    address: Address,
+    orders: Orders
 })
 
 export default reducers;

@@ -87,7 +87,64 @@ const initialState = {
             "deals": [],
             "path": "https://aress.kz/images/flashdeals"
         },
-        "sliders": null,
+        "sliders": {
+            "sort": 5,
+            "name": "slider",
+            "layout": "vertical",
+            "autoslide": true,
+            "enable": true,
+            "path": "https://encrypted-tbn0.gstatic.com",
+            "items": [
+                {
+                    "image": "images?q=tbn:ANd9GcQj8XPspladRKt28LlwAkjWv34Xp0LCT_fSkg&usqp=CAU",
+                    "linkedTo": "None",
+                    "linked_id": "",
+                    "topheading": {
+                        "en": "Fashion Deals",
+                        "ru": "Горячие предложения"
+                    },
+                    "headingtextcolor": "#000000",
+                    "heading": {
+                        "en": "60% off",
+                        "ru": "- до 60%"
+                    },
+                    "subheadingcolor": "#000000",
+                    "buttonname": {
+                        "en": "SHOP NOW",
+                        "ru": "КУПИТЬ СЕЙЧАС"
+                    },
+                    "btntextcolor": "#FFFFFF",
+                    "btnbgcolor": "#000000",
+                    "moredescription": "Not found",
+                    "descriptionTextColor": "#000000",
+                    "status": "1"
+                },
+                {
+                    "image": "images?q=tbn:ANd9GcQj8XPspladRKt28LlwAkjWv34Xp0LCT_fSkg&usqp=CAU",
+                    "linkedTo": "None",
+                    "linked_id": "",
+                    "topheading": {
+                        "en": "Music Never Stops",
+                        "ru": "Лучшего звучания в ушах"
+                    },
+                    "headingtextcolor": "#FFFFFF",
+                    "heading": {
+                        "en": "Arrival of smart era",
+                        "ru": "Новое поколение"
+                    },
+                    "subheadingcolor": "#FFFFFF",
+                    "buttonname": {
+                        "en": "BUY NOW",
+                        "ru": "Купить сейчас"
+                    },
+                    "btntextcolor": "#FFFFFF",
+                    "btnbgcolor": "#DE3B3B",
+                    "moredescription": "Not found",
+                    "descriptionTextColor": "#000000",
+                    "status": "1"
+                }
+            ]
+        },
         "TwoEqualAdvertise": null,
         "hotdeals": [],
         "featuredProducts": [],
