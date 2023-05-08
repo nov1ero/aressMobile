@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: Colors.white,
         alignItems: 'center',
-        borderRadius: wp('0.8%'),
+        borderRadius: wp('3.8%'),
         elevation: 2,
         height: hp('11%'),
         width: wp('23%'),
